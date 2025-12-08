@@ -1,9 +1,8 @@
-// netlify/functions/tryon.js
+// netlify/functions/tryon.mjs
 
-// 🚨 FIX: Correctly import the GoogleGenAI constructor from the module object 
-// to work around Netlify/esbuild bundling issues.
-const genAIModule = require('@google/genai'); 
-const GoogleGenAI = genAIModule.GoogleGenAI; 
+// 🚨 FINAL FIX: Use ES Module syntax (import/export) which is the most reliable
+// way to get the correct constructor in modern environments.
+import { GoogleGenAI } from '@google/genai';
 
 // Helper function to create the Part object for image input
 function base64ToGenerativePart(base64Data, mimeType) {
@@ -15,10 +14,9 @@ function base64ToGenerativePart(base64Data, mimeType) {
   };
 }
 
-exports.handler = async (event) => {
-  // 🚨 FIX: Initialize the AI client INSIDE the handler.
-  // This ensures 'ai' is scoped locally for each function invocation 
-  // and uses the correctly resolved constructor.
+// Handler must be exported as a named 'handler' function for Netlify
+export async function handler(event) {
+  // Initialize the AI client INSIDE the handler.
   const ai = new GoogleGenAI({}); 
 
   if (event.httpMethod !== 'POST') {
@@ -32,20 +30,17 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: 'Missing baseImage or prompt in request body.' };
     }
 
-    // Prepare the image part (Gemini 2.5 Flash supports inline Base64)
     const imagePart = base64ToGenerativePart(baseImage, "image/jpeg");
 
     // Call the Nano Banana (Gemini 2.5 Flash Image) model
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image', // The model ID for image generation/editing
+      model: 'gemini-2.5-flash-image',
       contents: [
         imagePart,
-        { text: prompt }, // The instruction for the AI (apply new hairstyle)
+        { text: prompt },
       ],
     });
     
-    // Extract the generated image (Base64 data) from the response
-    // The image data is found in the first part of the first candidate
     const generatedImageBase64 = response.candidates[0].content.parts[0].inlineData.data;
 
     return {
@@ -63,4 +58,4 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: `Failed to process image with AI model: ${error.message}` }),
     };
   }
-};
+}
