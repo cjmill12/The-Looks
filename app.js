@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const tryOnBtn = document.getElementById('try-on-btn');
     const styleOptions = document.querySelectorAll('.style-option'); 
     
-    // 🚨 LOADING INDICATOR ELEMENT
     const spinner = document.getElementById('loading-spinner');
     
     const originalSelfieImg = document.getElementById('original-selfie');
@@ -80,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         statusMessage.textContent = `Applying your selected style... This may take a moment.`;
         tryOnBtn.disabled = true;
-        spinner.style.display = 'inline-block'; // 🚨 SHOW SPINNER
+        spinner.style.display = 'inline-block'; 
 
         try {
             const response = await fetch('/.netlify/functions/tryon', {
@@ -88,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     baseImage: capturedImageBase64,
-                    // Use the stored, refined selectedPrompt variable
-                    prompt: `Apply a high-quality, photorealistic ${selectedPrompt} to the person in the image. Maintain natural shadows and lighting.`
+                    // The core prompt is now the specific, detailed string from the data-prompt
+                    prompt: `Apply a high-quality, photorealistic hairstyle to the person in the image. Instruction: ${selectedPrompt}. Maintain the original face, shadows, and portrait lighting.`
                 })
             });
 
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = `Error during AI try-on: ${error.message}. Please check your console/Netlify logs.`;
         } finally {
             tryOnBtn.disabled = false;
-            spinner.style.display = 'none'; // 🚨 HIDE SPINNER
+            spinner.style.display = 'none'; 
         }
     });
 });
