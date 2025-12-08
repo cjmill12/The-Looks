@@ -1,88 +1,63 @@
-/* --- Hairstyle Gallery: Overhauled for Horizontal Scroll --- */
-
-#controls h3 {
-    /* Keeping the text heading hidden for minimalist look */
-    display: none; 
-}
-
-#hairstyle-gallery {
-    /* 1. Enable Horizontal Scrolling */
-    display: flex;
-    white-space: nowrap; /* Prevents items from wrapping to the next line */
-    overflow-x: auto; /* Enables horizontal scrollbar if content exceeds width */
-    overflow-y: hidden; 
-
-    /* 2. Configure Scroll Snapping */
-    scroll-snap-type: x mandatory; /* Forces the scroll to "snap" to defined points */
-    
-    /* Center the gallery within the controls container */
-    justify-content: flex-start; /* Start items from the left */
-    align-items: center;
-    
-    padding: 15px 0;
-    margin: 10px auto;
-    background-color: white; 
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    
-    /* 3. Define the Size of the Viewing Window */
-    /* This makes only 3 items visible at a time on standard mobile screens */
-    width: 90%; 
-    max-width: 450px; 
-    
-    /* Hide the scrollbar for a cleaner mobile look (optional) */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-/* Hide scrollbar for Chrome, Safari, and Opera */
-#hairstyle-gallery::-webkit-scrollbar {
-    display: none;
-}
-
-/* --- Individual Style Option Sizing and Snapping --- */
+/* --- Global Colors (Remaining the same) --- */
 :root {
+    --primary-color: #1D2124; 
+    --text-on-dark: #FFFFFF; 
+    --background-color: #f4f7f6;
+    --text-color: #333;
+    --highlight-color: #28a745; 
     --thumbnail-size: 80px; 
-    --gallery-gap: 15px; /* Define gap for calculations */
+    --gallery-gap: 15px; 
 }
 
-.style-option {
-    cursor: pointer;
-    border: 3px solid transparent;
-    border-radius: 8px;
-    padding: 5px;
+/* ... (body, header, layout containers remain the same) ... */
+
+/* --- Camera and Buttons (Remaining the same) --- */
+/* ... (styles for #video-feed, #take-selfie-btn, #try-on-btn remain the same) ... */
+
+
+/* --- Hairstyle Gallery (Remaining the same) --- */
+/* ... (styles for #hairstyle-gallery and .style-option remain the same) ... */
+
+
+/* --- Loading Indicator Styling (Remaining the same) --- */
+/* ... (styles for #try-on-btn-content and .loading-indicator remain the same) ... */
+
+
+/* --- Results Area --- */
+#results {
+    flex: 1;
+    min-width: 300px;
     text-align: center;
-    transition: all 0.2s;
-    
-    /* 1. Calculate Width for 3 Items + Gaps */
-    /* This is the key calculation for showing 3 at a time: */
-    /* (100% / 3) - 2*gap/3 - gap-between-items */
-    flex: 0 0 calc(33.333% - var(--gallery-gap)); 
-    margin-right: var(--gallery-gap); /* Add spacing between items */
-    
-    /* 2. Scroll Snapping Point */
-    scroll-snap-align: center; /* Snap the center of the element to the center of the scroll container */
-    
-    /* Ensure no wrapping */
-    display: inline-block; 
-}
-/* Remove margin on the last item */
-#hairstyle-gallery .style-option:last-child {
-    margin-right: 0;
 }
 
+/* REMOVED: .image-comparison and the result-box wrapper */
 
-/* --- Image Styling (Remains same, using the defined size) --- */
-.style-thumbnail {
-    width: var(--thumbnail-size);
-    height: var(--thumbnail-size); 
-    object-fit: cover; 
+.result-box img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
     border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.style-option.selected {
-    border-color: var(--highlight-color); 
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
-    transform: scale(1.05);
+/* --- Mobile Optimization (Adjusted Media Query) --- */
+/* Only need to stack the main app container for better flow */
+@media (max-width: 600px) {
+    #main-app-container {
+        flex-direction: column; 
+        gap: 15px;
+    }
+    
+    #camera-and-controls, #results {
+        min-width: 100%;
+        width: 100%;
+    }
+    
+    #video-feed {
+        width: 100%; /* Maximize camera preview */
+    }
+    
+    .result-box h4 {
+        font-size: 1.1em;
+    }
 }
-
-/* ... (Remaining CSS for buttons, logo, and results remains the same) ... */
