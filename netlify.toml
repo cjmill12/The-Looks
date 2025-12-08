@@ -1,7 +1,9 @@
-[build]
-  publish = "/"
-  functions = "netlify/functions"
-
 [functions]
-  # Ensure your Node.js code is treated as a function
+  directory = "netlify/functions"
   node_bundler = "esbuild"
+  
+  # 👇 ADD THIS SECTION
+  [functions.tryon]
+    external_packages = [
+      "@google/genai" 
+    ]
