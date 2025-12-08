@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HairFlow: AR Style Changer</title>
+    <title>HairFlow: 3-Step Style Generator</title>
     <style>
         :root {
             --primary: #4A90E2;
@@ -16,103 +16,146 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fff;
-            overflow: hidden;
-        }
-
-        header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            z-index: 10;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* --- Camera View --- */
-        #camera-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
 
-        video {
+        #app-container {
+            width: 100%;
+            max-width: 450px;
+            height: 90vh;
+            max-height: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header & Title --- */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .step-indicator {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* --- Screens (Steps) --- */
+        .app-screen {
+            flex-grow: 1;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .app-screen.active {
+            display: flex;
+        }
+
+        /* --- Step 1: Camera --- */
+        #camera-view {
+            width: 100%;
+            max-height: 100%;
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #video-feed {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transform: scaleX(-1); /* Mirror effect */
         }
 
-        /* The AR Canvas Layer */
-        #ar-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            transform: scaleX(-1);
-        }
-
-        /* --- Capture Button --- */
-        #capture-btn {
-            position: absolute;
-            bottom: 120px; /* Positioned above the controls */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 70px;
-            background: white;
-            border: 4px solid var(--primary);
-            border-radius: 50%;
-            z-index: 30;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        #capture-btn::after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 50px;
+        .capture-button {
             background: var(--primary);
-            border-radius: 50%;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: background 0.3s;
         }
 
-        /* --- Controls Interface (Moved up to make room for Capture button) --- */
-        #controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 20px;
-            padding-bottom: 30px; /* Extra padding for bottom safety */
-            z-index: 20;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        /* --- Step 2: Selection --- */
+        #selfie-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        #style-carousel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            overflow-y: auto;
+            max-height: 300px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .style-option {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 10px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+            transition: border-color 0.2s;
             display: flex;
-            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
+        .style-option.selected {
+            border-color: var(--primary);
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.6);
+            color: var(--gold);
+            border-radius: 5px;
+            padding: 2px 5px;
+            font-size: 0.7rem;
+        }
+        
         .pro-banner {
             background: linear-gradient(90deg, #FFD700, #FFA500);
             color: #fff;
@@ -120,7 +163,7 @@
             border-radius: 8px;
             font-weight: bold;
             font-size: 0.9rem;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -128,153 +171,101 @@
             cursor: pointer;
         }
 
-        .style-carousel {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .style-option {
-            min-width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background-color: #ddd;
-            background-size: cover;
-            background-position: center;
-            border: 3px solid transparent;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.2s;
-            overflow: hidden; /* Ensure images are contained */
-        }
-
-        .style-option.selected {
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        .style-option.locked {
-            filter: grayscale(100%);
-            opacity: 0.7;
-        }
-
-        .lock-icon {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: var(--dark);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            z-index: 5;
-        }
-
-        /* --- Modal for Pro --- */
-        #pro-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* --- Step 3: Generation --- */
+        #result-image {
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 80%;
-            max-width: 300px;
-        }
-
-        .btn-upgrade {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 1rem;
-            margin-top: 15px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-close {
-            margin-top: 10px;
-            background: transparent;
-            border: none;
-            color: #888;
-            cursor: pointer;
+        #download-btn {
+            background: green;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">✨ HairFlow</div>
-        <div style="color:white; font-size: 1.5rem;">📷</div>
-    </header>
+    <div id="app-container">
+        <header>
+            <h1 id="app-title">HairFlow: AR Style Changer</h1>
+            <div class="step-indicator" id="step-title">Step 1: Take Your Selfie</div>
+        </header>
 
-    <div id="camera-container">
-        <video id="video" playsinline autoplay muted></video>
-        <canvas id="ar-canvas"></canvas>
-    </div>
-    
-    <div id="capture-btn" onclick="takeSelfie()"></div>
-
-    <div id="controls">
-        <div class="pro-banner" onclick="openProModal()">
-            <span>🍌</span> Nano Banana Pro Features
-        </div>
-        
-        <div class="style-carousel" id="style-list">
+        <div id="step-1" class="app-screen active">
+            <div id="camera-view">
+                <video id="video-feed" playsinline autoplay muted></video>
             </div>
-    </div>
+            <button class="capture-button" onclick="captureSelfie()">📸 Take Selfie</button>
+        </div>
 
-    <div id="pro-modal">
-        <div class="modal-content">
-            <h2>Upgrade to Pro 🍌</h2>
-            <p>Unlock exclusive Nano Banana styles and AI color matching.</p>
-            <button class="btn-upgrade" onclick="simulatePurchase()">Get Pro - $4.99</button>
-            <button class="btn-close" onclick="closeProModal()">No thanks</button>
+        <div id="step-2" class="app-screen">
+            <img id="selfie-preview" alt="Your captured selfie">
+            <div class="pro-banner" onclick="openProModal()">
+                <span>🍌</span> Nano Banana Pro Styles
+            </div>
+            
+            <h3>Choose a Style:</h3>
+            <div id="style-carousel">
+                </div>
+            <button class="capture-button" onclick="goToStep(3)" id="generate-btn">✨ Generate New Look</button>
+        </div>
+
+        <div id="step-3" class="app-screen">
+            <h3>Generated Hairstyle</h3>
+            <canvas id="result-canvas" style="border: 1px solid #ccc; max-width: 100%; height: 400px; border-radius: 10px;"></canvas>
+            <div style="margin-top: 20px;">
+                <button class="capture-button" id="download-btn" onclick="downloadResult()">⬇️ Download Image</button>
+                <button class="capture-button" style="background: #888; margin-left: 10px;" onclick="goToStep(1)">Start Over</button>
+            </div>
+        </div>
+
+        <div id="pro-modal" style="display: none;">
+            <div class="modal-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <h2>Upgrade to Pro 🍌</h2>
+                <p>Unlock exclusive Nano Banana styles and AI color matching.</p>
+                <button class="btn-upgrade capture-button" onclick="simulatePurchase()">Get Pro - $4.99</button>
+                <button class="btn-close" style="color: #4A90E2;" onclick="closeProModal()">No thanks</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 1. CONFIGURATION & DATA ---
-        // NOTE: The 'Custom Inspo' image is the placeholder for the hairstyle you uploaded.
-        // You MUST upload a *transparent PNG* of the hair style to a public host (like Imgur) 
-        // and replace the URL below for it to work correctly as an overlay.
-        const CUSTOM_INSPIRATION_URL = 'https://i.imgur.com/example-of-your-inspo-hair-png.png'; 
+        // --- 1. CONFIGURATION & STATE ---
+        const CUSTOM_INSPIRATION_URL = 'https://i.imgur.com/example-of-your-inspo-hair-png.png'; // REPLACE WITH YOUR TRANSPARENT PNG URL
 
         const styles = [
-            { id: 1, name: 'Custom Inspo', img: CUSTOM_INSPIRATION_URL, isPro: false }, 
-            { id: 2, name: 'Natural Waves', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825038.png', isPro: false },
-            { id: 3, name: 'Sharp Bob', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825112.png', isPro: false },
-            { id: 4, name: 'Punk Spikes', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825066.png', isPro: true },
-            { id: 5, name: 'Afro Puff', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825046.png', isPro: true } 
+            { id: 1, name: 'Custom Inspo', img: CUSTOM_INSPIRATION_URL, isPro: false, thumb: 'https://cdn-icons-png.flaticon.com/512/4825/4825016.png' },
+            { id: 2, name: 'Natural Waves', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825038.png', isPro: false, thumb: 'https://cdn-icons-png.flaticon.com/512/4825/4825038.png' },
+            { id: 3, name: 'Sharp Bob', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825112.png', isPro: false, thumb: 'https://cdn-icons-png.flaticon.com/512/4825/4825112.png' },
+            { id: 4, name: 'Punk Spikes', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825066.png', isPro: true, thumb: 'https://cdn-icons-png.flaticon.com/512/4825/4825066.png' },
+            { id: 5, name: 'Afro Puff', img: 'https://cdn-icons-png.flaticon.com/512/4825/4825046.png', isPro: true, thumb: 'https://cdn-icons-png.flaticon.com/512/4825/4825046.png' }
         ];
 
-        let isProUser = false;
-        let currentStyle = styles[0]; // Set default style to the custom one
-        let overlayImage = new Image();
+        let appState = {
+            step: 1,
+            isProUser: false,
+            selfieDataURL: null,
+            selectedStyle: styles[0]
+        };
+        
+        const STEP_TITLES = {
+            1: "Step 1: Take Your Selfie",
+            2: "Step 2: Choose a Hairstyle",
+            3: "Step 3: Download Your New Look"
+        };
+        
+        // --- 2. CAMERA AND NAVIGATION ---
 
-        // --- 2. CAMERA SETUP ---
         async function startCamera() {
-            const video = document.getElementById('video');
+            const video = document.getElementById('video-feed');
             try {
+                // Stop any previous streams
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { facingMode: 'user' }, 
                     audio: false 
@@ -285,102 +276,154 @@
                 console.error("Camera error:", err);
             }
         }
+        
+        function stopCamera() {
+            const video = document.getElementById('video-feed');
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+        }
 
-        // --- 3. UI GENERATION ---
+        function goToStep(stepNumber) {
+            // Stop camera if leaving step 1
+            if (appState.step === 1 && stepNumber !== 1) {
+                stopCamera();
+            }
+            
+            appState.step = stepNumber;
+            document.getElementById('step-title').innerText = STEP_TITLES[stepNumber];
+
+            // Hide all and show current step
+            document.querySelectorAll('.app-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+
+            if (stepNumber === 1) {
+                startCamera(); // Restart camera if going back to step 1
+            } else if (stepNumber === 2) {
+                document.getElementById('selfie-preview').src = appState.selfieDataURL;
+                renderStyles();
+            } else if (stepNumber === 3) {
+                generateResultImage();
+            }
+        }
+
+        function captureSelfie() {
+            const video = document.getElementById('video-feed');
+            const canvas = document.createElement('canvas');
+            
+            // Set canvas size to video frame size
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw the video frame, flipped to remove the mirror effect for the final image
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width * -1, canvas.height);
+            ctx.restore();
+            
+            // Save the captured image (DataURL) to state
+            appState.selfieDataURL = canvas.toDataURL('image/jpeg', 0.9);
+            
+            // Move to Step 2
+            goToStep(2);
+        }
+        
+        // --- 3. STYLE SELECTION & RENDERING ---
+        
         function renderStyles() {
-            const list = document.getElementById('style-list');
+            const list = document.getElementById('style-carousel');
             list.innerHTML = '';
-
+            
             styles.forEach(style => {
                 const div = document.createElement('div');
-                div.className = `style-option ${style.isPro && !isProUser ? 'locked' : ''}`;
-                div.style.backgroundImage = `url(${style.img})`;
+                div.className = `style-option`;
+                div.style.backgroundImage = `url(${style.thumb})`;
                 
-                if (style.isPro && !isProUser) {
-                    div.innerHTML = '<div class="lock-icon">🔒</div>';
+                // Set lock status
+                if (style.isPro && !appState.isProUser) {
+                    div.classList.add('locked');
+                    div.innerHTML = '<div class="lock-icon">🔒 Pro</div>';
+                }
+
+                // Set selected status
+                if (style.id === appState.selectedStyle.id) {
+                    div.classList.add('selected');
                 }
 
                 div.onclick = () => selectStyle(style, div);
-                
-                // Select the first style (Custom Inspo) by default
-                if (style.id === currentStyle.id) {
-                    div.classList.add('selected');
-                    overlayImage.src = currentStyle.img;
-                }
-                
                 list.appendChild(div);
             });
         }
-
+        
         function selectStyle(style, element) {
-            if (style.isPro && !isProUser) {
+            if (style.isPro && !appState.isProUser) {
                 openProModal();
                 return;
             }
 
+            // Update state
+            appState.selectedStyle = style;
+
             // Visual Selection
             document.querySelectorAll('.style-option').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-
-            // Set Current Style
-            currentStyle = style;
-            overlayImage.src = style.img; 
         }
+
+        // --- 4. GENERATION (COMBINING IMAGES) ---
         
-        // --- 4. AR RENDER & CAPTURE ---
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('ar-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function drawOverlay() {
-            // Match canvas size to video size for proper scaling
-            canvas.width = video.videoWidth || window.innerWidth;
-            canvas.height = video.videoHeight || window.innerHeight;
+        function generateResultImage() {
+            const canvas = document.getElementById('result-canvas');
+            const ctx = canvas.getContext('2d');
             
-            // Clear the canvas for the new frame
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const selfieImg = new Image();
+            const hairImg = new Image();
+            
+            // Load the captured selfie
+            selfieImg.onload = () => {
+                // Set canvas dimensions based on the selfie
+                canvas.width = selfieImg.width;
+                canvas.height = selfieImg.height;
 
-            if (currentStyle && overlayImage.complete) {
-                // Simplified Placement: Center-Upper position 
-                const size = canvas.width * 0.6; 
-                const x = (canvas.width - size) / 2;
-                const y = (canvas.height * 0.15); 
-                
-                ctx.drawImage(overlayImage, x, y, size, size);
-            }
+                // 1. Draw the selfie background
+                ctx.drawImage(selfieImg, 0, 0, canvas.width, canvas.height);
 
-            requestAnimationFrame(drawOverlay);
+                // Load the hair overlay image
+                hairImg.onload = () => {
+                    // ** NOTE: This is where the magic (and complexity) happens **
+                    // In a production app, you would use Face-API.js/TensorFlow to calculate:
+                    // 1. Head position (x, y)
+                    // 2. Head width (w)
+                    
+                    // For this MVP, we use hardcoded simple centering:
+                    const headWidth = canvas.width * 0.7; // 70% of canvas width
+                    const x = (canvas.width - headWidth) / 2;
+                    const y = canvas.height * 0.1; // 10% from the top
+                    const heightRatio = hairImg.height / hairImg.width;
+                    const h = headWidth * heightRatio;
+
+                    // 2. Draw the hair overlay
+                    ctx.drawImage(hairImg, x, y, headWidth, h);
+
+                    // You now have the final generated image on the canvas!
+                };
+                // Ensure the hair image is requested only after the selfie is loaded
+                hairImg.src = appState.selectedStyle.img;
+            };
+            selfieImg.src = appState.selfieDataURL;
         }
-        
-        function takeSelfie() {
-            // 1. Create a temporary canvas that will hold the final image
-            const finalCanvas = document.createElement('canvas');
-            finalCanvas.width = video.videoWidth || window.innerWidth;
-            finalCanvas.height = video.videoHeight || window.innerHeight;
-            const finalCtx = finalCanvas.getContext('2d');
-            
-            // 2. Draw the Video Frame (Mirrored)
-            // Draw the video frame, then flip it horizontally to correct the mirror effect
-            finalCtx.save();
-            finalCtx.scale(-1, 1);
-            finalCtx.drawImage(video, 0, 0, finalCanvas.width * -1, finalCanvas.height);
-            finalCtx.restore();
-            
-            // 3. Draw the AR Overlay (The hair)
-            // The hair overlay is already drawn correctly (mirrored) on the ar-canvas, 
-            // so we draw the ar-canvas content directly on top.
-            finalCtx.drawImage(canvas, 0, 0, finalCanvas.width, finalCanvas.height);
 
-            // 4. Trigger Download
-            const dataURL = finalCanvas.toDataURL('image/png');
+        function downloadResult() {
+            const canvas = document.getElementById('result-canvas');
+            const dataURL = canvas.toDataURL('image/png');
             const link = document.createElement('a');
             link.href = dataURL;
-            link.download = 'HairFlow_Selfie_' + new Date().getTime() + '.png';
+            link.download = `HairFlow_Generated_${appState.selectedStyle.name}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            alert("Selfie captured and downloaded!");
         }
 
         // --- 5. NANO BANANA PRO LOGIC (Unchanged) ---
@@ -397,24 +440,17 @@
             btn.innerText = "Processing...";
             
             setTimeout(() => {
-                isProUser = true;
+                appState.isProUser = true;
                 closeProModal();
                 alert("Welcome to Nano Banana Pro! 🍌 All styles unlocked.");
-                renderStyles(); // Re-render to remove locks
+                renderStyles();
             }, 1500);
         }
 
         // --- INITIALIZATION ---
         window.onload = () => {
-            startCamera();
-            renderStyles();
-            video.addEventListener('play', () => {
-                drawOverlay();
-                // Select the first style on load
-                selectStyle(styles[0], document.querySelector('.style-option')); 
-            });
+            goToStep(1);
         };
-
     </script>
 </body>
 </html>
