@@ -1,15 +1,9 @@
 // netlify/functions/tryon.js
 
+// Import the SDK at the top level
 const { GoogleGenAI } = require('@google/genai');
 
-// Initialize the GoogleGenAI instance with the API Key
-const ai = new GoogleGenAI({}); 
-// ... rest of the file
-
-// The SDK automatically looks for the GEMINI_API_KEY environment variable.
-const ai = new GoogleGenAI({});
-
-// Helper function to create the Part object for image input
+// Helper function to create the Part object for image input (Stays outside the handler)
 function base64ToGenerativePart(base64Data, mimeType) {
   return {
     inlineData: {
@@ -20,6 +14,10 @@ function base64ToGenerativePart(base64Data, mimeType) {
 }
 
 exports.handler = async (event) => {
+  // 🚨 FIX: Initialize the AI client INSIDE the handler.
+  // This ensures 'ai' is scoped locally for each function invocation.
+  const ai = new GoogleGenAI({}); 
+
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -27,38 +25,21 @@ exports.handler = async (event) => {
   try {
     const { baseImage, prompt } = JSON.parse(event.body);
 
-    if (!baseImage || !prompt) {
-      return { statusCode: 400, body: 'Missing baseImage or prompt in request body.' };
-    }
+    // ... (rest of your validation and logic) ...
 
-    // Prepare the image part (Gemini 2.5 Flash supports inline Base64)
     const imagePart = base64ToGenerativePart(baseImage, "image/jpeg");
 
-    // Call the Nano Banana (Gemini 2.5 Flash Image) model
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image', // The model ID for image generation/editing
+      model: 'gemini-2.5-flash-image',
       contents: [
         imagePart,
-        { text: prompt }, // The instruction for the AI (apply new hairstyle)
+        { text: prompt },
       ],
     });
     
-    // Extract the generated image (Base64 data) from the response
-    const generatedImageBase64 = response.candidates[0].content.parts[0].inlineData.data;
-
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        generatedImageBase64: generatedImageBase64,
-      }),
-    };
+    // ... (return response) ...
 
   } catch (error) {
-    console.error('AI Processing Error:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to process image with AI model.' }),
-    };
+    // ... (error handling) ...
   }
 };
