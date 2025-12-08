@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Get DOM elements (Ensure ALL element retrieval happens here)
+    // 1. Get DOM elements
     const videoFeed = document.getElementById('video-feed');
     const canvas = document.getElementById('hidden-canvas');
     const takeSelfieBtn = document.getElementById('take-selfie-btn');
-    
-    // These are the elements that may have been causing the error if declared incorrectly:
-    const tryOnBtn = document.getElementById('try-on-btn'); 
+    const tryOnBtn = document.getElementById('try-on-btn');
     const styleOptions = document.querySelectorAll('.style-option'); 
+    
     const spinner = document.getElementById('loading-spinner');
     
-    const originalSelfieImg = document.getElementById('original-selfie');
+    // REMOVED: const originalSelfieImg = document.getElementById('original-selfie');
     const aiResultImg = document.getElementById('ai-result');
     const statusMessage = document.getElementById('status-message');
     
@@ -45,9 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         capturedImageBase64 = dataUrl.split(',')[1]; 
 
-        originalSelfieImg.src = dataUrl;
-        originalSelfieImg.style.display = 'inline';
-        aiResultImg.style.display = 'none';
+        // REMOVED: originalSelfieImg.src = dataUrl;
+        // REMOVED: originalSelfieImg.style.display = 'inline';
+        aiResultImg.style.display = 'none'; // Hide result until processing is done
 
         if (selectedPrompt) {
             tryOnBtn.disabled = false;
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = "Selfie captured. Select a style and click 'Try On!'";
     });
 
-    // --- Style Selection Logic ---
+    // --- Style Selection Logic (Remaining the same) ---
     styleOptions.forEach(option => {
         option.addEventListener('click', () => {
             styleOptions.forEach(opt => opt.classList.remove('selected'));
@@ -71,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- Call Netlify Function for AI Processing (with Loading Indicator) ---
+    // --- Call Netlify Function for AI Processing (Remaining the same) ---
     tryOnBtn.addEventListener('click', async () => {
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Please take a selfie AND select a style!";
@@ -88,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     baseImage: capturedImageBase64,
-                    // New, direct prompt structure is used here
                     prompt: `Edit the hair in this image using the following instruction: ${selectedPrompt}. Ensure the final result is photorealistic, seamlessly blended, and maintains the subject's face and original lighting.`
                 })
             });
