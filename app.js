@@ -1,22 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Get DOM elements
     const videoFeed = document.getElementById('video-feed');
+    const aiResultImg = document.getElementById('ai-result');
     const canvas = document.getElementById('hidden-canvas');
+    
+    // Buttons and Controls
     const takeSelfieBtn = document.getElementById('take-selfie-btn');
     const tryOnBtn = document.getElementById('try-on-btn');
     const styleOptions = document.querySelectorAll('.style-option'); 
-    
     const spinner = document.getElementById('loading-spinner');
     
-    const aiResultImg = document.getElementById('ai-result');
     const statusMessage = document.getElementById('status-message');
     
     let capturedImageBase64 = null; 
     let selectedPrompt = null; 
     let cameraStarted = false; 
 
-    // --- NEW CONSTANT: THE NEGATIVE PROMPT (Remaining the same) ---
+    // --- CONSTANTS ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor quality, bad anatomy.";
+    
     
     // --- Camera Initialization Function ---
     function startCamera() {
@@ -24,66 +26,75 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             statusMessage.textContent = "Attempting to access camera...";
-            takeSelfieBtn.disabled = true; // Disable button while loading
+            takeSelfieBtn.disabled = true;
 
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     videoFeed.srcObject = stream;
                     cameraStarted = true;
                     
-                    // 🚨 KEY CHANGE 1: Update button text when camera is ready
+                    // Show camera, hide result
+                    videoFeed.style.display = 'block'; 
+                    aiResultImg.style.display = 'none'; 
+                    
+                    // Update button state
                     takeSelfieBtn.textContent = "📸 Take Selfie"; 
                     takeSelfieBtn.disabled = false;
                     statusMessage.textContent = "Camera ready. Click 'Take Selfie'!";
                 })
                 .catch(err => {
                     console.error("Camera access error:", err);
-                    takeSelfieBtn.disabled = false; // Re-enable on failure
+                    takeSelfieBtn.disabled = false; 
                     takeSelfieBtn.textContent = "Error: Camera Access Failed";
                     statusMessage.textContent = "Error: Cannot access camera. Check browser permissions.";
                 });
-        } else {
-            statusMessage.textContent = "Error: Camera access not supported by your browser.";
         }
     }
     
     // 🚨 INITIAL STATE SETUP
-    takeSelfieBtn.textContent = "▶️ Start Camera"; // Set initial text
+    takeSelfieBtn.textContent = "▶️ Start Camera"; 
     statusMessage.textContent = "Click 'Start Camera' to begin the virtual try-on.";
-    
+    tryOnBtn.style.display = 'none'; 
+    videoFeed.style.display = 'none'; // Ensure video is off at load
 
     // --- Capture Selfie/Camera Activation ---
     takeSelfieBtn.addEventListener('click', () => {
-        // Step 1: Handle Camera Initialization (First Click)
+        // First Click: Start Camera
         if (!cameraStarted) {
             startCamera(); 
             return; 
         }
         
-        // Step 2: Handle Photo Capture (Second Click)
+        // Second Click: Take Photo
         if (videoFeed.readyState !== 4) { 
             statusMessage.textContent = "Camera feed not ready yet. Please wait a moment.";
             return;
         }
-
+        
+        // 1. Capture Logic
         canvas.width = videoFeed.videoWidth;
         canvas.height = videoFeed.videoHeight;
         const context = canvas.getContext('2d');
-        
         context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
-        
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         capturedImageBase64 = dataUrl.split(',')[1]; 
-
-        aiResultImg.style.display = 'none';
+        
+        // 2. State Transition (Camera -> Captured Image)
+        takeSelfieBtn.style.display = 'none'; 
+        tryOnBtn.style.display = 'block'; 
+        videoFeed.style.display = 'none'; 
+        
+        // 3. Display captured image in the viewport
+        aiResultImg.src = dataUrl;
+        aiResultImg.style.display = 'block'; 
 
         if (selectedPrompt) {
             tryOnBtn.disabled = false;
         }
-        statusMessage.textContent = "Selfie captured. Select a style and click 'Try On!'";
+        statusMessage.textContent = "Selfie captured! Now, select a hairstyle below.";
     });
 
-    // --- Style Selection Logic (Remaining the same) ---
+    // --- Style Selection Logic ---
     styleOptions.forEach(option => {
         option.addEventListener('click', () => {
             styleOptions.forEach(opt => opt.classList.remove('selected'));
@@ -91,15 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             selectedPrompt = option.getAttribute('data-prompt');
             
+            // Automatically trigger the AI process on selection if a photo is captured
             if (capturedImageBase64) {
-                tryOnBtn.disabled = false;
+                tryOnBtn.click();
+            } else {
+                statusMessage.textContent = `Style selected. Click 'Start Camera' to take your selfie!`;
             }
-            statusMessage.textContent = `${option.getAttribute('data-name')} selected. Click 'Try On!'`;
         });
     });
 
 
-    // --- Call Netlify Function for AI Processing (Remaining the same) ---
+    // --- Call Netlify Function for AI Processing ---
     tryOnBtn.addEventListener('click', async () => {
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Please take a selfie AND select a style!";
@@ -109,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = `Applying your selected style... This may take a moment.`;
         tryOnBtn.disabled = true;
         spinner.style.display = 'inline-block'; 
-
+        
         try {
             const response = await fetch('/.netlify/functions/tryon', {
                 method: 'POST',
@@ -128,8 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
+            // Result is loaded directly into the central viewport
             aiResultImg.src = `data:image/jpeg;base64,${data.generatedImageBase64}`;
-            aiResultImg.style.display = 'inline';
+            aiResultImg.style.display = 'block';
             statusMessage.textContent = `Done! Your new look is ready.`;
 
         } catch (error) {
@@ -138,6 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             tryOnBtn.disabled = false;
             spinner.style.display = 'none'; 
+            
+            // State Transition (Result -> Ready to Take New Selfie)
+            takeSelfieBtn.style.display = 'block';
+            takeSelfieBtn.textContent = "📸 Take New Selfie"; // Update text for next action
+            tryOnBtn.style.display = 'none';
         }
     });
 });
