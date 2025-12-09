@@ -1,3 +1,18 @@
+<div id="hairstyle-gallery">
+                
+                <div class="style-option" data-prompt="Photorealistic inpainting, perfect masking, highly detailed natural texture, medium forward fringe, light golden brown, 4K resolution." data-name="Style 1: Fringe">
+                    <img src="/styles/forward fringe.jpeg" alt="Style 1: Forward Fringe" class="style-thumbnail">
+                    <p>Fringe</p>
+                </div>
+                </div> ```
+
+You need to re-insert the **other eight style options** into that HTML section.
+
+## 🛠️ The Fix: Complete `index.html` Gallery
+
+Here is the complete and final `index.html` file. Please replace your current file entirely with the code below, which includes all nine style options and their correct image paths and photorealism prompts.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +55,47 @@
                     <img src="/styles/forward fringe.jpeg" alt="Style 1: Forward Fringe" class="style-thumbnail">
                     <p>Fringe</p>
                 </div>
-                </div> </div> </div> <script src="app.js"></script>
+
+                <div class="style-option" data-prompt="Flawless composite, high volume wavy quiff, medium brown hair color, cinematic portrait lighting, high-detail texture." data-name="Style 2: Wavy Quiff">
+                    <img src="/styles/wavy quiff.jpeg" alt="Style 2: Wavy Quiff" class="style-thumbnail">
+                    <p>Wavy Quiff</p>
+                </div>
+
+                <div class="style-option" data-prompt="Flawless composite, high-detail spiked texture, short cut with sharp fade, deep brown color, maintain ambient shadows." data-name="Style 3: Spiked Charm">
+                    <img src="/styles/spiked charm.jpeg" alt="Style 3: Spiked Charm" class="style-thumbnail">
+                    <p>Spiked</p>
+                </div>
+                
+                <div class="style-option" data-prompt="Seamless photo-merge, ultra-clean classic side-part, high shine, medium brown color, sharp definition, studio portrait style." data-name="Style 4: Side Part">
+                    <img src="/styles/sleek side part.jpeg" alt="Style 4: Classic Side Part" class="style-thumbnail">
+                    <p>Side Part</p>
+                </div>
+
+                <div class="style-option" data-prompt="Perfectly masked, highly textured and tousled top with short sides, dark brown color, soft focus on texture, high resolution." data-name="Style 5: Tousled Top">
+                    <img src="/styles/tousled top.jpeg" alt="Style 5: Tousled Top" class="style-thumbnail">
+                    <p>Tousled</p>
+                </div>
+
+                <div class="style-option" data-prompt="Photorealistic inpainting, short sides, high volume brushed up top, bright platinum blonde color, cinematic light." data-name="Style 6: Brushed Up">
+                    <img src="/styles/brushed up blonde.jpeg" alt="Style 6: Brushed Up Blonde" class="style-thumbnail">
+                    <p>Blonde Quiff</p>
+                </div>
+
+                <div class="style-option" data-prompt="Seamless photo-merge, Denoising, soft texture natural curls, dark espresso brown color, ultra HD quality, studio portrait style." data-name="Style 7: Natural Curls">
+                    <img src="/styles/natural curls.jpeg" alt="Style 7: Natural Curls" class="style-thumbnail">
+                    <p>Curls</p>
+                </div>
+
+                <div class="style-option" data-prompt="Ultra-realistic, sharp high-top fade, short texture on top, dark black color, high contrast lighting." data-name="Style 8: High Top Fade">
+                    <img src="/styles/high top fade.jpeg" alt="Style 8: High Top Fade" class="style-thumbnail">
+                    <p>High Top</p>
+                </div>
+
+                <div class="style-option" data-prompt="Perfect composite, defined short texture on the fringe, high-contrast fade on sides, dark black color, photo-quality blend." data-name="Style 9: Textured Fringe">
+                    <img src="/styles/side swept scissor cut.jpeg" alt="Style 9: Textured Fringe Cut" class="style-thumbnail">
+                    <p>Textured Scissor</p>
+                </div>
+                
+            </div> </div> </div> <script src="app.js"></script>
 </body>
 </html>
