@@ -35,7 +35,7 @@ body {
 /* --- NEW LAYOUT: Single Screen Focused --- */
 #single-screen-app {
     display: flex;
-    flex-direction: column; /* Stack viewport and controls vertically */
+    flex-direction: column;
     align-items: center;
     max-width: 600px;
     margin: 0 auto;
@@ -45,7 +45,7 @@ body {
 /* 1. Central Image/Video Viewport */
 #central-viewport {
     position: relative; 
-    width: 95vw; /* Fluid width for max space on mobile */
+    width: 95vw;
     max-width: 400px; 
     margin-bottom: 20px;
     border-radius: 8px;
@@ -57,7 +57,7 @@ body {
     width: 100%;
     height: auto;
     display: block;
-    min-height: 300px; /* Ensure a minimum visible area */
+    min-height: 300px;
     object-fit: cover;
 }
 
@@ -94,7 +94,7 @@ body {
     border-radius: 8px;
     font-size: 18px;
     transition: background-color 0.2s;
-    width: 95%; /* Match viewport width for clean look */
+    width: 95%;
     max-width: 400px;
 }
 
@@ -103,30 +103,105 @@ body {
     cursor: not-allowed;
 }
 
+/* --- NEW: Filter Section Styles --- */
+
+.filter-section {
+    width: 95%;
+    max-width: 400px;
+    margin: 20px auto 10px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: left; /* Align text within the filter box */
+}
+
+.filter-section h3 {
+    font-size: 1.1em;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.filter-options-group {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Gender/General Option Buttons */
+.gender-option {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-grow: 1;
+    max-width: 190px;
+}
+.gender-option.selected {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+}
+
+/* Complexion Tiles (Three per row) */
+#complexion-options-group {
+    justify-content: space-between;
+}
+.complexion-tile {
+    width: calc(33.33% - 10px); /* 3 tiles per row with spacing */
+    min-width: 100px;
+    aspect-ratio: 1 / 1.2; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; 
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 5px;
+    box-sizing: border-box;
+}
+
+.complexion-tile.selected {
+    border-color: var(--highlight-color);
+}
+
+.complexion-tile p {
+    color: #fff; 
+    font-size: 0.8em;
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8); /* Ensure text is readable */
+    margin: 0;
+}
 
 /* --- Hairstyle Gallery: Scroll Snapping & Circular Thumbnails --- */
 #hairstyle-gallery {
+    /* Changed to a filter section style box */
+    width: 95%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 15px 5%;
+    background-color: white; 
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    /* Carousel behavior for the dynamic style options */
     display: flex;
     white-space: nowrap; 
     overflow-x: scroll; 
     overflow-y: hidden; 
-
     scroll-snap-type: x mandatory;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     
-    padding: 15px 5%;
-    margin: 10px auto;
-    background-color: white; 
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    
-    width: 100%;
-    max-width: 500px; 
-    
-    margin-left: auto;
-    margin-right: auto;
-
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -142,19 +217,24 @@ body {
     text-align: center;
     transition: all 0.2s;
     
-    flex: 0 0 calc(33.333% - var(--gallery-gap)); 
+    /* Ensure styles are visible in the scrollable view */
+    flex: 0 0 auto; 
     margin-right: var(--gallery-gap); 
     
-    scroll-snap-align: center; 
+    scroll-snap-align: start; 
     
     display: inline-flex; 
     flex-direction: column;
     align-items: center;
 }
 
-/* Hide Text Labels */
+/* Show Text Labels for dynamic gallery */
 .style-option p {
-    display: none; 
+    display: block; 
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: var(--text-color);
+    white-space: normal;
 }
 
 
@@ -162,18 +242,17 @@ body {
     width: var(--thumbnail-size);
     height: var(--thumbnail-size); 
     object-fit: cover; 
-    border-radius: 50%; /* Perfect circle */
+    border-radius: 50%;
     border: 1px solid #ccc;
 }
 
 .style-option.selected {
-    /* Prominent clean green ring highlight */
     border-color: var(--highlight-color); 
     box-shadow: none; 
     transform: none; 
 }
 
-/* --- Loading Indicator Styling --- */
+/* --- Loading Indicator Styling --- (remains the same) */
 #try-on-btn-content {
     display: flex;
     align-items: center;
@@ -200,12 +279,14 @@ body {
     #single-screen-app {
         padding: 0;
     }
+    .filter-section {
+        border-radius: 0; /* Edge to edge for mobile */
+    }
     
-    /* Ensure Fluid Width for everything capture-related */
     #video-feed, #ai-result {
         width: 100%;
         max-width: 100%;
-        border-radius: 0; /* Optional: Edge-to-edge camera feed */
+        border-radius: 0; 
     }
     
     .main-action-btn {
