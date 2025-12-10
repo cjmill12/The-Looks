@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const statusMessage = document.getElementById('status-message');
     
-    // Filter elements 
+    // Filter elements (using IDs for sections)
+    const genderSelector = document.getElementById('gender-selector');
+    const complexionSelector = document.getElementById('complexion-selector');
     const complexionGroup = document.getElementById('complexion-options-group');
     const galleryContainer = document.getElementById('hairstyle-gallery');
     
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONSTANTS ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor quality, bad anatomy.";
     
-    // --- Complexion Data and Prompt Database ---
+    // --- Complexion Data and Prompt Database (No Change) ---
     const complexionData = [
         { id: 'fair', name: 'Fair', color: '#F0E6D2' },
         { id: 'medium', name: 'Medium', color: '#E0C79A' },
@@ -70,7 +72,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- Camera Initialization Function ---
+    // --- Helper function to manage filter collapse/expand state ---
+    function setFilterState(sectionElement, isExpanded) {
+        sectionElement.classList.toggle('expanded', isExpanded);
+        sectionElement.classList.toggle('collapsed', !isExpanded);
+    }
+    
+    // --- Generic Toggle Handler for Collapsible Sections (New) ---
+    document.querySelectorAll('.filter-section h3').forEach(header => {
+        header.addEventListener('click', (e) => {
+            const section = e.currentTarget.parentElement;
+            const isCurrentlyExpanded = section.classList.contains('expanded');
+            
+            // Collapse all filter sections first
+            document.querySelectorAll('.filter-section').forEach(s => setFilterState(s, false));
+
+            // Only expand the clicked section if it was previously collapsed
+            if (!isCurrentlyExpanded) {
+                 setFilterState(section, true);
+            }
+            e.stopPropagation(); 
+        });
+    });
+
+
+    // --- Camera Initialization Function (No change) ---
     function startCamera() {
         if (cameraStarted) return;
         
@@ -108,17 +134,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- INITIAL STATE SETUP ---
     takeSelfieBtn.textContent = "▶️"; 
-    statusMessage.textContent = "1. Select your style category, 2. complexion, and 3. hairstyle, then take a selfie.";
+    statusMessage.textContent = "1. Select your gender, 2. complexion, and 3. inspiration style, then take a selfie.";
     tryOnBtn.style.display = 'none'; 
     videoFeed.style.display = 'none'; 
     tryOnBtn.disabled = true;
 
-    // Render Step 2 and Step 3 content immediately on load.
+    // Ensure initial state is set
+    setFilterState(genderSelector, true); // Step 1 starts expanded
+    setFilterState(complexionSelector, false); // Step 2 starts collapsed
+    setFilterState(galleryContainer, false); // Step 3 starts collapsed
+    
+    // Render Step 2 and Step 3 content immediately on load so they are ready when expanded.
     renderComplexionSelector(); 
     renderFinalGallery();
 
 
-    // --- FILTER STEP 1: Gender Selection Logic ---
+    // --- FILTER STEP 1: Gender Selection Logic (Modified for Collapse/Expand) ---
     document.querySelectorAll('.gender-option').forEach(button => {
         button.addEventListener('click', (e) => {
             document.querySelectorAll('.gender-option').forEach(btn => btn.classList.remove('selected'));
@@ -136,12 +167,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Re-render Step 3 gallery to clear old styles
             renderFinalGallery();
             
-            statusMessage.textContent = "1. Category selected. Now choose your 2. complexion and 3. hairstyle.";
+            // Action: Collapse Step 1, Expand Step 2
+            setFilterState(genderSelector, false);
+            setFilterState(complexionSelector, true);
+            
+            statusMessage.textContent = "1. Category selected. Now choose your 2. complexion.";
         });
     });
 
 
-    // --- FILTER STEP 2: Complexion Selector Generation ---
+    // --- FILTER STEP 2: Complexion Selector Generation (Modified for Collapse/Expand) ---
     function renderComplexionSelector() {
         complexionGroup.innerHTML = ''; // Clear previous tiles
         
@@ -151,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tile.setAttribute('data-complexion', c.id);
             tile.style.backgroundColor = c.color;
             
+            // Label is hidden in CSS but useful for debugging/accessibility
             const label = document.createElement('p');
             label.textContent = c.name;
             
@@ -166,21 +202,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 // RENDER STEP 3 (Gallery) based on new selection
                 renderFinalGallery();
 
-                statusMessage.textContent = "2. Complexion selected. Now choose your 3. hairstyle.";
+                // Action: Collapse Step 2, Expand Step 3
+                setFilterState(complexionSelector, false);
+                setFilterState(galleryContainer, true);
+
+                statusMessage.textContent = "2. Complexion selected. Now choose your 3. inspiration style.";
             });
         });
         
     }
 
 
-    // --- FINAL STEP 3: Render the Filtered Gallery ---
+    // --- FINAL STEP 3: Render the Filtered Gallery (No Change) ---
     function renderFinalGallery() {
         const galleryOptionsGroup = galleryContainer.querySelector('.filter-options-group');
         galleryOptionsGroup.innerHTML = ''; // Clear previous gallery styles
         
         // Only render styles if both gender and complexion are selected
         if (!selectedGender || !selectedComplexion) {
-            galleryOptionsGroup.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 15px;">Please complete Steps 1 & 2 first.</p>';
+            galleryOptionsGroup.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 15px;">Please complete Gender and Complexion selections first.</p>';
             return;
         }
         
@@ -218,12 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = "3. Select your final style and click 'Try On Selected Hairstyle'.";
     }
 
-    // --- Style Selection Handler ---
+    // --- Style Selection Handler (Modified for Collapse) ---
     function handleStyleSelection(e) {
         document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('selected'));
         e.currentTarget.classList.add('selected');
         
         selectedPrompt = e.currentTarget.getAttribute('data-prompt');
+        
+        // Action: Collapse Step 3
+        setFilterState(galleryContainer, false); 
         
         // Show the Try On button if selfie is taken, otherwise keep instructions
         if (capturedImageBase64) {
@@ -238,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Capture Selfie/Camera Activation & AI Processing ---
+    // --- Capture Selfie/Camera Activation & AI Processing (No Change) ---
     takeSelfieBtn.addEventListener('click', () => {
         if (!cameraStarted) {
             takeSelfieBtn.textContent = "⏳"; 
@@ -275,10 +318,18 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             tryOnBtn.disabled = true; 
             statusMessage.textContent = "Selfie captured! Now, complete steps 1, 2, and 3 to select your style.";
+            // If filters are not complete, expand the first uncompleted step
+            if (!selectedGender) {
+                setFilterState(genderSelector, true);
+            } else if (!selectedComplexion) {
+                setFilterState(complexionSelector, true);
+            } else {
+                setFilterState(galleryContainer, true);
+            }
         }
     });
 
-    // --- CORRECTED TRY ON BUTTON LOGIC ---
+    // --- CORRECTED TRY ON BUTTON LOGIC (No Change) ---
     tryOnBtn.addEventListener('click', async () => {
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Error: Please take a selfie AND select a style!";
@@ -319,18 +370,16 @@ document.addEventListener('DOMContentLoaded', () => {
             takeSelfieBtn.style.display = 'block'; 
             takeSelfieBtn.textContent = "▶️"; 
             
-            // We leave the centralViewport active and the aiResultImg visible
-            
         } catch (error) {
             // --- ERROR BLOCK ---
             console.error('AI Processing Error:', error);
             statusMessage.textContent = `Error during AI try-on: ${error.message}. Please try again.`;
             
-            // Cleanup on error: keep image visible, restore try-on button or take-selfie button
-            tryOnBtn.disabled = false; // Re-enable Try On button in case the error was temporary
+            // Cleanup on error: keep image visible, restore try-on button
+            tryOnBtn.disabled = false; 
             spinner.style.display = 'none'; 
             tryOnBtn.style.display = 'block';
-            takeSelfieBtn.style.display = 'none'; // Keep camera button hidden if try-on is re-enabled
+            takeSelfieBtn.style.display = 'none';
 
         }
     });
