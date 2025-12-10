@@ -2,12 +2,13 @@
 :root {
     --primary-color: #1D2124; 
     --text-on-dark: #FFFFFF; 
-    --background-color: #FFFFFF; /* Use white for the app background */
+    --background-color: #FFFFFF; 
     --filter-background: #F0F0F0;
     --text-color: #333; 
-    --highlight-color: #007bff; /* Changed to a modern blue for highlight */
+    --highlight-color: #007bff; 
     --header-height: 40px;
     --app-padding: 15px;
+    --pill-width: 90px;
 }
 
 body {
@@ -20,7 +21,7 @@ body {
     -webkit-user-select: none;
     user-select: none;
     height: 100vh;
-    overflow: hidden; /* Control scrolling explicitly */
+    overflow: hidden; 
 }
 
 /* ================================================== */
@@ -31,9 +32,9 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    max-width: 450px; /* Simulate a phone screen width */
+    max-width: 450px; 
     margin: 0 auto;
-    background-color: #f4f4f4; /* Subtle background for the phone frame */
+    background-color: #f4f4f4; 
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -52,9 +53,14 @@ body {
     z-index: 100;
 }
 
-#sparkle-logo {
-    font-size: 1.5em;
-    color: var(--highlight-color);
+#header-left {
+    display: flex;
+    align-items: center;
+}
+#main-logo {
+    max-width: 60px; /* Adjust size for the corner */
+    height: 30px;
+    object-fit: contain;
 }
 
 #header-center {
@@ -93,14 +99,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    overflow-y: auto; /* Allows scrolling if content exceeds height */
+    overflow-y: auto; 
 }
 
-/* CENTRAL VIEWPORT - Image Dominates Screen */
 #central-viewport {
     position: relative; 
     width: 100%;
-    /* Use a fixed aspect ratio for the viewport on mobile */
     aspect-ratio: 1 / 1.25; 
     max-height: 70vh;
     margin-bottom: 0;
@@ -136,6 +140,7 @@ body {
 }
 
 /* FLOATING OVERLAY CONTROLS */
+
 .floating-icon-btn {
     background-color: rgba(255, 255, 255, 0.6);
     border: none;
@@ -148,7 +153,28 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Top Right Group */
+/* 🚨 Pill Buttons for Gender/Complexion */
+.action-pill-btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    width: var(--pill-width);
+    height: 35px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Centers the icon content */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+
+/* Active State for Gender/Complexion Pills */
+.action-pill-btn.selected {
+    background-color: var(--highlight-color);
+    color: var(--text-on-dark);
+}
+
 #viewport-actions-top {
     position: absolute;
     top: 15px;
@@ -159,7 +185,6 @@ body {
     z-index: 20;
 }
 
-/* Bottom Center Group */
 #viewport-actions-bottom {
     position: absolute;
     bottom: 15px;
@@ -171,7 +196,6 @@ body {
     z-index: 20;
 }
 
-/* Central Action Button (Selfie/Try-On) */
 #take-selfie-btn {
     width: 60px; 
     height: 60px;
@@ -187,24 +211,43 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Pro Feature Banner */
-#pro-feature-banner {
+
+/* 🚨 INSPIRATION TOGGLE (Replaces Pro Banner) */
+#inspiration-toggle {
     width: calc(100% - 2 * var(--app-padding));
     background-color: #fff;
-    padding: 12px 15px;
-    margin-top: -30px; /* Overlap with the viewport */
+    padding: 0;
+    margin-top: -30px; 
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 30;
+    cursor: pointer;
+    /* Make it look like the Pro banner but collapsible */
+}
+#inspiration-toggle-header {
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 12px 15px;
+    margin: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 30;
-}
-#pro-text {
-    font-weight: bold;
     color: var(--primary-color);
-    font-size: 0.9em;
+    text-transform: uppercase;
 }
+#inspiration-toggle.collapsed #inspiration-toggle-header::after {
+    content: '▶';
+    font-size: 1.2em;
+}
+#inspiration-toggle.expanded #inspiration-toggle-header {
+    border-radius: 10px 10px 0 0;
+    background-color: var(--filter-background);
+}
+#inspiration-toggle.expanded #inspiration-toggle-header::after {
+    content: '▼';
+    font-size: 1.2em;
+}
+
 
 /* --- 3. BOTTOM BAR (Filters and Gallery) --- */
 #bottom-bar {
@@ -214,10 +257,66 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Placeholder for Gender/Complexion (Hidden in this design, used in JS flow) */
+/* 🚨 Filter Selection Wrapper (Hidden/Shown content for Gender/Complexion pills) */
 #filter-selection-wrapper {
-    display: none; /* Hide the vertical filter steps for this design */
+    width: 100%;
+    background-color: var(--filter-background);
+    padding: 15px var(--app-padding);
+    box-sizing: border-box;
 }
+
+.selector-content {
+    /* Styles for the expanded content boxes */
+    display: block;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+}
+.selector-content.hidden {
+    display: none;
+}
+
+/* Gender/Complexion Options inside the expanded area */
+.filter-options-group {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 8px; 
+    justify-content: center;
+    padding: 0;
+}
+.gender-option {
+    padding: 8px 15px;
+    border: 1px solid #ccc; 
+    border-radius: 20px;
+    font-size: 0.9em;
+    background-color: #fff;
+}
+.gender-option.selected {
+    background-color: var(--highlight-color);
+    color: var(--text-on-dark);
+    border-color: var(--highlight-color);
+}
+
+
+/* Complexion Tiles inside the expanded area */
+#complexion-options-group {
+    justify-content: center;
+    gap: 15px;
+}
+.complexion-tile {
+    width: 35px; 
+    height: 35px; 
+    border-radius: 50%;
+    border: 3px solid transparent; 
+}
+.complexion-tile.selected {
+    border-color: var(--highlight-color);
+}
+
+.complexion-tile p {
+    display: none; 
+}
+
 
 /* Hairstyle Gallery (Inspiration) */
 #hairstyle-gallery {
@@ -232,19 +331,17 @@ body {
     overflow-y: hidden; 
     gap: 15px;
     padding: 10px var(--app-padding);
-    
-    /* Hide scrollbar visually */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 #hairstyle-gallery .filter-options-group::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
 .style-option {
     flex-shrink: 0;
     text-align: center;
-    width: 70px; /* Fixed width for thumbnails */
+    width: 70px; 
     cursor: pointer;
 }
 
@@ -252,7 +349,7 @@ body {
     width: 70px; 
     height: 70px;
     object-fit: cover;
-    border-radius: 50%; /* Circular thumbnails */
+    border-radius: 50%; 
     border: 3px solid transparent;
     transition: all 0.2s;
 }
@@ -266,7 +363,7 @@ body {
     font-size: 0.7em;
     margin-top: 5px;
     color: #666;
-    display: none; /* Hide text label for simplicity */
+    display: none; 
 }
 
 /* Pagination Dots */
@@ -296,12 +393,9 @@ body {
 }
 
 
-/* ================================================== */
-/* MOBILE MEDIA QUERY - Since the default is already mobile-optimized, this is minimal */
-/* ================================================== */
+/* MOBILE SPECIFIC OVERRIDES */
 @media (max-width: 768px) {
     #full-screen-container {
-        /* On real devices, let it take up full screen */
         max-width: 100%; 
     }
 }
