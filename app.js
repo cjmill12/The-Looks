@@ -24,10 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedGender = null;
     let selectedComplexion = null;
 
-    // --- CONSTANTS ---
+    // --- CONSTANTS, Complexion Data, and Prompt Database (No change) ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor quality, bad anatomy.";
     
-    // --- Complexion Data and Prompt Database ---
     const complexionData = [
         { id: 'fair', name: 'Fair', color: '#F0E6D2' },
         { id: 'medium', name: 'Medium', color: '#E0C79A' },
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'deep', name: 'Deep', color: '#442C2E' },
     ];
     
-    const promptDatabase = {
+    const promptDatabase = { /* ... (Your promptDatabase content) ... */ 
         male: {
             fair: [
                 { name: 'Fringe', prompt: 'Photorealistic inpainting, perfect masking, medium forward fringe, light golden brown, 4K resolution.', img: '/styles/forward fringe.jpeg' },
@@ -71,8 +70,37 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- Camera Initialization Function ---
+    // --- Helper function to collapse filter content ---
+    function setFilterState(sectionElement, isExpanded) {
+        const optionsGroup = sectionElement.querySelector('.filter-options-group');
+        if (optionsGroup) {
+            optionsGroup.classList.toggle('collapsed', !isExpanded);
+        }
+        sectionElement.classList.toggle('expanded', isExpanded);
+    }
+    
+    // --- Generic Toggle Handler for Collapsible Sections ---
+    // Attaches to the whole filter section to allow expansion/collapse
+    document.querySelectorAll('.filter-section').forEach(section => {
+        section.addEventListener('click', () => {
+            const optionsGroup = section.querySelector('.filter-options-group');
+            // If the content is currently visible (not collapsed), collapse it. Otherwise, expand it.
+            const isCurrentlyExpanded = section.classList.contains('expanded');
+
+            // Collapse all filter sections first, then expand the clicked one
+            document.querySelectorAll('.filter-section').forEach(s => setFilterState(s, false));
+
+            // Only expand the clicked section if it was previously collapsed
+            if (!isCurrentlyExpanded) {
+                 setFilterState(section, true);
+            }
+        });
+    });
+
+
+    // --- Camera Initialization and Setup (No Change) ---
     function startCamera() {
+        // ... (startCamera function logic remains the same) ...
         if (cameraStarted) return;
         
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -92,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(() => {
                     cameraStarted = true;
-                    // Changed button content to the camera icon
                     takeSelfieBtn.textContent = "📸"; 
                     takeSelfieBtn.disabled = false;
                     statusMessage.textContent = "Camera ready. Tap the camera icon to capture!";
@@ -100,22 +127,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => {
                     console.error("Camera access error (getUserMedia or play failed):", err);
                     takeSelfieBtn.disabled = false; 
-                    // Changed button content to an error icon
                     takeSelfieBtn.textContent = "❌";
                     statusMessage.textContent = "Error: Cannot access camera. Check browser permissions.";
                 });
         }
     }
-    
-    // 🚨 INITIAL STATE SETUP
-    // Use the Play/Start icon as the initial button content
+
+    // INITIAL STATE SETUP: Make sure only the first step is expanded on load
+    setFilterState(genderSelector, true); // Step 1 starts expanded
+    setFilterState(complexionSelector, false); // Step 2 starts collapsed (and hidden)
+    setFilterState(galleryContainer, false); // Step 3 starts collapsed (and hidden)
+
     takeSelfieBtn.textContent = "▶️"; 
     statusMessage.textContent = "Click the Play icon to begin the virtual try-on.";
     tryOnBtn.style.display = 'none'; 
     videoFeed.style.display = 'none'; 
     tryOnBtn.disabled = true;
 
-    // --- FILTER STEP 1: Gender Selection Logic (remains the same) ---
+    // --- FILTER STEP 1: Gender Selection Logic (Updated) ---
     document.querySelectorAll('.gender-option').forEach(button => {
         button.addEventListener('click', (e) => {
             document.querySelectorAll('.gender-option').forEach(btn => btn.classList.remove('selected'));
@@ -127,15 +156,18 @@ document.addEventListener('DOMContentLoaded', () => {
             galleryContainer.style.display = 'none';
             
             renderComplexionSelector();
+            
+            // 🚨 Action: Collapse Step 1, Expand Step 2
+            setFilterState(genderSelector, false);
+            setFilterState(complexionSelector, true);
         });
     });
 
 
-    // --- FILTER STEP 2: Complexion Selector Generation (remains the same) ---
+    // --- FILTER STEP 2: Complexion Selector Generation (Updated) ---
     function renderComplexionSelector() {
-        // ... (function logic remains the same) ...
         complexionGroup.innerHTML = '';
-        complexionSelector.style.display = 'block';
+        complexionSelector.style.display = 'block'; // Make Step 2 visible
 
         complexionData.forEach(c => {
             const tile = document.createElement('div');
@@ -156,6 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedComplexion = e.currentTarget.getAttribute('data-complexion');
                 
                 renderFinalGallery();
+
+                // 🚨 Action: Collapse Step 2, Expand Step 3
+                setFilterState(complexionSelector, false);
+                setFilterState(galleryContainer, true);
             });
         });
         
@@ -163,9 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- FINAL STEP 3: Render the Filtered Gallery (remains the same) ---
+    // --- FINAL STEP 3: Render the Filtered Gallery (Updated) ---
     function renderFinalGallery() {
-        // ... (function logic remains the same) ...
         if (!selectedGender || !selectedComplexion) return;
 
         galleryContainer.innerHTML = '';
@@ -176,7 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (filteredStyles.length === 0) {
             statusMessage.textContent = `No styles available for this selection yet. Please choose another option or contact the barbershop for more styles.`;
-            galleryContainer.style.display = 'none';
+            galleryContainer.style.display = 'block'; // Keep section visible but no gallery
+            setFilterState(galleryContainer, true); // Keep expanded to show message
             return;
         }
 
@@ -201,18 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
             optionDiv.addEventListener('click', handleStyleSelection);
         });
 
-        galleryContainer.style.display = 'flex'; 
+        galleryContainer.style.display = 'block'; // Make Step 3 visible
         statusMessage.textContent = "3. Select your final style and click 'Try On Selected Hairstyle'.";
     }
 
-    // --- Style Selection Handler (remains the same) ---
+    // --- Style Selection Handler (Updated) ---
     function handleStyleSelection(e) {
-        // ... (function logic remains the same) ...
         document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('selected'));
         e.currentTarget.classList.add('selected');
         
         selectedPrompt = e.currentTarget.getAttribute('data-prompt');
+
+        // 🚨 Action: Collapse Step 3 after style selection
+        setFilterState(galleryContainer, false); 
         
+        // Show the Try On button if selfie is taken, otherwise keep instructions
         if (capturedImageBase64) {
             tryOnBtn.disabled = false;
             takeSelfieBtn.style.display = 'none';
@@ -225,22 +264,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Capture Selfie/Camera Activation ---
+    // --- Capture Selfie/Camera Activation & AI Processing (No Change) ---
     takeSelfieBtn.addEventListener('click', () => {
-        // NEW LOGIC: If camera hasn't started, start it first.
+        // ... (takeSelfieBtn logic remains the same) ...
         if (!cameraStarted) {
-            takeSelfieBtn.textContent = "⏳"; // Show loading icon
+            takeSelfieBtn.textContent = "⏳"; 
             startCamera(); 
             return; 
         }
         
-        // Existing logic for taking a photo only runs if cameraStarted is true
         if (videoFeed.readyState !== 4) { 
             statusMessage.textContent = "Camera feed not ready yet. Please wait a moment.";
             return; 
         }
         
-        // 1. Capture Logic
+        // Capture Logic
         canvas.width = videoFeed.videoWidth;
         canvas.height = videoFeed.videoHeight;
         const context = canvas.getContext('2d');
@@ -248,12 +286,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         capturedImageBase64 = dataUrl.split(',')[1]; 
         
-        // 2. State Transition (Camera -> Captured Image)
+        // State Transition (Camera -> Captured Image)
         takeSelfieBtn.style.display = 'none'; 
         tryOnBtn.style.display = 'block'; 
         videoFeed.style.display = 'none'; 
         
-        // 3. Display captured image
+        // Display captured image
         aiResultImg.src = dataUrl;
         aiResultImg.style.display = 'block'; 
 
@@ -267,10 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // --- Call Netlify Function for AI Processing (remains the same) ---
     tryOnBtn.addEventListener('click', async () => {
-        // ... (function logic remains the same) ...
+        // ... (tryOnBtn logic remains the same) ...
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Error: Please take a selfie AND select a style!";
             return;
@@ -311,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // State Transition (Result -> Ready to Take New Selfie)
             takeSelfieBtn.style.display = 'block';
-            takeSelfieBtn.textContent = "▶️"; // Reset to the 'start camera' icon
+            takeSelfieBtn.textContent = "▶️"; 
             cameraStarted = false; 
             tryOnBtn.style.display = 'none';
         }
