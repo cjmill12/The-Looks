@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusMessage = document.getElementById('status-message');
     
     // Filter elements 
-    const genderSelector = document.getElementById('gender-selector');
-    const complexionSelector = document.getElementById('complexion-selector');
     const complexionGroup = document.getElementById('complexion-options-group');
     const galleryContainer = document.getElementById('hairstyle-gallery');
     
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONSTANTS ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor quality, bad anatomy.";
     
-    // --- Complexion Data and Prompt Database (No Change) ---
+    // --- Complexion Data and Prompt Database ---
     const complexionData = [
         { id: 'fair', name: 'Fair', color: '#F0E6D2' },
         { id: 'medium', name: 'Medium', color: '#E0C79A' },
@@ -72,11 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // 🚨 REMOVED: setFilterState function (No more collapse)
-    // 🚨 REMOVED: Click listener for toggling collapse (No more collapse)
-
-
-    // --- Camera Initialization Function (No change) ---
+    // --- Camera Initialization Function (No Change) ---
     function startCamera() {
         if (cameraStarted) return;
         
@@ -113,17 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- INITIAL STATE SETUP ---
-    // 🚨 REMOVED: Initial collapse state setup. All steps are visible by default via CSS.
-
     takeSelfieBtn.textContent = "▶️"; 
     statusMessage.textContent = "1. Select your style category, 2. complexion, and 3. hairstyle, then take a selfie.";
     tryOnBtn.style.display = 'none'; 
     videoFeed.style.display = 'none'; 
     tryOnBtn.disabled = true;
 
-    // 🚨 Run Step 2 and 3 rendering on load to ensure Step 3 elements exist for selection
+    // CRITICAL: Render Step 2 and Step 3 content immediately on load.
     renderComplexionSelector(); 
-    // Note: renderFinalGallery needs selection data, so it won't run fully here.
+    renderFinalGallery();
 
 
     // --- FILTER STEP 1: Gender Selection Logic ---
@@ -134,11 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             selectedGender = e.currentTarget.getAttribute('data-gender');
             
+            // Reset downstream selections
             selectedComplexion = null;
             selectedPrompt = null; 
             
             // Re-render Step 2 tiles (Complexion) to clear selection
-            renderComplexionSelector();
+            renderComplexionSelector(); 
             
             // Re-render Step 3 gallery to clear old styles
             renderFinalGallery();
@@ -151,8 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FILTER STEP 2: Complexion Selector Generation ---
     function renderComplexionSelector() {
         complexionGroup.innerHTML = ''; // Clear previous tiles
-        // 🚨 NO MORE setFilterState CALLS HERE
-
+        
         complexionData.forEach(c => {
             const tile = document.createElement('div');
             tile.classList.add('complexion-tile');
@@ -246,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Capture Selfie/Camera Activation & AI Processing (No functional change) ---
+    // --- Capture Selfie/Camera Activation & AI Processing ---
     takeSelfieBtn.addEventListener('click', () => {
         if (!cameraStarted) {
             takeSelfieBtn.textContent = "⏳"; 
