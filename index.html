@@ -3,38 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Looks - Virtual Hairstyle Studio</title>
+    <title>HairFlow: AR Style Changer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header id="app-header">
-        <img src="/assets/Minimalist 'Looks' Logo with Hair Strand Design (1).png" alt="Looks App Logo" id="main-logo">
-    </header>
     
-    <div id="two-column-layout">
+    <div id="full-screen-container">
         
-        <aside id="filter-sidebar">
-            
-            <div id="gender-selector" class="filter-section collapsed"> 
-                <h3><span>Gender</span></h3>
-                <div class="filter-content-group">
-                    <div class="filter-options-group">
-                        <button class="gender-option" data-gender="male">Male Styles</button>
-                        <button class="gender-option" data-gender="female">Female Styles</button>
-                    </div>
-                </div>
+        <header id="app-header">
+            <div id="header-left">
+                <div id="sparkle-logo">✨</div>
             </div>
+            <div id="header-center">
+                <h1 id="app-title">HairFlow: AR Style Changer</h1>
+                <p id="app-subtitle">Try On New Looks Instantly!</p>
+            </div>
+            <div id="header-right">
+                <button class="icon-btn">🔍</button>
+                <button class="icon-btn">⋮</button>
+            </div>
+        </header>
 
-            <div id="complexion-selector" class="filter-section collapsed">
-                <h3><span>Complexion</span></h3>
-                <div class="filter-content-group">
-                    <div class="filter-options-group" id="complexion-options-group">
-                        </div>
-                </div>
-            </div>
-            
-        </aside>
-        
         <main id="main-content">
             
             <div id="central-viewport">
@@ -42,28 +31,66 @@
                 <img id="ai-result" alt="AI Hairstyle Result" style="display: none;">
                 <canvas id="hidden-canvas" style="display: none;"></canvas>
                 <p id="status-message">Select your Gender and Complexion to begin.</p>
-            </div>
 
-            <div id="controls">
-                <button id="take-selfie-btn" class="main-action-btn">▶️</button>
-                
-                <button id="try-on-btn" disabled class="main-action-btn" style="display: none;">
-                    <span id="try-on-btn-content">
-                        <div id="loading-spinner" class="loading-indicator"></div>
-                        <span>✨ Try On Selected Hairstyle</span>
-                    </span>
-                </button>
-            </div>
-
-            <div id="hairstyle-gallery" class="filter-section collapsed filter-inspiration">
-                <h3><span>Inspiration</span></h3> 
-                <div class="filter-content-group">
-                    <div class="filter-options-group">
-                        </div>
+                <div id="viewport-actions-top">
+                    <button class="floating-icon-btn home-icon">🏠</button>
+                    <button class="floating-icon-btn email-icon">✉️</button>
+                    <button class="floating-icon-btn share-icon">🔗</button>
                 </div>
+                
+                <div id="viewport-actions-bottom">
+                    <button id="gallery-icon-btn" class="floating-icon-btn">📷</button>
+                    <button id="video-icon-btn" class="floating-icon-btn">▶️</button>
+                    <button id="take-selfie-btn" class="main-action-btn">📸</button>
+                    <button id="history-icon-btn" class="floating-icon-btn">🔄</button>
+                    <button id="compare-icon-btn" class="floating-icon-btn">⊞</button>
+                </div>
+
             </div>
             
+            <div id="pro-feature-banner">
+                <div id="pro-text">🧑‍💻 Nano Banana Pro Features</div>
+                <div id="pro-arrow"> > </div>
+            </div>
+
+            <div id="bottom-bar">
+                
+                <div id="filter-selection-wrapper">
+                    <div id="gender-selector" class="filter-section collapsed"> 
+                        <h3><span>Gender</span></h3>
+                        <div class="filter-content-group">
+                            <div class="filter-options-group">
+                                <button class="gender-option" data-gender="male">Male Styles</button>
+                                <button class="gender-option" data-gender="female">Female Styles</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="complexion-selector" class="filter-section collapsed">
+                        <h3><span>Complexion</span></h3>
+                        <div class="filter-content-group">
+                            <div class="filter-options-group" id="complexion-options-group">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hairstyle-gallery" class="filter-section filter-inspiration expanded">
+                    <div class="filter-options-group">
+                        </div>
+                    <div id="gallery-pagination">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+
         </main>
+        
+        <footer id="app-footer">
+            Powered by Netlify
+        </footer>
+
     </div>
 
     <script src="app.js"></script>
