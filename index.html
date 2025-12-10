@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HairFlow: AR Style Changer</title>
+    <title>Looks: AR Style Changer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,10 +12,10 @@
         
         <header id="app-header">
             <div id="header-left">
-                <div id="sparkle-logo">✨</div>
+                <img src="/assets/Minimalist 'Looks' Logo with Hair Strand Design (1).png" alt="Looks App Logo" id="main-logo">
             </div>
             <div id="header-center">
-                <h1 id="app-title">HairFlow: AR Style Changer</h1>
+                <h1 id="app-title">Looks: AR Style Changer</h1>
                 <p id="app-subtitle">Try On New Looks Instantly!</p>
             </div>
             <div id="header-right">
@@ -33,44 +33,38 @@
                 <p id="status-message">Select your Gender and Complexion to begin.</p>
 
                 <div id="viewport-actions-top">
-                    <button class="floating-icon-btn home-icon">🏠</button>
-                    <button class="floating-icon-btn email-icon">✉️</button>
+                    <button id="gender-button-mobile" class="floating-icon-btn action-pill-btn">M/F</button>
+                    <button id="complexion-button-mobile" class="floating-icon-btn action-pill-btn">🎨</button>
                     <button class="floating-icon-btn share-icon">🔗</button>
                 </div>
                 
                 <div id="viewport-actions-bottom">
                     <button id="gallery-icon-btn" class="floating-icon-btn">📷</button>
                     <button id="video-icon-btn" class="floating-icon-btn">▶️</button>
-                    <button id="take-selfie-btn" class="main-action-btn">📸</button>
+                    <button id="take-selfie-btn" class="main-action-btn">📸</button> 
                     <button id="history-icon-btn" class="floating-icon-btn">🔄</button>
                     <button id="compare-icon-btn" class="floating-icon-btn">⊞</button>
                 </div>
 
             </div>
             
-            <div id="pro-feature-banner">
-                <div id="pro-text">🧑‍💻 Nano Banana Pro Features</div>
-                <div id="pro-arrow"> > </div>
+            <div id="inspiration-toggle" class="filter-section collapsed">
+                <h3 id="inspiration-toggle-header"><span>Inspiration</span></h3>
             </div>
+
 
             <div id="bottom-bar">
                 
                 <div id="filter-selection-wrapper">
-                    <div id="gender-selector" class="filter-section collapsed"> 
-                        <h3><span>Gender</span></h3>
-                        <div class="filter-content-group">
-                            <div class="filter-options-group">
-                                <button class="gender-option" data-gender="male">Male Styles</button>
-                                <button class="gender-option" data-gender="female">Female Styles</button>
-                            </div>
+                    <div id="gender-selector" class="filter-content-group selector-content hidden"> 
+                        <div class="filter-options-group">
+                            <button class="gender-option" data-gender="male">Male Styles</button>
+                            <button class="gender-option" data-gender="female">Female Styles</button>
                         </div>
                     </div>
-                    <div id="complexion-selector" class="filter-section collapsed">
-                        <h3><span>Complexion</span></h3>
-                        <div class="filter-content-group">
-                            <div class="filter-options-group" id="complexion-options-group">
-                                </div>
-                        </div>
+                    <div id="complexion-selector" class="filter-content-group selector-content hidden">
+                        <div class="filter-options-group" id="complexion-options-group">
+                            </div>
                     </div>
                 </div>
 
