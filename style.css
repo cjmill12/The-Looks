@@ -20,9 +20,10 @@ body {
     user-select: none;
 }
 
-/* --- Header and Logo Styling (Banner Update) --- */
+/* --- Header and Logo Styling (MINIMAL BANNER UPDATE) --- */
 #app-header {
-    padding: 8px 0; 
+    /* 🚨 Reduced padding from 8px to 4px for a much thinner look */
+    padding: 4px 0; 
     background-color: #FFFFFF;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
     margin-bottom: 5px; 
@@ -40,7 +41,8 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 0 10px; 
-    height: calc(100vh - 50px); 
+    /* Adjust height calculation to reflect the smaller banner */
+    height: calc(100vh - 42px); /* Assuming header height is now around 42px total */
 }
 
 /* 1. Central Image/Video Viewport (Compact) */
@@ -147,7 +149,6 @@ body {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     text-align: left; 
-    /* Make the whole section clickable to expand/collapse */
     cursor: pointer; 
 }
 
@@ -155,25 +156,25 @@ body {
     font-size: 1em; 
     color: var(--primary-color);
     margin: 0; 
-    text-align: left; /* Align text to the left */
+    text-align: left; 
     display: flex;
-    justify-content: space-between; /* Space out title and indicator */
+    justify-content: space-between; 
     align-items: center;
-    pointer-events: none; /* Allows click to pass through to the parent .filter-section */
+    pointer-events: none; 
 }
 
-/* 🚨 Collapsible indicator styling */
+/* Collapsible indicator styling */
 .filter-section h3::after {
-    content: '▼'; /* Down arrow indicator (Collapsed state) */
+    content: '▼'; 
     font-size: 0.8em;
     color: #999;
     transition: transform 0.2s;
     pointer-events: none;
 }
 
-/* 🚨 Rotates the caret when the content is visible (Expanded state) */
+/* Rotates the caret when the content is visible (Expanded state) */
 .filter-section.expanded h3::after {
-    content: '▲'; /* Up arrow indicator */
+    content: '▲'; 
 }
 
 /* Class to hide the content when collapsed */
@@ -186,6 +187,146 @@ body {
     flex-wrap: wrap; 
     gap: 10px;
     justify-content: center;
-    margin-top: 10px; /* Add space between header and options */
+    margin-top: 10px; 
 }
-/* ... (Rest of the CSS remains the same) ... */
+
+/* Gender/General Option Buttons */
+.gender-option {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-grow: 1;
+    max-width: 190px;
+}
+.gender-option.selected {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+}
+
+/* Complexion Tiles (Circular & Compact) */
+#complexion-options-group {
+    justify-content: space-between;
+}
+.complexion-tile {
+    width: 65px; 
+    height: 65px;
+    aspect-ratio: 1 / 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    border: 3px solid transparent;
+    border-radius: 50%; 
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.complexion-tile p {
+    color: #fff; 
+    font-size: 0.7em; 
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    margin-top: 50px; 
+    position: absolute;
+    width: 100px; 
+}
+
+.complexion-tile.selected {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.5); 
+}
+
+/* --- Hairstyle Gallery: Scroll Snapping & Circular Thumbnails --- */
+#hairstyle-gallery {
+    width: 95%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 15px 5%;
+    background-color: white; 
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    white-space: nowrap; 
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+#hairstyle-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.style-option {
+    cursor: pointer;
+    border-radius: 50%; 
+    border: 3px solid transparent; 
+    padding: 0; 
+    text-align: center;
+    transition: all 0.2s;
+    
+    flex: 0 0 auto; 
+    margin-right: var(--gallery-gap); 
+    
+    scroll-snap-align: start; 
+    
+    display: inline-flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+.style-option p {
+    display: block; 
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: var(--text-color);
+    white-space: normal;
+}
+
+
+.style-thumbnail {
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size); 
+    object-fit: cover; 
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+.style-option.selected {
+    border-color: var(--highlight-color); 
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.4); 
+    transform: none; 
+}
+
+/* --- Media Query (Mobile Optimization) --- */
+@media (max-width: 600px) {
+    #single-screen-app {
+        padding: 0;
+    }
+    .filter-section {
+        border-radius: 0; 
+    }
+    
+    #video-feed, #ai-result {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0; 
+    }
+    
+    .main-action-btn {
+        width: 95%; 
+        max-width: 95%;
+    }
+}
