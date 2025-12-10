@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('hidden-canvas');
     const centralViewport = document.getElementById('central-viewport');
     const statusMessage = document.getElementById('status-message');
-    // 🚨 NEW: Get the loading overlay
     const loadingOverlay = document.getElementById('loading-overlay');
     
     // Controls
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeFilterContent = null; 
 
     // --- Complexion Data and Prompt Database (Simplified for brevity) ---
-    // NOTE: Ensure your project has images at these paths
     const complexionData = [
         { id: 'fair', name: 'Fair', color: '#F0E6D2' },
         { id: 'medium', name: 'Medium', color: '#E0C79A' },
@@ -131,42 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- INITIAL STATE SETUP ---
-    captureBtn.textContent = "▶️"; 
-    generateBtn.classList.add('hidden-btn'); 
-    statusMessage.textContent = "Select your Gender (M/F) and Complexion (🎨) to begin.";
-    
-    filterWrapper.style.display = 'none';
-    
-    inspirationToggle.classList.add('collapsed');
-    inspirationToggle.classList.remove('expanded');
-    galleryContainer.style.display = 'none'; 
-    
-    renderComplexionSelector(); 
-    renderFinalGallery(); 
-
-    // --- Filter Listeners ---
-    genderPill.addEventListener('click', () => { toggleFilterContent(genderContent); statusMessage.textContent = "Select a style gender (Male or Female) below."; });
-    complexionPill.addEventListener('click', () => {
-        if (!selectedGender) { statusMessage.textContent = "Please select a Gender first!"; genderPill.click(); return; }
-        toggleFilterContent(complexionContent);
-        statusMessage.textContent = "Select your desired complexion below.";
-    });
-
-    genderContent.addEventListener('click', (e) => {
-        if (e.target.classList.contains('gender-option')) {
-            genderContent.querySelectorAll('.gender-option').forEach(btn => btn.classList.remove('selected'));
-            e.target.classList.add('selected');
-            selectedGender = e.target.getAttribute('data-gender');
-            selectedComplexion = null; 
-            selectedPrompt = null; 
-            updatePillState();
-            toggleFilterContent(genderContent); 
-            complexionPill.click(); 
-            statusMessage.textContent = "Gender set. Now select your Complexion (🎨)";
-        }
-    });
-
     function renderComplexionSelector() {
         complexionGroup.innerHTML = ''; 
         complexionData.forEach(c => {
@@ -186,17 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
-    inspirationToggle.addEventListener('click', () => {
-        if (!selectedGender || !selectedComplexion) { statusMessage.textContent = "Please select Gender (M/F) and Complexion (🎨) first!"; return; }
-        const isExpanded = inspirationToggle.classList.contains('expanded');
-        inspirationToggle.classList.toggle('expanded', !isExpanded);
-        inspirationToggle.classList.toggle('collapsed', isExpanded);
-        filterWrapper.style.display = 'none'; 
-        activeFilterContent = null;
-        galleryContainer.style.display = isExpanded ? 'none' : 'block';
-        if (!isExpanded) { statusMessage.textContent = "Select an inspiration style from the gallery below."; }
-    });
 
     function renderFinalGallery() {
         const galleryOptionsGroup = galleryContainer.querySelector('.filter-options-group');
@@ -238,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         inspirationToggle.classList.add('collapsed');
         galleryContainer.style.display = 'none';
 
-        // Show the Capture/Restart button and hide the Generate button
         captureBtn.classList.remove('hidden-btn');
         captureBtn.textContent = cameraStarted ? '📸' : '▶️';
         generateBtn.classList.add('hidden-btn');
@@ -246,20 +196,61 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = `Style selected: ${e.currentTarget.getAttribute('data-name')}. Tap the camera button to capture your selfie.`;
     }
 
+    // --- INITIAL STATE SETUP AND EVENT LISTENERS ---
+    
+    captureBtn.textContent = "▶️"; 
+    generateBtn.classList.add('hidden-btn'); 
+    statusMessage.textContent = "Select your Gender (M/F) and Complexion (🎨) to begin.";
+    filterWrapper.style.display = 'none';
+    inspirationToggle.classList.add('collapsed');
+    inspirationToggle.classList.remove('expanded');
+    galleryContainer.style.display = 'none'; 
+    
+    renderComplexionSelector(); 
+    renderFinalGallery(); 
+    
+    genderPill.addEventListener('click', () => { toggleFilterContent(genderContent); statusMessage.textContent = "Select a style gender (Male or Female) below."; });
+    complexionPill.addEventListener('click', () => {
+        if (!selectedGender) { statusMessage.textContent = "Please select a Gender first!"; genderPill.click(); return; }
+        toggleFilterContent(complexionContent);
+        statusMessage.textContent = "Select your desired complexion below.";
+    });
+    genderContent.addEventListener('click', (e) => {
+        if (e.target.classList.contains('gender-option')) {
+            genderContent.querySelectorAll('.gender-option').forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+            selectedGender = e.target.getAttribute('data-gender');
+            selectedComplexion = null; 
+            selectedPrompt = null; 
+            updatePillState();
+            toggleFilterContent(genderContent); 
+            complexionPill.click(); 
+            statusMessage.textContent = "Gender set. Now select your Complexion (🎨)";
+        }
+    });
+    inspirationToggle.addEventListener('click', () => {
+        if (!selectedGender || !selectedComplexion) { statusMessage.textContent = "Please select Gender (M/F) and Complexion (🎨) first!"; return; }
+        const isExpanded = inspirationToggle.classList.contains('expanded');
+        inspirationToggle.classList.toggle('expanded', !isExpanded);
+        inspirationToggle.classList.toggle('collapsed', isExpanded);
+        filterWrapper.style.display = 'none'; 
+        activeFilterContent = null;
+        galleryContainer.style.display = isExpanded ? 'none' : 'block';
+        if (!isExpanded) { statusMessage.textContent = "Select an inspiration style from the gallery below."; }
+    });
 
-    // --- 4. BUTTON LISTENERS ---
+    // --- 4. BUTTON LISTENERS (THE CORE FUNCTIONALITY) ---
 
     // 1. CAPTURE / START CAMERA / RESTART
     captureBtn.addEventListener('click', () => {
         if (!selectedPrompt) { statusMessage.textContent = "Please select a style from the Inspiration gallery first!"; inspirationToggle.click(); return; }
 
-        // State A: Initial Load -> Start Camera (▶️ button)
         if (!cameraStarted) {
             startCamera(); 
             return; 
         }
         
-        // State B: Live Camera -> Capture Selfie (📸 button)
+        // State: Live Camera -> Capture Selfie (📸 button)
         if (videoFeed.style.display === 'block' && captureBtn.textContent === '📸') {
             
             // Capture Logic
@@ -282,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
         } 
         
-        // State C: AI Result -> Restart Camera (🔄 button)
+        // State: AI Result -> Restart Camera (🔄 button)
         else if (captureBtn.textContent === '🔄') {
             capturedImageBase64 = null;
             videoFeed.style.display = 'block';
@@ -300,26 +291,25 @@ document.addEventListener('DOMContentLoaded', () => {
     generateBtn.addEventListener('click', () => {
         if (generateBtn.classList.contains('hidden-btn')) return;
 
-        // State D: Captured Image -> AI Processing (✨ button)
+        // State: Captured Image -> AI Processing (✨ button)
         statusMessage.textContent = `Applying your selected style... This may take a moment.`;
         captureBtn.disabled = true;
         generateBtn.disabled = true;
         generateBtn.textContent = '⏳'; 
         
-        // 🚨 SHOW LOADING OVERLAY
         loadingOverlay.classList.remove('hidden-btn');
         
         // ** Simulating the AI call **
         setTimeout(() => {
             
-            // --- SUCCESS BLOCK (Image Swap) ---
+            // --- SUCCESS BLOCK (Simple Image Swap) ---
             const styleImgElement = document.querySelector('.style-option.selected .style-thumbnail');
             if (styleImgElement) {
-                // FORCE the final result image source swap here.
+                // *** REVERTED LOGIC ***: Use the exact source of the thumbnail.
+                // This confirms the state transition works, even if the image is wrong.
                 aiResultImg.src = styleImgElement.src; 
             }
             
-            // 🚨 HIDE LOADING OVERLAY
             loadingOverlay.classList.add('hidden-btn');
 
             // State Transition: AI Result Ready
@@ -332,7 +322,4 @@ document.addEventListener('DOMContentLoaded', () => {
             
         }, 3000);
     });
-
-    // Initialize complexions and state on load
-    renderComplexionSelector(); 
 });
