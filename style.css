@@ -1,10 +1,9 @@
 /* --- Global Colors --- */
 :root {
-    /* Primary color remains the same, but we will use white for the header background */
     --primary-color: #1D2124; 
     --text-on-dark: #FFFFFF; 
     --background-color: #f4f7f6;
-    --text-color: #333; /* Default text color is black/dark grey */
+    --text-color: #333; 
     --highlight-color: #28a745; 
     --thumbnail-size: 60px;
     --gallery-gap: 15px; 
@@ -23,17 +22,16 @@ body {
 
 /* --- Header and Logo Styling (Banner Update) --- */
 #app-header {
-    /* 1. Remove black background, use white/transparent */
-    padding: 8px 0; /* Reduced padding for a thinner banner */
+    /* White/Transparent Background */
+    padding: 8px 0; 
     background-color: #FFFFFF;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Lighter shadow */
-    margin-bottom: 5px; /* Reduced margin */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+    margin-bottom: 5px; 
 }
 #main-logo {
-    /* 2. Shrink logo to a narrow banner shape, use black text color */
-    max-width: 100px; /* Even smaller width */
+    /* 🚨 Rectangular Banner Size */
+    max-width: 100px; 
     height: auto;
-    /* Assuming the logo file itself uses black text/design */
 }
 
 /* --- NEW LAYOUT: Single Screen Focused --- */
@@ -43,33 +41,32 @@ body {
     align-items: center;
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 10px; /* Reduced padding */
-    height: calc(100vh - 50px); /* Fill remaining viewport height */
+    padding: 0 10px; 
+    height: calc(100vh - 50px); 
 }
 
-/* 1. Central Image/Video Viewport (Reduced Height) */
+/* 1. Central Image/Video Viewport (Compact) */
 #central-viewport {
     position: relative; 
     width: 95vw;
     max-width: 400px; 
-    margin-bottom: 10px; /* Reduced margin */
+    margin-bottom: 10px; 
     border-radius: 8px;
     overflow: hidden;
     background-color: #eee;
-    /* Adjust viewport to take up less vertical space */
     flex-shrink: 0; 
-    min-height: 250px; /* Fixed minimum height to save space */
-    max-height: 45vh; /* Maximum height relative to screen size */
+    min-height: 250px; 
+    max-height: 45vh; 
 }
 
 #video-feed, #ai-result {
     width: 100%;
-    height: 100%; /* Fill the container height */
+    height: 100%; 
     display: block;
     object-fit: cover;
 }
 
-/* Status message overlay (remains the same) */
+/* Status message overlay (Compact) */
 #status-message {
     position: absolute;
     bottom: 0;
@@ -89,21 +86,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Allows controls to scroll independently if they exceed vertical space */
     overflow-y: auto; 
     padding-bottom: 20px;
 }
 
-/* Style for both action buttons (Aesthetic remains) */
+/* Main Action Buttons (Elevated Look) */
 .main-action-btn {
-    padding: 12px 24px; /* Slightly reduced padding */
+    padding: 12px 24px; 
     margin-bottom: 10px;
     cursor: pointer;
     background-color: var(--primary-color); 
     color: var(--text-on-dark); 
     border: none;
     border-radius: 8px;
-    font-size: 16px; /* Slightly smaller font */
+    font-size: 16px; 
     transition: all 0.2s;
     width: 95%;
     max-width: 400px;
@@ -123,13 +119,13 @@ body {
     box-shadow: none;
 }
 
-/* --- Filter Section Styles (Compacting the filters) --- */
+/* --- Filter Section Styles (Compact) --- */
 
 .filter-section {
     width: 95%;
     max-width: 400px;
-    margin: 8px auto 8px; /* Reduced margin */
-    padding: 10px 15px; /* Reduced padding */
+    margin: 8px auto 8px; 
+    padding: 10px 15px; 
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -137,11 +133,156 @@ body {
 }
 
 .filter-section h3 {
-    font-size: 1em; /* Smaller heading text */
+    font-size: 1em; 
     color: var(--primary-color);
     margin-top: 0;
-    margin-bottom: 10px; /* Reduced margin */
+    margin-bottom: 10px; 
     text-align: center;
 }
 
-/* ... (Remaining styles for gender-option, complexion-tile, and gallery remain the same) ... */
+.filter-options-group {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Gender/General Option Buttons */
+.gender-option {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-grow: 1;
+    max-width: 190px;
+}
+.gender-option.selected {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+}
+
+/* Complexion Tiles (Circular & Compact) */
+#complexion-options-group {
+    justify-content: space-between;
+}
+.complexion-tile {
+    width: 65px; 
+    height: 65px;
+    aspect-ratio: 1 / 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    border: 3px solid transparent;
+    border-radius: 50%; 
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.complexion-tile p {
+    color: #fff; 
+    font-size: 0.7em; 
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    margin-top: 50px; 
+    position: absolute;
+    width: 100px; 
+}
+
+.complexion-tile.selected {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.5); 
+}
+
+/* --- Hairstyle Gallery: Scroll Snapping & Circular Thumbnails --- */
+#hairstyle-gallery {
+    width: 95%;
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 15px 5%;
+    background-color: white; 
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    white-space: nowrap; 
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+#hairstyle-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.style-option {
+    cursor: pointer;
+    border-radius: 50%; 
+    border: 3px solid transparent; 
+    padding: 0; 
+    text-align: center;
+    transition: all 0.2s;
+    
+    flex: 0 0 auto; 
+    margin-right: var(--gallery-gap); 
+    
+    scroll-snap-align: start; 
+    
+    display: inline-flex; 
+    flex-direction: column;
+    align-items: center;
+}
+
+.style-option p {
+    display: block; 
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: var(--text-color);
+    white-space: normal;
+}
+
+
+.style-thumbnail {
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size); 
+    object-fit: cover; 
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+.style-option.selected {
+    border-color: var(--highlight-color); 
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.4); 
+    transform: none; 
+}
+/* --- Media Query (Mobile Optimization) --- */
+@media (max-width: 600px) {
+    #single-screen-app {
+        padding: 0;
+    }
+    .filter-section {
+        border-radius: 0; 
+    }
+    
+    #video-feed, #ai-result {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0; 
+    }
+    
+    .main-action-btn {
+        width: 95%; 
+        max-width: 95%;
+    }
+}
