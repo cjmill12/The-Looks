@@ -6,8 +6,8 @@
     --text-color: #333; 
     --highlight-color: #28a745; 
     --thumbnail-size: 60px;
-    --gallery-gap: 10px; /* Adjusted gap */
-    --sidebar-width: 200px; /* Fixed width for the sidebar */
+    --gallery-gap: 10px; 
+    --sidebar-width: 200px; 
     --header-height: 40px;
 }
 
@@ -32,7 +32,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: sticky; /* Keep header at the top */
+    position: sticky; 
     top: 0;
     z-index: 100;
 }
@@ -48,19 +48,19 @@ body {
 
 #two-column-layout {
     display: flex;
-    max-width: 1200px; /* Max overall width */
+    max-width: 1200px; 
     margin: 0 auto;
-    height: calc(100vh - var(--header-height)); /* Full height minus header */
+    height: calc(100vh - var(--header-height)); 
 }
 
 /* --- 1. Filter Sidebar (LEFT) --- */
 #filter-sidebar {
     width: var(--sidebar-width);
-    flex-shrink: 0; /* Prevents sidebar from shrinking */
+    flex-shrink: 0; 
     background-color: #fff;
     box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
     padding: 10px;
-    overflow-y: auto; /* Allows scrolling if steps are too long */
+    overflow-y: auto; 
     display: flex;
     flex-direction: column;
 }
@@ -72,46 +72,77 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto; /* Allows content area to scroll */
+    overflow-y: auto; 
 }
 
 /* --- FILTER SECTION STYLES (Sidebar appearance) --- */
 
 .filter-section {
     width: 100%;
-    margin: 0 0 15px 0; 
-    padding: 10px 5px; 
+    margin: 0 0 10px 0; /* Reduced margin */
+    padding: 0; /* Removing main section padding */
     background-color: #f9f9f9;
     border-radius: 6px;
-    box-shadow: none; /* Removed heavy box shadow for sidebar elements */
     text-align: left; 
 }
 
+/* 🚨 Accordion Button Style */
 .filter-section h3 {
     font-size: 0.9em; 
     font-weight: bold;
     color: var(--primary-color);
-    margin-bottom: 8px; 
+    margin: 0; 
+    padding: 8px 10px; /* Padding makes the button area larger */
     text-transform: uppercase;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    cursor: pointer; /* Makes it look like a button */
+    background-color: #fff;
+    border-radius: 6px 6px 0 0;
 }
+
+/* Caret Icon for Collapse */
+.filter-section h3::after {
+    content: '▶'; /* Right pointing arrow (collapsed) */
+    font-size: 0.8em;
+    margin-left: 5px;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+
+.filter-section.expanded h3::after {
+    content: '▼'; /* Down pointing arrow (expanded) */
+}
+
+/* 🚨 Hiding the content group when collapsed */
+.filter-content-group {
+    padding: 5px 10px 10px 10px;
+    background-color: #f9f9f9;
+    border-radius: 0 0 6px 6px;
+}
+
+.filter-section.collapsed .filter-content-group {
+    display: none;
+}
+
 
 /* Filter options group */
 .filter-options-group {
     display: flex;
     flex-wrap: wrap; 
-    gap: 8px; /* Reduced gap for small sidebar */
-    justify-content: flex-start; /* Start elements from the left */
+    gap: 8px; 
+    justify-content: flex-start; 
     margin-top: 5px; 
 }
 
 /* Gender/General Option Buttons (Adapted for sidebar) */
 .gender-option {
     padding: 8px 10px;
-    border: 1px solid #ccc; /* Thinner border */
+    border: 1px solid #ccc; 
     font-size: 0.85em;
-    flex-grow: 1; /* Allows them to fill space better */
+    flex-grow: 1; 
     max-width: 100%; 
 }
 
@@ -124,18 +155,18 @@ body {
 /* Complexion Tiles (Circular & Compact) */
 #complexion-options-group {
     justify-content: flex-start; 
-    gap: 6px; /* Further reduced gap */
+    gap: 6px; 
 }
 
 .complexion-tile {
-    width: 30px; /* Significantly reduced size */
+    width: 30px; 
     height: 30px; 
-    border: 2px solid transparent; /* Thinner border */
-    flex-shrink: 0; /* Important: prevents shrinking */
+    border: 2px solid transparent; 
+    flex-shrink: 0; 
 }
 
 .complexion-tile p {
-    display: none; /* Hide text label on very small tiles */
+    display: none; 
 }
 
 .complexion-tile.selected {
@@ -144,12 +175,14 @@ body {
 }
 
 /* --- Hairstyle Gallery (Adapted for sidebar) --- */
+/* The filter-options-group styles here handle the scrolling carousel */
 #hairstyle-gallery {
-    padding: 10px 5px; /* Sidebar padding */
-    width: 100%;
+    padding: 0;
+}
+#hairstyle-gallery .filter-content-group {
+     padding: 10px 5px; /* Adjust padding inside content area */
 }
 #hairstyle-gallery .filter-options-group {
-    /* Retain horizontal scroll but keep items compact */
     white-space: nowrap; 
     overflow-x: scroll; 
     overflow-y: hidden; 
@@ -159,7 +192,7 @@ body {
 }
 
 .style-thumbnail {
-    width: 45px; /* Reduced thumbnail size for sidebar */
+    width: 45px; 
     height: 45px; 
 }
 
@@ -172,23 +205,21 @@ body {
 /* ================================================== */
 /* RIGHT COLUMN ELEMENTS (Viewport and Controls) */
 /* ================================================== */
-
+/* ... (No functional changes here) ... */
 #central-viewport {
     width: 100%;
-    max-width: 500px; /* Increased max size for better viewing */
+    max-width: 500px; 
     min-height: 350px; 
     max-height: 60vh;
     margin-bottom: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-    
-    /* Removed display: none; from here, now controlled by .active class */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 #central-viewport.active {
-    display: block; /* Show content when camera is active */
+    display: block; 
 }
 
 #controls {
@@ -211,7 +242,7 @@ body {
 @media (max-width: 768px) {
     
     #two-column-layout {
-        flex-direction: column; /* Stacks columns vertically */
+        flex-direction: column; 
         height: auto;
     }
     
@@ -227,14 +258,9 @@ body {
     }
     
     .filter-section {
-        margin: 8px auto;
-        padding: 10px 15px;
+        margin: 8px 10px;
+        padding: 0;
         background-color: #fff;
-    }
-    
-    .complexion-tile {
-        width: 40px; /* Slightly larger on mobile when wide */
-        height: 40px;
     }
     
     /* Re-show the label text for the complexion tiles on the stacked mobile layout */
@@ -242,10 +268,5 @@ body {
         display: block; 
         font-size: 0.6em;
         margin-top: 25px;
-    }
-    
-    /* Allow the hairstyle gallery to be full width and scrollable */
-    #hairstyle-gallery {
-        padding: 10px 15px;
     }
 }
