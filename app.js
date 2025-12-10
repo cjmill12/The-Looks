@@ -46,23 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptDatabase = {
         male: {
             fair: [
-                { name: 'Fringe', prompt: 'medium forward fringe, light golden brown', img: '/styles/forward fringe.jpeg' },
-                { name: 'Spiked', prompt: 'spiked texture, short cut, light brown', img: '/styles/spiked charm.jpeg' },
+                { name: 'Fringe', prompt: 'medium forward fringe, light golden brown', img: 'styles/forward fringe.jpeg' },
+                { name: 'Spiked', prompt: 'spiked texture, short cut, light brown', img: 'styles/spiked charm.jpeg' },
             ],
             medium: [
-                { name: 'Wavy Quiff', prompt: 'high volume wavy quiff, medium brown', img: '/styles/wavy quiff.jpeg' },
-                { name: 'Side Part', prompt: 'classic side-part, medium brown', img: '/styles/sleek side part.jpeg' },
+                { name: 'Wavy Quiff', prompt: 'high volume wavy quiff, medium brown', img: 'styles/wavy quiff.jpeg' },
+                { name: 'Side Part', prompt: 'classic side-part, medium brown', img: 'styles/sleek side part.jpeg' },
             ],
             deep: [
-                { name: 'High Fade', prompt: 'sharp high-top fade, dark black color', img: '/styles/high top fade.jpeg' },
-                { name: 'Natural Curls', prompt: 'soft texture natural curls, dark espresso', img: '/styles/natural curls.jpeg' },
+                { name: 'High Fade', prompt: 'sharp high-top fade, dark black color', img: 'styles/high top fade.jpeg' },
+                { name: 'Natural Curls', prompt: 'soft texture natural curls, dark espresso', img: 'styles/natural curls.jpeg' },
             ],
         },
         female: {
-            fair: [ { name: 'Long Bob', prompt: 'Shoulder length layered bob, light blonde highlights.', img: '/styles/placeholder_bob.jpeg' }],
-            deep: [ { name: 'Afro Puff', prompt: 'Voluminous afro puff hairstyle, natural black color, defined curls.', img: '/styles/placeholder_afro.jpeg' }],
+            fair: [ { name: 'Long Bob', prompt: 'Shoulder length layered bob, light blonde highlights.', img: 'styles/placeholder_bob.jpeg' }],
+            deep: [ { name: 'Afro Puff', prompt: 'Voluminous afro puff hairstyle, natural black color, defined curls.', img: 'styles/placeholder_afro.jpeg' }],
         }
     };
+    // NOTE: The image paths in promptDatabase were also updated to remove the leading slash 
 
 
     // --- Helper Functions (Omitting for brevity) ---
@@ -306,12 +307,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // --- SUCCESS BLOCK (Image Swap: CRITICAL FIX FOR MOCK-UP) ---
             const styleImgElement = document.querySelector('.style-option.selected .style-thumbnail');
             if (styleImgElement) {
-                // Get the current source path (e.g., /styles/forward fringe.jpeg)
+                // Get the current source path (e.g., styles/brushed up blonde.jpeg)
                 let originalSrc = styleImgElement.src;
 
-                // 🚨 This line is the magic that simulates the AI result by changing the path.
-                // It replaces '/styles/' with '/styles/result_' to point to your mock-up file.
-                const newSrc = originalSrc.replace('/styles/', '/styles/result_');
+                // 🚨 FIX APPLIED: Removed the leading slash to match your file path structure.
+                const newSrc = originalSrc.replace('styles/', 'styles/result_');
                 
                 // Force the final result image source swap here.
                 aiResultImg.src = newSrc; 
