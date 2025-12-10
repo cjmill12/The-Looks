@@ -6,7 +6,7 @@
     --filter-background: #F0F0F0;
     --text-color: #333; 
     --highlight-color: #007bff; 
-    --header-height: 50px; /* Increased height slightly for logo visibility */
+    --header-height: 50px; 
     --app-padding: 15px;
     --pill-width: 90px;
 }
@@ -41,21 +41,18 @@ body {
 /* --- 1. HEADER (Logo Only) --- */
 #app-header {
     background-color: var(--background-color);
-    /* Updated to center content horizontally */
     display: flex; 
     justify-content: center;
     align-items: center;
     padding: 0;
     height: var(--header-height);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Added subtle shadow back */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-/* Removed specific grid layout */
 #header-center {
-    /* Ensures the logo container itself is centered */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -63,13 +60,10 @@ body {
 }
 
 #main-logo {
-    max-width: 80px; /* Made the logo slightly larger for prominence */
+    max-width: 80px; 
     height: 40px;
     object-fit: contain;
 }
-
-/* Removed unused header elements styles */
-/* #header-left, #header-right, #app-title, #app-subtitle, .icon-btn are now obsolete/removed from HTML */
 
 /* --- 2. MAIN CONTENT (Viewport) --- */
 #main-content {
@@ -148,7 +142,6 @@ body {
     justify-content: center;
 }
 
-/* Active State for Gender/Complexion Pills */
 .action-pill-btn.selected {
     background-color: var(--highlight-color);
     color: var(--text-on-dark);
@@ -164,18 +157,19 @@ body {
     z-index: 20;
 }
 
-#viewport-actions-bottom {
+/* 🚨 SIMPLIFIED BUTTONS CONTAINER */
+#viewport-actions-bottom-simplified {
     position: absolute;
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px; /* Spacing between the two large buttons */
     z-index: 20;
 }
 
-#take-selfie-btn {
+.action-btn-large {
     width: 60px; 
     height: 60px;
     padding: 0;
@@ -188,10 +182,20 @@ body {
     font-size: 25px; 
     border: 3px solid #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
+/* Style for the Generate/Try-On button if different */
+.generate-action {
+    background-color: var(--highlight-color); /* Use highlight color for Generate */
+}
 
-/* INSPIRATION TOGGLE (Replaces Pro Banner) */
+/* Utility Class for hiding buttons */
+.hidden-btn {
+    display: none !important;
+}
+
+/* INSPIRATION TOGGLE */
 #inspiration-toggle {
     width: calc(100% - 2 * var(--app-padding));
     background-color: #fff;
@@ -235,7 +239,7 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Filter Selection Wrapper (Hidden/Shown content for Gender/Complexion pills) */
+/* Filter Selection Wrapper */
 #filter-selection-wrapper {
     width: 100%;
     background-color: var(--filter-background);
@@ -253,7 +257,7 @@ body {
     display: none;
 }
 
-/* Gender/Complexion Options inside the expanded area */
+/* Gender/Complexion Options */
 .filter-options-group {
     display: flex;
     flex-wrap: wrap; 
@@ -275,7 +279,7 @@ body {
 }
 
 
-/* Complexion Tiles inside the expanded area */
+/* Complexion Tiles */
 #complexion-options-group {
     justify-content: center;
     gap: 15px;
@@ -289,11 +293,6 @@ body {
 .complexion-tile.selected {
     border-color: var(--highlight-color);
 }
-
-.complexion-tile p {
-    display: none; 
-}
-
 
 /* Hairstyle Gallery (Inspiration) */
 #hairstyle-gallery {
@@ -367,12 +366,4 @@ body {
     font-size: 0.7em;
     color: #aaa;
     background-color: var(--background-color);
-}
-
-
-/* MOBILE SPECIFIC OVERRIDES */
-@media (max-width: 768px) {
-    #full-screen-container {
-        max-width: 100%; 
-    }
 }
