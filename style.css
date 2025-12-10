@@ -6,7 +6,7 @@
     --filter-background: #F0F0F0;
     --text-color: #333; 
     --highlight-color: #007bff; 
-    --header-height: 40px;
+    --header-height: 50px; /* Increased height slightly for logo visibility */
     --app-padding: 15px;
     --pill-width: 90px;
 }
@@ -38,58 +38,38 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-/* --- 1. HEADER (Top of the screen) --- */
+/* --- 1. HEADER (Logo Only) --- */
 #app-header {
     background-color: var(--background-color);
-    padding: 10px var(--app-padding);
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
+    /* Updated to center content horizontally */
+    display: flex; 
+    justify-content: center;
     align-items: center;
-    text-align: left;
-    height: auto;
-    box-shadow: none;
+    padding: 0;
+    height: var(--header-height);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Added subtle shadow back */
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-#header-left {
+/* Removed specific grid layout */
+#header-center {
+    /* Ensures the logo container itself is centered */
     display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100%;
 }
+
 #main-logo {
-    max-width: 60px; /* Adjust size for the corner */
-    height: 30px;
+    max-width: 80px; /* Made the logo slightly larger for prominence */
+    height: 40px;
     object-fit: contain;
 }
 
-#header-center {
-    text-align: left;
-    margin-left: 10px;
-}
-#app-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin: 0;
-    color: var(--primary-color);
-}
-#app-subtitle {
-    font-size: 0.8em;
-    margin: 2px 0 0 0;
-    color: #666;
-}
-
-#header-right {
-    text-align: right;
-}
-.icon-btn {
-    background: none;
-    border: none;
-    font-size: 1.2em;
-    color: var(--primary-color);
-    margin-left: 10px;
-    cursor: pointer;
-}
+/* Removed unused header elements styles */
+/* #header-left, #header-right, #app-title, #app-subtitle, .icon-btn are now obsolete/removed from HTML */
 
 /* --- 2. MAIN CONTENT (Viewport) --- */
 #main-content {
@@ -153,7 +133,7 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* 🚨 Pill Buttons for Gender/Complexion */
+/* Pill Buttons for Gender/Complexion */
 .action-pill-btn {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
@@ -163,7 +143,6 @@ body {
     font-weight: bold;
     color: var(--primary-color);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Centers the icon content */
     display: flex; 
     align-items: center;
     justify-content: center;
@@ -212,7 +191,7 @@ body {
 }
 
 
-/* 🚨 INSPIRATION TOGGLE (Replaces Pro Banner) */
+/* INSPIRATION TOGGLE (Replaces Pro Banner) */
 #inspiration-toggle {
     width: calc(100% - 2 * var(--app-padding));
     background-color: #fff;
@@ -222,7 +201,6 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 30;
     cursor: pointer;
-    /* Make it look like the Pro banner but collapsible */
 }
 #inspiration-toggle-header {
     font-size: 0.9em;
@@ -257,7 +235,7 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* 🚨 Filter Selection Wrapper (Hidden/Shown content for Gender/Complexion pills) */
+/* Filter Selection Wrapper (Hidden/Shown content for Gender/Complexion pills) */
 #filter-selection-wrapper {
     width: 100%;
     background-color: var(--filter-background);
@@ -266,7 +244,6 @@ body {
 }
 
 .selector-content {
-    /* Styles for the expanded content boxes */
     display: block;
     padding: 0;
     background: none;
