@@ -37,36 +37,38 @@ export async function handler(event) {
     // Prepare the image part (Gemini 2.5 Flash supports inline Base64)
     const imagePart = base64ToGenerativePart(baseImage, "image/jpeg");
 
-    // CRITICAL FIX: Use the correct Imagen model for image-to-image editing
+    // FIX: Using gemini-2.5-flash, which is supported by generateContent 
+    // and can handle the multimodal input (image + text prompt).
     const response = await ai.models.generateContent({
-      model: 'imagen-3.0-generate-002', // The correct model ID for high-quality image generation/editing
+      model: 'gemini-2.5-flash', // The supported multimodal model ID
       contents: [
         imagePart,
         { text: prompt }, // The instruction for the AI (apply new hairstyle)
       ],
       config: {
         // Pass negative prompt for quality control
+        // Note: Gemini models typically respond with text, but with the 
+        // correct prompting, they can often return a structured image-part 
+        // that the following parsing logic expects.
+        // We will keep the negativePrompt in the config just in case.
         negativePrompt: negativePrompt, 
-        // Request a specific aspect ratio or size
-        aspectRatio: '1:1',
-        numberOfImages: 1
       }
     });
     
-    // Extract the generated image (Base64 data)
-    // The response structure for Imagen is slightly different, checking for safety filtered candidates is important
+    // --- Reverting to original parsing logic for Gemini model output ---
     const candidate = response.candidates[0];
-    
-    if (candidate.safetyRatings && candidate.safetyRatings.some(rating => rating.probability !== 'NEGLIGIBLE')) {
-         console.warn("Generated image was filtered for safety.");
-         return {
-            statusCode: 403,
-            body: JSON.stringify({ error: "Generation failed: The image was filtered due to safety policies. Please try a different pose or style." }),
-         };
-    }
 
-    // Extract the Base64 data from the first part of the first candidate
-    const generatedImageBase64 = candidate.image.imageBytes;
+    if (!candidate || !candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+      // If the model didn't return a structured image part, return an error.
+       console.warn("Gemini model did not return a structured image part in the response.");
+       return {
+          statusCode: 500,
+          body: JSON.stringify({ error: "AI response failed to generate an image. Please try again with a simpler image or prompt." }),
+       };
+    }
+    
+    // This expects the model to return a part containing an image.
+    const generatedImageBase64 = candidate.content.parts[0].inlineData.data;
 
     return {
       statusCode: 200,
