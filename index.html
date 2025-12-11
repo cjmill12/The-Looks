@@ -272,3 +272,589 @@ body {
 }
 
 .style-option p {
+    font-size: 0.75em;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* ================================================== */
+/* RIGHT COLUMN ELEMENTS (Viewport and Controls) */
+/* ================================================== */
+
+/* Desktop Circular Viewport */
+#central-viewport {
+    position: relative; 
+    width: var(--viewport-size); 
+    height: var(--viewport-size);
+    min-height: auto; 
+    max-width: none; 
+    max-height: none;
+    margin-bottom: 20px;
+    border-radius: 50%; 
+    overflow: hidden;
+    background-color: #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    
+    /* Hide by default */
+    display: none; 
+    
+    align-items: center;
+    justify-content: center;
+}
+
+/* Show when 'active' class is added by JS on camera start */
+#central-viewport.active {
+    display: flex;
+}
+
+#video-feed, #ai-result {
+    width: 100%;
+    height: 100%; 
+    display: block;
+    object-fit: cover;
+}
+
+#status-message {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 5px;
+    margin: 0;
+    font-size: 0.85em;
+    text-align: center;
+    z-index: 100; 
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.main-action-btn {
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px; 
+    transition: all 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+    transform: translateY(0);
+}
+
+#take-selfie-btn {
+    width: 70px; 
+    height: 70px;
+    padding: 0;
+    border-radius: 50%; 
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px; 
+    line-height: 1;
+}
+
+#try-on-btn {
+    width: 100%; 
+    max-width: 400px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+}
+
+/* ================================================== */
+/* 📱 MOBILE MEDIA QUERY (Smaller Camera, Compact Filters) */
+/* ================================================== */
+
+@media (max-width: 768px) {
+    
+    #two-column-layout {
+        flex-direction: column; 
+        height: auto;
+        padding: 0; 
+        margin: 0;
+    }
+    
+    #filter-sidebar {
+        width: 100%; 
+        padding: 10px; /* Ensures 10px buffer on left/right edges */
+        box-shadow: none; 
+        order: 1; 
+        
+        /* Revert to stacking filters vertically and center elements */
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap; 
+        justify-content: flex-start;
+        align-items: center;
+    }
+    
+    /* Mobile style for new gender buttons */
+    .gender-buttons-container {
+        width: 100%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        padding: 0 10px; /* Use padding to push content from the sides */
+        box-sizing: border-box;
+    }
+    
+    .gender-button {
+        padding: 12px 0;
+        border-radius: 20px;
+    }
+
+
+    #main-content {
+        width: 100%;
+        padding: 10px 0; 
+        order: 0; 
+    }
+    
+    /* 🚨 MOBILE VIEWPORT OPTIMIZATION: Shrink the circle */
+    #central-viewport {
+        margin-left: auto;
+        margin-right: auto;
+        width: 65vw; 
+        height: 65vw;
+        max-width: 300px; 
+        max-height: 300px;
+        margin-top: 10px;
+    }
+
+    /* Filters will now stack and center automatically due to #filter-sidebar rules */
+    #complexion-selector {
+        width: 95%; 
+        max-width: 350px;
+        margin: 8px auto;
+        box-sizing: border-box;
+    }
+    
+    /* Ensure .filter-section can stack and be centered */
+    .filter-section {
+        margin: 8px auto; /* Vertical margin remains, auto margin centers */
+        padding: 0;
+        background-color: #fff;
+        max-width: 350px; 
+        width: 95%; /* Constrains width of the accordion section */
+    }
+    
+    /* Keep the collapsed style for all elements */
+    .filter-section.collapsed h3 {
+        width: 90%; 
+        max-width: none; 
+        border-radius: 20px; 
+        margin: 0 auto;
+    }
+
+    
+    /* FIX: Ensure Inspiration Gallery takes full width and flows below */
+    #hairstyle-gallery {
+        width: 100%; 
+        margin-top: 10px;
+        max-width: none; /* Let it take full width for horizontal scroll */
+        padding: 0;
+    }
+
+    /* FIX: Ensure the gallery content scrolls horizontally (was wrapping) */
+    #hairstyle-gallery .filter-options-group {
+        display: flex;
+        flex-wrap: nowrap; /* CRITICAL FIX: Prevents stacking in rows/columns */
+        white-space: nowrap; 
+        overflow-x: scroll;
+        padding-bottom: 5px; 
+        padding-left: 10px; /* Small padding for scroll edge visibility */
+        padding-right: 10px;
+    }
+
+
+    /* Expanded Content Group within the filter section */
+    .filter-section.expanded .filter-content-group {
+        width: 100%;
+        box-sizing: border-box; 
+    }
+    
+    /* Complexion tiles must show text labels on mobile */
+    .complexion-tile {
+        width: 40px; 
+        height: 40px; 
+    }
+    .complexion-tile p {
+        display: block; 
+        font-size: 0.6em;
+        margin-top: 45px; 
+        text-align: center;
+        width: 40px;
+        white-space: normal;
+    }
+    
+    /* INSPIRATION GALLERY OPTIMIZATION */
+    #hairstyle-gallery {
+        padding-bottom: 20px;
+        max-width: none; 
+    }
+
+    .style-thumbnail {
+        width: 65px; 
+        height: 65px; 
+    }
+
+    .style-option p {
+        font-size: 0.8em;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="app-header">
+        <img id="main-logo" src="logo.png" alt="Logo">
+    </div>
+
+    <div id="two-column-layout">
+        <div id="filter-sidebar">
+            
+            <div class="gender-buttons-container">
+                <button id="male-gender-btn" class="gender-button">Male</button>
+                <button id="female-gender-btn" class="gender-button">Female</button>
+            </div>
+            
+            <div id="complexion-selector" class="filter-section collapsed">
+                <h3><span>Complexion</span><span class="icon"></span></h3>
+                <div class="filter-content-group">
+                    <div id="complexion-options-group" class="filter-options-group">
+                        <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light"></div>
+                        <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium"></div>
+                        <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark"></div>
+                        <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hairstyle-gallery" class="filter-section expanded">
+                <h3><span>Hairstyle Inspiration</span><span class="icon"></span></h3>
+                <div class="filter-content-group">
+                    <div class="filter-options-group">
+                        <div class="style-option" data-prompt="a slicked-back undercut">
+                            <img class="style-thumbnail" src="thumb1.jpg" alt="Undercut">
+                            <p>Undercut</p>
+                        </div>
+                        <div class="style-option" data-prompt="a classic bob cut">
+                            <img class="style-thumbnail" src="thumb2.jpg" alt="Bob">
+                            <p>Bob Cut</p>
+                        </div>
+                        <div class="style-option" data-prompt="a long wavy hairstyle">
+                            <img class="style-thumbnail" src="thumb3.jpg" alt="Long Wavy">
+                            <p>Long Wavy</p>
+                        </div>
+                        <div class="style-option" data-prompt="a french crop with a fade">
+                            <img class="style-thumbnail" src="thumb4.jpg" alt="French Crop">
+                            <p>French Crop</p>
+                        </div>
+                        <div class="style-option" data-prompt="a high ponytail">
+                            <img class="style-thumbnail" src="thumb5.jpg" alt="Ponytail">
+                            <p>Ponytail</p>
+                        </div>
+                        <div class="style-option" data-prompt="a high ponytail">
+                            <img class="style-thumbnail" src="thumb6.jpg" alt="Bun">
+                            <p>Messy Bun</p>
+                        </div>
+                        <div class="style-option" data-prompt="a high ponytail">
+                            <img class="style-thumbnail" src="thumb7.jpg" alt="Fade">
+                            <p>High Fade</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div id="main-content">
+            
+            <div id="central-viewport">
+                <video id="video-feed" autoplay></video>
+                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
+                <p id="status-message">Click 'Start Camera' to begin.</p>
+            </div>
+            
+            <div id="controls">
+                <button id="take-selfie-btn" class="main-action-btn">▶️</button>
+                <button id="try-on-btn" class="main-action-btn" style="display: none;">Try On Hairstyle</button>
+                <div id="loading-spinner" class="spinner"></div>
+            </div>
+        </div>
+    </div>
+    
+    <canvas id="hidden-canvas" style="display: none;"></canvas>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Get DOM elements
+    const videoFeed = document.getElementById('video-feed');
+    const aiResultImg = document.getElementById('ai-result');
+    const canvas = document.getElementById('hidden-canvas');
+    const centralViewport = document.getElementById('central-viewport');
+    
+    // Buttons and Controls
+    const takeSelfieBtn = document.getElementById('take-selfie-btn');
+    const tryOnBtn = document.getElementById('try-on-btn');
+    const spinner = document.getElementById('loading-spinner');
+    
+    const statusMessage = document.getElementById('status-message');
+    
+    // Filter elements 
+    // NOTE: genderSelector removed, replaced by specific buttons
+    const complexionSelector = document.getElementById('complexion-selector');
+    const complexionGroup = document.getElementById('complexion-options-group');
+    const galleryContainer = document.getElementById('hairstyle-gallery'); 
+    
+    // New Gender Buttons
+    const maleGenderBtn = document.getElementById('male-gender-btn');
+    const femaleGenderBtn = document.getElementById('female-gender-btn');
+
+    // State tracking variables
+    let capturedImageBase64 = null; 
+    let selectedPrompt = null; 
+    let cameraStarted = false; 
+    let selectedGender = 'Male'; // Set default gender
+    let selectedComplexion = null;
+
+    // --- CONSTANTS ---
+    const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor lighting, poor composition, low quality"; 
+
+    // --- Helper Functions ---
+
+    // Function to handle gender selection (New)
+    function handleGenderSelect(gender) {
+        selectedGender = gender;
+
+        // Remove 'selected' class from all gender buttons
+        maleGenderBtn.classList.remove('selected');
+        femaleGenderBtn.classList.remove('selected');
+
+        // Add 'selected' class to the clicked button
+        if (gender === 'Male') {
+            maleGenderBtn.classList.add('selected');
+        } else if (gender === 'Female') {
+            femaleGenderBtn.classList.add('selected');
+        }
+    }
+
+    // Function to handle accordion collapse/expand (kept for other filters)
+    function toggleFilterSection(section) {
+        if (section.classList.contains('collapsed')) {
+            section.classList.remove('collapsed');
+            section.classList.add('expanded');
+        } else {
+            section.classList.remove('expanded');
+            section.classList.add('collapsed');
+        }
+    }
+    
+    // Function to handle complexion tile selection (remains the same)
+    function handleComplexionSelect(tile) {
+        const complexionTiles = complexionGroup.querySelectorAll('.complexion-tile');
+        complexionTiles.forEach(t => t.classList.remove('selected'));
+        tile.classList.add('selected');
+        selectedComplexion = tile.dataset.complexion;
+    }
+    
+    // Function to handle hairstyle selection (remains the same)
+    function handleStyleSelect(styleOption) {
+        const styleOptions = galleryContainer.querySelectorAll('.style-option');
+        styleOptions.forEach(o => o.classList.remove('selected'));
+        styleOption.classList.add('selected');
+        selectedPrompt = styleOption.dataset.prompt;
+    }
+    
+    // Function to start camera stream (remains the same)
+    async function startCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoFeed.srcObject = stream;
+            cameraStarted = true;
+            centralViewport.classList.add('active'); // Show viewport
+            aiResultImg.style.display = 'none'; // Hide result image
+            videoFeed.style.display = 'block'; // Show video feed
+            statusMessage.textContent = "Adjust your face in the circle, then click 📸 to capture.";
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            statusMessage.textContent = `Error: Could not start camera. Check permissions. (${error.name})`;
+        }
+    }
+    
+    // Function to stop camera stream (remains the same)
+    function stopCamera() {
+        if (videoFeed.srcObject) {
+            videoFeed.srcObject.getTracks().forEach(track => track.stop());
+            videoFeed.srcObject = null;
+        }
+        cameraStarted = false;
+        centralViewport.classList.remove('active'); // Hide viewport
+    }
+    
+    // Function to capture image (remains the same)
+    function captureImage() {
+        const context = canvas.getContext('2d');
+        const width = videoFeed.videoWidth;
+        const height = videoFeed.videoHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(videoFeed, 0, 0, width, height);
+
+        // Save image data and update UI
+        capturedImageBase64 = canvas.toDataURL('image/jpeg').split(',')[1];
+        
+        videoFeed.style.display = 'none'; 
+        aiResultImg.style.display = 'block';
+        aiResultImg.src = canvas.toDataURL('image/jpeg'); // Show captured image
+        
+        statusMessage.textContent = "Image captured. Select a hairstyle and click 'Try On'.";
+        
+        // Update control buttons
+        takeSelfieBtn.style.display = 'none';
+        tryOnBtn.style.display = 'block';
+        tryOnBtn.disabled = false;
+        
+        // Stop the camera stream after capturing the image
+        stopCamera();
+    }
+    
+    // Function to run AI try-on (remains the same)
+    tryOnBtn.addEventListener('click', async () => {
+        if (!capturedImageBase64) {
+            statusMessage.textContent = "Please capture a selfie first (📸).";
+            return;
+        }
+        
+        if (!selectedPrompt) {
+            statusMessage.textContent = "Please select a hairstyle from the gallery first.";
+            return;
+        }
+        
+        if (!selectedComplexion) {
+            statusMessage.textContent = "Please select a complexion first.";
+            return;
+        }
+
+        // Disable button, show spinner, and update status
+        tryOnBtn.disabled = true;
+        tryOnBtn.style.display = 'none';
+        spinner.style.display = 'block';
+        statusMessage.textContent = "Processing your new look...";
+        
+        // --- IMPORTANT: Ensure gender is included in the prompt! ---
+        const finalPrompt = `A high quality, professional studio portrait of a ${selectedGender} model with a ${selectedComplexion} complexion, featuring a new hairstyle: ${selectedPrompt}. The face should be clear and well-lit.`;
+        
+        try {
+            const response = await fetch('/api/run_model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    image: capturedImageBase64,
+                    prompt: finalPrompt,
+                    // Keep the original face shape and original lighting.
+                    negativePrompt: NEGATIVE_PROMPT 
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // --- SUCCESS BLOCK ---
+            aiResultImg.src = `data:image/jpeg;base64,${data.generatedImageBase64}`;
+            aiResultImg.style.display = 'block';
+            statusMessage.textContent = `Done! Your new look is ready. Click the Play button to take a new selfie.`;
+            
+            // Cleanup on successful completion (Ready for next action)
+            tryOnBtn.disabled = true; 
+            spinner.style.display = 'none'; 
+            tryOnBtn.style.display = 'none';
+            takeSelfieBtn.style.display = 'block'; 
+            takeSelfieBtn.textContent = "▶️"; 
+            
+        } catch (error) {
+            // --- ERROR BLOCK ---
+            console.error('AI Processing Error:', error);
+            statusMessage.textContent = `Error during AI try-on: ${error.message}. Please try again.`;
+            
+            // Cleanup on error: keep image visible, restore try-on button
+            tryOnBtn.disabled = false; 
+            spinner.style.display = 'none'; 
+            tryOnBtn.style.display = 'block';
+            takeSelfieBtn.style.display = 'none';
+        }
+    });
+
+
+    // --- INITIALIZATION and EVENT LISTENERS ---
+
+    // Set initial gender selection (Default to Male if buttons exist)
+    if (maleGenderBtn) {
+        handleGenderSelect('Male');
+    }
+    
+    // New Gender Button Listeners
+    if (maleGenderBtn) {
+        maleGenderBtn.addEventListener('click', () => handleGenderSelect('Male'));
+    }
+
+    if (femaleGenderBtn) {
+        femaleGenderBtn.addEventListener('click', () => handleGenderSelect('Female'));
+    }
+
+    // Toggle button listeners for remaining filters (Complexion, Hairstyle)
+    if (complexionSelector) {
+        complexionSelector.querySelector('h3').addEventListener('click', () => toggleFilterSection(complexionSelector));
+    }
+    if (galleryContainer) {
+        galleryContainer.querySelector('h3').addEventListener('click', () => toggleFilterSection(galleryContainer));
+    }
+
+    // Complexion tile listeners
+    if (complexionGroup) {
+        complexionGroup.querySelectorAll('.complexion-tile').forEach(tile => {
+            tile.addEventListener('click', () => handleComplexionSelect(tile));
+        });
+    }
+
+    // Hairstyle option listeners
+    if (galleryContainer) {
+        galleryContainer.querySelectorAll('.style-option').forEach(option => {
+            option.addEventListener('click', () => handleStyleSelect(option));
+        });
+    }
+
+    // Camera/Selfie button logic
+    takeSelfieBtn.addEventListener('click', () => {
+        if (!cameraStarted) {
+            // If camera is off, start it
+            startCamera();
+            takeSelfieBtn.textContent = "📸";
+        } else {
+            // If camera is on, capture image
+            captureImage();
+        }
+    });
+
+    // Initial state setup for filters (optional)
+    if (complexionSelector) complexionSelector.classList.add('collapsed');
+    if (galleryContainer) galleryContainer.classList.add('expanded');
+    
+    // Hide spinner initially
+    spinner.style.display = 'none';
+});
+    </script>
+</body>
+</html>
