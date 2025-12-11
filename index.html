@@ -15,9 +15,9 @@
     --highlight-color: #28a745; 
     --thumbnail-size: 60px;
     --gallery-gap: 10px; 
-    --sidebar-width: 200px; 
     --header-height: 40px;
     --viewport-size: 300px; /* Desktop circular viewport size */
+    --content-max-width: 400px; /* Max width for centered elements */
 }
 
 body {
@@ -30,6 +30,9 @@ body {
     -webkit-user-select: none;
     user-select: none;
     overflow-x: hidden; 
+    display: flex; /* Use flexbox on body for overall layout */
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* --- Header and Logo Styling (MINIMAL BANNER) --- */
@@ -37,7 +40,6 @@ body {
     padding: 0; 
     background-color: #FFFFFF;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
-    margin-bottom: 0; 
     height: var(--header-height); 
     display: flex;
     align-items: center;
@@ -53,37 +55,29 @@ body {
 }
 
 /* ================================================== */
-/* DESKTOP LAYOUT: TWO-COLUMN STRUCTURE */
+/* NEW SINGLE-COLUMN LAYOUT */
 /* ================================================== */
 
-#two-column-layout {
-    display: flex;
+#main-app-container {
+    flex-grow: 1; /* Allows container to take up remaining space */
     width: 100%;
-    margin: 0; 
-    height: calc(100vh - var(--header-height)); 
-}
-
-/* --- 1. Filter Sidebar (LEFT) --- */
-#filter-sidebar {
-    width: var(--sidebar-width);
-    flex-shrink: 0; 
-    background-color: #fff;
-    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
-    padding: 10px;
-    overflow-y: auto; 
+    padding: 20px 0;
+    margin: 0 auto; /* Center the container on the page */
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    gap: 20px; /* Space between main sections (Gender, Camera, Filters) */
 }
 
-/* --- NEW GENDER BUTTONS (Top Left Side) --- */
+/* --- 1. GENDER BUTTONS (Top Section) --- */
 .gender-buttons-container {
     display: flex;
     justify-content: space-between;
-    gap: 8px; /* Space between buttons */
-    width: 100%;
-    margin-bottom: 15px;
+    gap: 8px;
+    width: 90%; /* Use a percentage for responsiveness */
+    max-width: var(--content-max-width);
+    margin-bottom: 0;
     box-sizing: border-box;
-    padding: 0; /* Already padded by #filter-sidebar */
 }
 
 .gender-button {
@@ -111,24 +105,115 @@ body {
     color: var(--text-on-dark);
     border-color: var(--primary-color);
 }
-/* --- END NEW GENDER BUTTONS --- */
 
 
-/* --- 2. Main Content (RIGHT) --- */
-#main-content {
-    flex-grow: 1;
-    padding: 20px;
+/* --- 2. CAMERA SECTION (Middle Section) --- */
+
+#central-section {
+    width: 90%;
+    max-width: var(--content-max-width);
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto; 
+    justify-content: center;
+    gap: 15px;
 }
 
-/* --- FILTER SECTION STYLES (Excluding Gender which is now permanent buttons) --- */
+#central-viewport {
+    position: relative; 
+    width: var(--viewport-size); 
+    height: var(--viewport-size);
+    margin: 0; /* Remove old margin */
+    border-radius: 50%; 
+    overflow: hidden;
+    background-color: #eee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    
+    /* Hide by default */
+    display: none; 
+    align-items: center;
+    justify-content: center;
+}
+
+#central-viewport.active {
+    display: flex;
+}
+
+#video-feed, #ai-result {
+    width: 100%;
+    height: 100%; 
+    display: block;
+    object-fit: cover;
+}
+
+#status-message {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 5px;
+    margin: 0;
+    font-size: 0.85em;
+    text-align: center;
+    z-index: 100; 
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.main-action-btn {
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px; 
+    transition: all 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+}
+
+#take-selfie-btn {
+    width: 70px; 
+    height: 70px;
+    padding: 0;
+    border-radius: 50%; 
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px; 
+    line-height: 1;
+}
+
+#try-on-btn {
+    width: 100%; 
+    max-width: 400px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+}
+
+
+/* --- 3. FILTER SECTION (Bottom Section) --- */
+
+#filter-section-wrapper {
+    width: 90%;
+    max-width: var(--content-max-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
 
 .filter-section {
     width: 100%;
-    margin: 0 0 10px 0; 
+    margin: 0; 
     padding: 0;
     background-color: #fff;
     border-radius: 6px;
@@ -159,12 +244,12 @@ body {
     
     height: 40px; 
     width: 90%; 
-    max-width: 180px; 
+    max-width: 100%; /* Important for centering in the wrapper */
     padding: 0 10px; 
     
     justify-content: center;
     overflow: hidden; 
-    margin: 0 auto 10px auto; 
+    margin: 0 auto; 
 }
 
 /* Ensure the full text is visible when collapsed */
@@ -237,6 +322,7 @@ body {
     height: 30px; 
     border: 2px solid transparent; 
     flex-shrink: 0; 
+    border-radius: 50%;
 }
 
 .complexion-tile p {
@@ -250,9 +336,9 @@ body {
 
 /* --- Hairstyle Gallery (INSPIRATION) --- */
 #hairstyle-gallery {
+    /* No margin top needed now, gap handles spacing */
     padding: 0;
     width: 100%; 
-    margin-top: 20px; 
 }
 #hairstyle-gallery .filter-content-group {
      padding: 10px 5px; 
@@ -264,241 +350,104 @@ body {
     scroll-snap-type: x mandatory;
     gap: 8px;
     padding-bottom: 5px; 
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.style-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 45px;
+    flex-shrink: 0;
 }
 
 .style-thumbnail {
     width: 45px; 
     height: 45px; 
+    border-radius: 6px;
+    object-fit: cover;
 }
 
 .style-option p {
     font-size: 0.75em;
     white-space: normal;
     word-break: break-word;
+    margin: 4px 0 0 0;
 }
 
 /* ================================================== */
-/* RIGHT COLUMN ELEMENTS (Viewport and Controls) */
+/* 📱 MOBILE MEDIA QUERY OPTIMIZATIONS */
 /* ================================================== */
 
-/* Desktop Circular Viewport */
-#central-viewport {
-    position: relative; 
-    width: var(--viewport-size); 
-    height: var(--viewport-size);
-    min-height: auto; 
-    max-width: none; 
-    max-height: none;
-    margin-bottom: 20px;
-    border-radius: 50%; 
-    overflow: hidden;
-    background-color: #eee;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+@media (max-width: 600px) {
     
-    /* Hide by default */
-    display: none; 
-    
-    align-items: center;
-    justify-content: center;
-}
-
-/* Show when 'active' class is added by JS on camera start */
-#central-viewport.active {
-    display: flex;
-}
-
-#video-feed, #ai-result {
-    width: 100%;
-    height: 100%; 
-    display: block;
-    object-fit: cover;
-}
-
-#status-message {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 8px 5px;
-    margin: 0;
-    font-size: 0.85em;
-    text-align: center;
-    z-index: 100; 
-}
-
-#controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px;
-}
-
-.main-action-btn {
-    margin-bottom: 10px;
-    cursor: pointer;
-    border: none;
-    font-size: 16px; 
-    transition: all 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
-    transform: translateY(0);
-}
-
-#take-selfie-btn {
-    width: 70px; 
-    height: 70px;
-    padding: 0;
-    border-radius: 50%; 
-    background-color: var(--primary-color);
-    color: var(--text-on-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px; 
-    line-height: 1;
-}
-
-#try-on-btn {
-    width: 100%; 
-    max-width: 400px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    background-color: var(--primary-color);
-    color: var(--text-on-dark);
-}
-
-/* ================================================== */
-/* 📱 MOBILE MEDIA QUERY (Smaller Camera, Compact Filters) */
-/* ================================================== */
-
-@media (max-width: 768px) {
-    
-    #two-column-layout {
-        flex-direction: column; 
-        height: auto;
-        padding: 0; 
-        margin: 0;
+    #main-app-container {
+        padding: 10px 0;
+        gap: 15px; 
     }
     
-    #filter-sidebar {
-        width: 100%; 
-        padding: 10px; /* Ensures 10px buffer on left/right edges */
-        box-shadow: none; 
-        order: 1; 
-        
-        /* Revert to stacking filters vertically and center elements */
-        display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap; 
-        justify-content: flex-start;
-        align-items: center;
-    }
-    
-    /* Mobile style for new gender buttons */
-    .gender-buttons-container {
-        width: 100%;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        padding: 0 10px; /* Use padding to push content from the sides */
+    /* Ensure content sections take full width on mobile, and center the camera */
+    .gender-buttons-container,
+    #central-section,
+    #filter-section-wrapper {
+        width: 95%; 
+        max-width: 95%;
         box-sizing: border-box;
+        padding: 0 10px;
     }
     
-    .gender-button {
-        padding: 12px 0;
-        border-radius: 20px;
-    }
-
-
-    #main-content {
-        width: 100%;
-        padding: 10px 0; 
-        order: 0; 
-    }
-    
-    /* 🚨 MOBILE VIEWPORT OPTIMIZATION: Shrink the circle */
+    /* Shrink the circular viewport */
     #central-viewport {
-        margin-left: auto;
-        margin-right: auto;
         width: 65vw; 
         height: 65vw;
         max-width: 300px; 
         max-height: 300px;
-        margin-top: 10px;
-    }
-
-    /* Filters will now stack and center automatically due to #filter-sidebar rules */
-    #complexion-selector {
-        width: 95%; 
-        max-width: 350px;
-        margin: 8px auto;
-        box-sizing: border-box;
     }
     
-    /* Ensure .filter-section can stack and be centered */
-    .filter-section {
-        margin: 8px auto; /* Vertical margin remains, auto margin centers */
-        padding: 0;
-        background-color: #fff;
-        max-width: 350px; 
-        width: 95%; /* Constrains width of the accordion section */
-    }
-    
-    /* Keep the collapsed style for all elements */
+    /* Mobile filter styles adjustments */
     .filter-section.collapsed h3 {
-        width: 90%; 
-        max-width: none; 
-        border-radius: 20px; 
-        margin: 0 auto;
+        width: 95%; /* Make pills slightly wider */
     }
 
-    
-    /* FIX: Ensure Inspiration Gallery takes full width and flows below */
-    #hairstyle-gallery {
-        width: 100%; 
-        margin-top: 10px;
-        max-width: none; /* Let it take full width for horizontal scroll */
-        padding: 0;
-    }
-
-    /* FIX: Ensure the gallery content scrolls horizontally (was wrapping) */
-    #hairstyle-gallery .filter-options-group {
-        display: flex;
-        flex-wrap: nowrap; /* CRITICAL FIX: Prevents stacking in rows/columns */
-        white-space: nowrap; 
-        overflow-x: scroll;
-        padding-bottom: 5px; 
-        padding-left: 10px; /* Small padding for scroll edge visibility */
-        padding-right: 10px;
-    }
-
-
-    /* Expanded Content Group within the filter section */
-    .filter-section.expanded .filter-content-group {
-        width: 100%;
-        box-sizing: border-box; 
-    }
-    
     /* Complexion tiles must show text labels on mobile */
+    #complexion-options-group {
+        justify-content: space-around;
+        flex-wrap: nowrap;
+        overflow-x: scroll;
+        padding-bottom: 5px;
+        padding-top: 5px;
+        scroll-snap-type: x mandatory;
+    }
+
     .complexion-tile {
         width: 40px; 
         height: 40px; 
+        flex-shrink: 0;
+        position: relative;
     }
     .complexion-tile p {
         display: block; 
         font-size: 0.6em;
-        margin-top: 45px; 
-        text-align: center;
-        width: 40px;
-        white-space: normal;
+        position: absolute;
+        top: 100%; 
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 5px; 
+        width: 60px;
     }
     
     /* INSPIRATION GALLERY OPTIMIZATION */
-    #hairstyle-gallery {
-        padding-bottom: 20px;
-        max-width: none; 
+    #hairstyle-gallery .filter-options-group {
+        padding-left: 10px;
+        padding-right: 10px;
     }
-
+    
+    .style-option {
+        width: 65px; 
+        flex-shrink: 0;
+    }
     .style-thumbnail {
         width: 65px; 
         height: 65px; 
@@ -515,13 +464,29 @@ body {
         <img id="main-logo" src="logo.png" alt="Looks Logo">
     </div>
 
-    <div id="two-column-layout">
-        <div id="filter-sidebar">
-            
-            <div class="gender-buttons-container">
-                <button id="male-gender-btn" class="gender-button">Male</button>
-                <button id="female-gender-btn" class="gender-button">Female</button>
+    <div id="main-app-container">
+        
+        <div class="gender-buttons-container">
+            <button id="male-gender-btn" class="gender-button">Male</button>
+            <button id="female-gender-btn" class="gender-button">Female</button>
+        </div>
+
+        <div id="central-section">
+            <div id="central-viewport">
+                <video id="video-feed" autoplay></video>
+                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
+                <p id="status-message">Click 'Start Camera' to begin.</p>
             </div>
+            
+            <div id="controls">
+                <button id="take-selfie-btn" class="main-action-btn">▶️</button>
+                <button id="try-on-btn" class="main-action-btn" style="display: none;">Try On Hairstyle</button>
+                <div id="loading-spinner" class="spinner"></div>
+            </div>
+        </div>
+
+
+        <div id="filter-section-wrapper">
             
             <div id="complexion-selector" class="filter-section collapsed">
                 <h3><span>Complexion</span><span class="icon"></span></h3>
@@ -571,25 +536,7 @@ body {
                 </div>
             </div>
             
-        </div>
-
-        <div id="main-content">
-            
-            <div id="central-viewport">
-                <video id="video-feed" autoplay></video>
-                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
-                <p id="status-message">Click 'Start Camera' to begin.</p>
-            </div>
-            
-            <div id="controls">
-                <button id="take-selfie-btn" class="main-action-btn">▶️</button>
-                <button id="try-on-btn" class="main-action-btn" style="display: none;">Try On Hairstyle</button>
-                <div id="loading-spinner" class="spinner"></div>
-            </div>
-        </div>
-    </div>
-    
-    <canvas id="hidden-canvas" style="display: none;"></canvas>
+        </div> </div> <canvas id="hidden-canvas" style="display: none;"></canvas>
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -847,7 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial state setup for filters (optional)
+    // Initial state setup for filters (Complexion collapsed, Gallery expanded)
     if (complexionSelector) complexionSelector.classList.add('collapsed');
     if (galleryContainer) galleryContainer.classList.add('expanded');
     
