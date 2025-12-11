@@ -610,17 +610,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let capturedImageBase64 = null; 
     let selectedPrompt = null; 
     let cameraStarted = false; 
-    let selectedGender = 'Male'; // Set default gender
-    let selectedComplexion = null; // Stays null if not selected
+    let selectedGender = 'Male'; 
+    let selectedComplexion = null; 
 
     // --- CONSTANTS ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor lighting, poor composition, low quality"; 
 
     // --- Helper Functions ---
     
-    // Function to check if Try On button should be visible (COMPLEXION IS NOW OPTIONAL)
+    // Complexion is OPTIONAL
     function updateTryOnButtonVisibility() {
-        // Button is visible when an image is captured AND a style is selected.
         if (capturedImageBase64 && selectedPrompt) {
             tryOnBtn.style.display = 'block';
             tryOnBtn.disabled = false;
@@ -655,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Function to handle complexion tile selection (Sets selectedComplexion)
     function handleComplexionSelect(tile) {
         const isSelected = tile.classList.contains('selected');
         const complexionTiles = complexionGroup.querySelectorAll('.complexion-tile');
@@ -740,11 +738,15 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.height = height;
         context.drawImage(videoFeed, 0, 0, width, height);
 
-        capturedImageBase64 = canvas.toDataURL('image/jpeg').split(',')[1];
+        const fullDataURL = canvas.toDataURL('image/jpeg');
+        
+        // CRITICAL FIX: Ensure only the pure base64 string is stored
+        const parts = fullDataURL.split(',');
+        capturedImageBase64 = parts.length > 1 ? parts[1] : fullDataURL;
         
         videoFeed.style.display = 'none'; 
         aiResultImg.style.display = 'block';
-        aiResultImg.src = canvas.toDataURL('image/jpeg');
+        aiResultImg.src = fullDataURL;
         
         stopCamera();
         
@@ -757,7 +759,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Try On button logic 
     tryOnBtn.addEventListener('click', async () => {
-        // Now only check for captured image and selected prompt
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Please capture a selfie and select a hairstyle first.";
             return;
@@ -768,10 +769,10 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner.style.display = 'block';
         statusMessage.textContent = "Processing your new look... This may take a moment.";
         
-        // CONDITIONAL PROMPT CONSTRUCTION
+        // Build the prompt conditionally
         const complexionClause = selectedComplexion 
             ? ` with a ${selectedComplexion} complexion,` 
-            : `,`; // Just a comma if complexion is not selected
+            : `,`; 
             
         const finalPrompt = `A high quality, professional studio portrait of a ${selectedGender} model${complexionClause} featuring a new hairstyle: ${selectedPrompt}. The face should be clear and well-lit.`;
         
@@ -782,7 +783,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    image: capturedImageBase64,
+                    // Send the clean base64 string
+                    image: capturedImageBase64, 
                     prompt: finalPrompt,
                     negativePrompt: NEGATIVE_PROMPT 
                 })
@@ -828,6 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleGenderSelect('Male');
     }
     
+    // Event listeners
     if (maleGenderBtn) {
         maleGenderBtn.addEventListener('click', () => handleGenderSelect('Male'));
     }
@@ -836,7 +839,6 @@ document.addEventListener('DOMContentLoaded', () => {
         femaleGenderBtn.addEventListener('click', () => handleGenderSelect('Female'));
     }
 
-    // Filter toggle listeners
     if (complexionSelector) {
         complexionSelector.querySelector('h3').addEventListener('click', () => toggleFilterSection(complexionSelector));
     }
@@ -844,21 +846,18 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryContainer.querySelector('h3').addEventListener('click', () => toggleFilterSection(galleryContainer));
     }
 
-    // Complexion tile listeners
     if (complexionGroup) {
         complexionGroup.querySelectorAll('.complexion-tile').forEach(tile => {
             tile.addEventListener('click', () => handleComplexionSelect(tile));
         });
     }
 
-    // Hairstyle option listeners
     if (galleryContainer) {
         galleryContainer.querySelectorAll('.style-option').forEach(option => {
             option.addEventListener('click', () => handleStyleSelect(option));
         });
     }
 
-    // Camera/Selfie button logic
     takeSelfieBtn.addEventListener('click', () => {
         if (!cameraStarted) {
             startCamera();
