@@ -783,8 +783,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    // Send the clean base64 string
-                    image: capturedImageBase64, 
+                    // CRITICAL FIX: Changed key to 'baseImage' to match tryon.mjs Netlify function
+                    baseImage: capturedImageBase64, 
                     prompt: finalPrompt,
                     negativePrompt: NEGATIVE_PROMPT 
                 })
@@ -872,7 +872,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     takeSelfieBtn.textContent = "▶️";
     spinner.style.display = 'none';
-    tryOnBtn.style.display = 'none';
     centralViewport.classList.add('active'); 
 });
     </script>
