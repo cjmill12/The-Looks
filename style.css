@@ -67,6 +67,45 @@ body {
     flex-direction: column;
 }
 
+/* --- NEW GENDER BUTTONS (Top Left Side) --- */
+.gender-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px; /* Space between buttons */
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    padding: 0; /* Already padded by #filter-sidebar */
+}
+
+.gender-button {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: var(--text-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.2s;
+    user-select: none;
+    line-height: 1;
+}
+
+.gender-button:hover {
+    background-color: #f0f0f0;
+}
+
+.gender-button.selected {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+}
+/* --- END NEW GENDER BUTTONS --- */
+
+
 /* --- 2. Main Content (RIGHT) --- */
 #main-content {
     flex-grow: 1;
@@ -77,7 +116,7 @@ body {
     overflow-y: auto; 
 }
 
-/* --- FILTER SECTION STYLES (Larger Pill Buttons) --- */
+/* --- FILTER SECTION STYLES (Excluding Gender which is now permanent buttons) --- */
 
 .filter-section {
     width: 100%;
@@ -179,21 +218,6 @@ body {
     margin-top: 5px; 
 }
 
-/* Gender/General Option Buttons (Adapted for sidebar) */
-.gender-option {
-    padding: 8px 10px;
-    border: 1px solid #ccc; 
-    font-size: 0.85em;
-    flex-grow: 1; 
-    max-width: 100%; 
-}
-
-.gender-option.selected {
-    background-color: var(--primary-color);
-    color: var(--text-on-dark);
-    border-color: var(--primary-color);
-}
-
 /* Complexion Tiles (Circular & Compact) */
 #complexion-options-group {
     justify-content: flex-start; 
@@ -263,14 +287,14 @@ body {
     background-color: #eee;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
     
-    /* FIX 1 (New Request): Hide by default */
+    /* Hide by default (New Request) */
     display: none; 
     
     align-items: center;
     justify-content: center;
 }
 
-/* FIX 2 (New Request): Show when 'active' class is added by JS on camera start */
+/* Show when 'active' class is added by JS on camera start */
 #central-viewport.active {
     display: flex;
 }
@@ -355,13 +379,28 @@ body {
         box-shadow: none; 
         order: 1; 
         
-        /* FIX 1: Enable flex row layout for side-by-side elements */
+        /* Revert to stacking filters vertically and center elements */
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: flex-start;
+        flex-direction: column;
+        flex-wrap: nowrap; 
+        justify-content: flex-start;
+        align-items: center;
     }
+    
+    /* Mobile style for new gender buttons */
+    .gender-buttons-container {
+        width: 100%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        padding: 0 10px; /* Use padding to push content from the sides */
+        box-sizing: border-box;
+    }
+    
+    .gender-button {
+        padding: 12px 0;
+        border-radius: 20px;
+    }
+
 
     #main-content {
         width: 100%;
@@ -380,20 +419,21 @@ body {
         margin-top: 10px;
     }
 
-    /* FIX 2: Set GENDER and COMPLEXION to fit side-by-side */
-    #gender-selector, #complexion-selector {
-        width: calc(50% - 5px); 
-        margin: 8px 0; /* Only vertical margin */
+    /* Filters will now stack and center automatically due to #filter-sidebar rules */
+    #complexion-selector {
+        width: 95%; 
+        max-width: 350px;
+        margin: 8px auto;
         box-sizing: border-box;
     }
     
-    /* FIX 3: Clean up the general .filter-section rule to ensure side-by-side elements are not centered/constrained */
+    /* Ensure .filter-section can stack and be centered */
     .filter-section {
-        margin: 8px 0; /* Vertical margin remains */
+        margin: 8px auto; /* Vertical margin remains, auto margin centers */
         padding: 0;
         background-color: #fff;
-        max-width: none; 
-        width: auto; 
+        max-width: 350px; 
+        width: 95%; /* Constrains width of the accordion section */
     }
     
     /* Keep the collapsed style for all elements */
@@ -405,15 +445,15 @@ body {
     }
 
     
-    /* FIX 4: Ensure Inspiration Gallery takes full width and wraps below */
+    /* FIX: Ensure Inspiration Gallery takes full width and flows below */
     #hairstyle-gallery {
-        width: 100%; /* Must take 100% of the sidebar's width */
+        width: 100%; 
         margin-top: 10px;
-        margin-left: 0; 
-        margin-right: 0;
+        max-width: none; /* Let it take full width for horizontal scroll */
+        padding: 0;
     }
 
-    /* FIX 5: Ensure the gallery content scrolls horizontally (was wrapping) */
+    /* FIX: Ensure the gallery content scrolls horizontally (was wrapping) */
     #hairstyle-gallery .filter-options-group {
         display: flex;
         flex-wrap: nowrap; /* CRITICAL FIX: Prevents stacking in rows/columns */
