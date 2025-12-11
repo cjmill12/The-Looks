@@ -9,7 +9,7 @@
     --gallery-gap: 10px; 
     --sidebar-width: 200px; 
     --header-height: 40px;
-    --viewport-size: 300px; /* Desktop circular viewport size */
+    --viewport-size: 250px; /* Desktop circular viewport size (Slightly smaller) */
 }
 
 body {
@@ -341,20 +341,11 @@ body {
 }
 
 /* ================================================== */
-/* 📱 MOBILE MEDIA QUERY */
+/* 📱 MOBILE MEDIA QUERY (Smaller Camera, Compact Filters) */
 /* ================================================== */
 
 @media (max-width: 768px) {
     
-    /* Responsive viewport size */
-    #central-viewport {
-        width: 90vw; 
-        height: 90vw;
-        max-width: 350px; 
-        max-height: 350px;
-        margin: 10px auto 20px auto; 
-    }
-
     /* Stack top filters vertically on mobile */
     #top-filters {
         flex-direction: column; 
@@ -384,16 +375,30 @@ body {
         order: 0; 
     }
     
+    /* 🚨 MOBILE VIEWPORT OPTIMIZATION: Shrink the circle */
+    #central-viewport {
+        margin-left: auto;
+        margin-right: auto;
+        /* KEY CHANGE: Reduced size to 65vw */
+        width: 65vw; 
+        height: 65vw;
+        max-width: 300px; 
+        max-height: 300px;
+        margin-top: 10px;
+    }
+
     /* MOBILE FILTER PILLS (Centering and using fixed percentage for compactness) */
     .filter-section {
         margin: 8px auto; 
         padding: 0;
         background-color: #fff;
+        /* Reduce max width for a more centralized/compact look */
         width: 90%; 
         max-width: 350px; 
     }
     
     .filter-section.collapsed h3 {
+        /* Keep pill width constrained */
         width: 95%; 
         max-width: none; 
         border-radius: 20px; 
@@ -409,12 +414,12 @@ body {
     /* Complexion tiles must show text labels on mobile */
     .complexion-tile {
         width: 40px; 
-        height: 40px; 
+        height: 40px; /* Reduced size slightly */
     }
     .complexion-tile p {
         display: block; 
         font-size: 0.6em;
-        margin-top: 45px; 
+        margin-top: 45px; /* Push label below the circle */
         text-align: center;
         width: 40px;
         white-space: normal;
