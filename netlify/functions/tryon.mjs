@@ -1,17 +1,13 @@
 // netlify/functions/tryon.mjs
 
+// 1. Use ES Module syntax for reliable import/export
 import { GoogleGenAI } from '@google/genai';
 
 // Helper function to create the Part object for image input
 function base64ToGenerativePart(base64Data, mimeType) {
-  // CRITICAL FIX: Ensure only the pure base64 string is sent to the API
-  const cleanBase64 = base64Data.startsWith('data:') 
-    ? base64Data.split(',')[1] 
-    : base64Data;
-
   return {
     inlineData: {
-      data: cleanBase64,
+      data: base64Data,
       mimeType
     },
   };
@@ -20,40 +16,58 @@ function base64ToGenerativePart(base64Data, mimeType) {
 // Handler must be exported as a named 'handler' function for Netlify
 export async function handler(event) {
   
+  // 2. FIX: Explicitly pass the API key from the environment to the constructor.
   const ai = new GoogleGenAI({ 
     apiKey: process.env.GEMINI_API_KEY 
   }); 
 
+  // Basic method check
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
-    const { baseImage, prompt } = JSON.parse(event.body);
+    // We now extract negativePrompt as well, which is sent from the frontend
+    const { baseImage, prompt, negativePrompt } = JSON.parse(event.body);
 
     if (!baseImage || !prompt) {
       return { statusCode: 400, body: 'Missing baseImage or prompt in request body.' };
     }
 
-    // Prepare the image part
+    // Prepare the image part (Gemini 2.5 Flash supports inline Base64)
     const imagePart = base64ToGenerativePart(baseImage, "image/jpeg");
 
-    // Reverting to the high-capability image model that worked before
+    // CRITICAL FIX: Use the correct Imagen model for image-to-image editing
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image', // Targeting the image editing model
+      model: 'imagen-3.0-generate-002', // The correct model ID for high-quality image generation/editing
       contents: [
         imagePart,
-        { text: prompt }, // The explicit identity-preserving prompt
+        { text: prompt }, // The instruction for the AI (apply new hairstyle)
       ],
+      config: {
+        // Pass negative prompt for quality control
+        negativePrompt: negativePrompt, 
+        // Request a specific aspect ratio or size
+        aspectRatio: '1:1',
+        numberOfImages: 1
+      }
     });
     
-    // Using the previously successful response structure
-    const generatedImageBase64 = response.candidates[0].content.parts[0].inlineData.data;
-
-    if (!generatedImageBase64) {
-        throw new Error("API responded successfully but did not return a generated image base64 string.");
-    }
+    // Extract the generated image (Base64 data)
+    // The response structure for Imagen is slightly different, checking for safety filtered candidates is important
+    const candidate = response.candidates[0];
     
+    if (candidate.safetyRatings && candidate.safetyRatings.some(rating => rating.probability !== 'NEGLIGIBLE')) {
+         console.warn("Generated image was filtered for safety.");
+         return {
+            statusCode: 403,
+            body: JSON.stringify({ error: "Generation failed: The image was filtered due to safety policies. Please try a different pose or style." }),
+         };
+    }
+
+    // Extract the Base64 data from the first part of the first candidate
+    const generatedImageBase64 = candidate.image.imageBytes;
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -67,9 +81,7 @@ export async function handler(event) {
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        error: `Netlify Function Error. Check API Key/Model response. Detail: ${error.message}`
-      }),
+      body: JSON.stringify({ error: 'Internal Server Error during AI processing. Check Netlify logs.' }),
     };
   }
 }
