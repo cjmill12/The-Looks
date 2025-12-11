@@ -343,7 +343,7 @@ body {
     
     #filter-sidebar {
         width: 100%; 
-        padding: 10px; /* Use full padding for spacing on sides: 10px left/right */
+        padding: 10px; /* Ensures 10px buffer on left/right edges */
         box-shadow: none; 
         order: 1; 
         
@@ -365,7 +365,6 @@ body {
     #central-viewport {
         margin-left: auto;
         margin-right: auto;
-        /* KEY CHANGE: Reduced size to 65vw */
         width: 65vw; 
         height: 65vw;
         max-width: 300px; 
@@ -375,24 +374,22 @@ body {
 
     /* FIX 2: Set GENDER and COMPLEXION to fit side-by-side */
     #gender-selector, #complexion-selector {
-        /* Total internal width is 100% - 20px padding from sidebar. 
-           calc(50% - 10px) ensures a 20px gap between the two elements in the 100% space. */
         width: calc(50% - 5px); 
-        margin: 0;
+        margin: 8px 0; /* Only vertical margin */
         box-sizing: border-box;
     }
     
-    /* FIX 3: Ensure filter sections and pills use their width properly */
+    /* FIX 3: Clean up the general .filter-section rule to ensure side-by-side elements are not centered/constrained */
     .filter-section {
-        /* Remove mobile width constraints/centering for Gender/Complexion, handled by their IDs above */
         margin: 8px 0; /* Vertical margin remains */
         padding: 0;
         background-color: #fff;
         max-width: none; 
+        width: auto; 
     }
     
+    /* Keep the collapsed style for all elements */
     .filter-section.collapsed h3 {
-        /* Make collapsed pills fit within their new width container */
         width: 90%; 
         max-width: none; 
         border-radius: 20px; 
@@ -400,12 +397,25 @@ body {
     }
 
     
-    /* FIX 4: Ensure Inspiration Gallery takes full width and maintains horizontal scroll */
+    /* FIX 4: Ensure Inspiration Gallery takes full width and wraps below */
     #hairstyle-gallery {
-        /* Must take 100% of the sidebar's width to span below the two side-by-side filters */
-        width: 100%;
+        width: 100%; /* Must take 100% of the sidebar's width */
         margin-top: 10px;
+        margin-left: 0; 
+        margin-right: 0;
     }
+
+    /* FIX 5: Ensure the gallery content scrolls horizontally (was wrapping) */
+    #hairstyle-gallery .filter-options-group {
+        display: flex;
+        flex-wrap: nowrap; /* CRITICAL FIX: Prevents stacking in rows/columns */
+        white-space: nowrap; 
+        overflow-x: scroll;
+        padding-bottom: 5px; 
+        padding-left: 10px; /* Small padding for scroll edge visibility */
+        padding-right: 10px;
+    }
+
 
     /* Expanded Content Group within the filter section */
     .filter-section.expanded .filter-content-group {
@@ -431,14 +441,6 @@ body {
     #hairstyle-gallery {
         padding-bottom: 20px;
         max-width: none; 
-    }
-    
-    #hairstyle-gallery .filter-options-group {
-        overflow-x: scroll;
-        padding-bottom: 5px; 
-        /* Ensure there is no extra padding here causing issues */
-        padding-left: 0; 
-        padding-right: 0;
     }
 
     .style-thumbnail {
