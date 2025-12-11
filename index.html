@@ -67,7 +67,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; 
-    gap: 20px; 
+    gap: 15px; /* Reduced gap for tighter layout */
 }
 
 /* --- 1. GENDER BUTTONS (Top Section) --- */
@@ -79,6 +79,7 @@ body {
     max-width: var(--content-max-width);
     margin-bottom: 0;
     box-sizing: border-box;
+    padding: 0 10px;
 }
 
 .gender-button {
@@ -118,6 +119,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
+    padding: 0 10px;
 }
 
 #central-viewport {
@@ -251,8 +253,8 @@ body {
 
 /* Try On Hairstyle Button Styling */
 #try-on-btn {
-    width: 100%; 
-    max-width: 400px;
+    width: 90%; 
+    max-width: var(--content-max-width);
     padding: 12px 24px;
     border-radius: 8px;
     background-color: var(--highlight-color); 
@@ -260,23 +262,16 @@ body {
     font-size: 1.1em;
     font-weight: bold;
     box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
-    margin-top: 15px; 
+    margin-top: 5px; /* Tighter spacing below camera */
+    margin-bottom: 10px;
 }
 
-/* --- 3. FILTER SECTION (Bottom Section) --- */
-
-#filter-section-wrapper {
-    width: 90%;
-    max-width: var(--content-max-width);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
+/* --- 3. FILTER SECTION (Now individual sections) --- */
 
 .filter-section {
-    width: 100%;
-    margin: 0; 
+    width: 90%; 
+    max-width: var(--content-max-width);
+    margin: 0 auto; /* Center the filter sections */
     padding: 0;
     background-color: #fff;
     border-radius: 6px;
@@ -394,7 +389,7 @@ body {
 /* --- Hairstyle Gallery (INSPIRATION) --- */
 #hairstyle-gallery {
     padding: 0;
-    width: 100%; 
+    margin-bottom: 5px; /* Tighter spacing above camera */
 }
 #hairstyle-gallery .filter-content-group {
      padding: 10px 5px; 
@@ -462,7 +457,8 @@ body {
     
     .gender-buttons-container,
     #central-section,
-    #filter-section-wrapper {
+    .filter-section,
+    #try-on-btn {
         width: 95%; 
         max-width: 95%;
         box-sizing: border-box;
@@ -537,6 +533,61 @@ body {
             <button id="male-gender-btn" class="gender-button">Male</button>
             <button id="female-gender-btn" class="gender-button">Female</button>
         </div>
+        
+        <div id="hairstyle-gallery" class="filter-section expanded">
+            <h3><span>Hairstyle Inspiration</span><span class="icon"></span></h3>
+            <div class="filter-content-group">
+                <div class="filter-options-group">
+                    
+                    <div class="style-option" data-prompt="a slicked-back undercut with brushed up blonde hair">
+                        <img class="style-thumbnail" src="styles/brushed up blonde.jpeg" alt="Brushed Up Blonde">
+                        <p>Brushed Up Blonde</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a short cut with a heavy forward fringe">
+                        <img class="style-thumbnail" src="styles/forward fringe.jpeg" alt="Forward Fringe">
+                        <p>Forward Fringe</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a classic high top fade with sharp lines">
+                        <img class="style-thumbnail" src="styles/high top fade.jpeg" alt="High Top Fade">
+                        <p>High Top Fade</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a voluminous hairstyle with natural curls">
+                        <img class="style-thumbnail" src="styles/natural curls.jpeg" alt="Natural Curls">
+                        <p>Natural Curls</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a clean side swept scissor cut">
+                        <img class="style-thumbnail" src="styles/side swept scissor cut.jpeg" alt="Side Swept Scissor Cut">
+                        <p>Side Swept Scissor Cut</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a sleek, formal side part style">
+                        <img class="style-thumbnail" src="styles/sleek side part.jpeg" alt="Sleek Side Part">
+                        <p>Sleek Side Part</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a fun, short spiked hairstyle">
+                        <img class="style-thumbnail" src="styles/spiked charm.jpeg" alt="Spiked Charm">
+                        <p>Spiked Charm</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a short haircut with a tousled and textured top">
+                        <img class="style-thumbnail" src="styles/tousled top.jpeg" alt="Tousled Top">
+                        <p>Tousled Top</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a modern wavy quiff with volume">
+                        <img class="style-thumbnail" src="styles/wavy quiff.jpeg" alt="Wavy Quiff">
+                        <p>Wavy Quiff</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
 
         <div id="central-section">
             <div id="central-viewport">
@@ -555,78 +606,22 @@ body {
             </div>
         </div>
 
+        <button id="try-on-btn" class="main-action-btn" style="display: none;">Generate My New Look</button>
 
-        <div id="filter-section-wrapper">
-            
-            <div id="complexion-selector" class="filter-section collapsed">
-                <h3><span>Complexion (Optional)</span><span class="icon"></span></h3>
-                <div class="filter-content-group">
-                    <div id="complexion-options-group" class="filter-options-group">
-                        <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light"></div>
-                        <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium"></div>
-                        <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark"></div>
-                        <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep"></div>
-                    </div>
+
+        <div id="complexion-selector" class="filter-section collapsed">
+            <h3><span>Complexion (Optional)</span><span class="icon"></span></h3>
+            <div class="filter-content-group">
+                <div id="complexion-options-group" class="filter-options-group">
+                    <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light"></div>
+                    <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium"></div>
+                    <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark"></div>
+                    <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep"></div>
                 </div>
             </div>
+        </div>
 
-            <div id="hairstyle-gallery" class="filter-section expanded">
-                <h3><span>Hairstyle Inspiration</span><span class="icon"></span></h3>
-                <div class="filter-content-group">
-                    <div class="filter-options-group">
-                        
-                        <div class="style-option" data-prompt="a slicked-back undercut with brushed up blonde hair">
-                            <img class="style-thumbnail" src="styles/brushed up blonde.jpeg" alt="Brushed Up Blonde">
-                            <p>Brushed Up Blonde</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a short cut with a heavy forward fringe">
-                            <img class="style-thumbnail" src="styles/forward fringe.jpeg" alt="Forward Fringe">
-                            <p>Forward Fringe</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a classic high top fade with sharp lines">
-                            <img class="style-thumbnail" src="styles/high top fade.jpeg" alt="High Top Fade">
-                            <p>High Top Fade</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a voluminous hairstyle with natural curls">
-                            <img class="style-thumbnail" src="styles/natural curls.jpeg" alt="Natural Curls">
-                            <p>Natural Curls</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a clean side swept scissor cut">
-                            <img class="style-thumbnail" src="styles/side swept scissor cut.jpeg" alt="Side Swept Scissor Cut">
-                            <p>Side Swept Scissor Cut</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a sleek, formal side part style">
-                            <img class="style-thumbnail" src="styles/sleek side part.jpeg" alt="Sleek Side Part">
-                            <p>Sleek Side Part</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a fun, short spiked hairstyle">
-                            <img class="style-thumbnail" src="styles/spiked charm.jpeg" alt="Spiked Charm">
-                            <p>Spiked Charm</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a short haircut with a tousled and textured top">
-                            <img class="style-thumbnail" src="styles/tousled top.jpeg" alt="Tousled Top">
-                            <p>Tousled Top</p>
-                        </div>
-                        
-                        <div class="style-option" data-prompt="a modern wavy quiff with volume">
-                            <img class="style-thumbnail" src="styles/wavy quiff.jpeg" alt="Wavy Quiff">
-                            <p>Wavy Quiff</p>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-            
-            <button id="try-on-btn" class="main-action-btn" style="display: none;">Generate My New Look</button>
-
-        </div> </div> <canvas id="hidden-canvas" style="display: none;"></canvas>
+    </div> <canvas id="hidden-canvas" style="display: none;"></canvas>
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -965,7 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial filter state
+    // Initial filter state (Gallery expanded, Complexion collapsed)
     if (complexionSelector) complexionSelector.classList.add('collapsed');
     if (galleryContainer) galleryContainer.classList.add('expanded');
 
