@@ -41,28 +41,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptDatabase = {
         male: {
             fair: [
-                { name: 'Fringe', prompt: 'Photorealistic inpainting, perfect masking, medium forward fringe, light golden brown, 4K resolution.', img: '/styles/forward fringe.jpeg' },
-                { name: 'Spiked Charm', prompt: 'Flawless composite, high-detail spiked texture, short cut with sharp fade, light brown color.', img: '/styles/spiked charm.jpeg' },
+                // 🚨 File path changed: "forward fringe.jpeg" -> "forward-fringe.jpeg"
+                { name: 'Fringe', prompt: 'Photorealistic inpainting, perfect masking, medium forward fringe, light golden brown, 4K resolution.', img: '/styles/forward-fringe.jpeg' },
+                // 🚨 File path changed: "spiked charm.jpeg" -> "spiked-charm.jpeg"
+                { name: 'Spiked Charm', prompt: 'Flawless composite, high-detail spiked texture, short cut with sharp fade, light brown color.', img: '/styles/spiked-charm.jpeg' },
             ],
             medium: [
-                { name: 'Wavy Quiff', prompt: 'Flawless composite, high volume wavy quiff, medium brown hair color, cinematic portrait lighting.', img: '/styles/wavy quiff.jpeg' },
-                { name: 'Sleek Side Part', prompt: 'Seamless photo-merge, ultra-clean classic side-part, medium brown color, sharp definition.', img: '/styles/sleek side part.jpeg' },
+                // 🚨 File path changed: "wavy quiff.jpeg" -> "wavy-quiff.jpeg"
+                { name: 'Wavy Quiff', prompt: 'Flawless composite, high volume wavy quiff, medium brown hair color, cinematic portrait lighting.', img: '/styles/wavy-quiff.jpeg' },
+                // 🚨 File path changed: "sleek side part.jpeg" -> "sleek-side-part.jpeg"
+                { name: 'Sleek Side Part', prompt: 'Seamless photo-merge, ultra-clean classic side-part, medium brown color, sharp definition.', img: '/styles/sleek-side-part.jpeg' },
             ],
             olive: [
-                { name: 'Tousled Top', prompt: 'Perfectly masked, highly textured and tousled top with short sides, dark brown color, high resolution.', img: '/styles/tousled top.jpeg' },
-                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural curls.jpeg' },
+                // 🚨 File path changed: "tousled top.jpeg" -> "tousled-top.jpeg"
+                { name: 'Tousled Top', prompt: 'Perfectly masked, highly textured and tousled top with short sides, dark brown color, high resolution.', img: '/styles/tousled-top.jpeg' },
+                // 🚨 File path changed: "natural curls.jpeg" -> "natural-curls.jpeg"
+                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural-curls.jpeg' },
             ],
             brown: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side swept scissor cut.jpeg' },
+                // 🚨 File path changed: "high top fade.jpeg" -> "high-top-fade.jpeg"
+                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high-top-fade.jpeg' },
+                // 🚨 File path changed: "side swept scissor cut.jpeg" -> "side-swept-scissor-cut.jpeg"
+                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side-swept-scissor-cut.jpeg' },
             ],
             dark_brown: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural curls.jpeg' },
+                // 🚨 File path changed: "high top fade.jpeg" -> "high-top-fade.jpeg"
+                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high-top-fade.jpeg' },
+                // 🚨 File path changed: "natural curls.jpeg" -> "natural-curls.jpeg"
+                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural-curls.jpeg' },
             ],
             deep: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side swept scissor cut.jpeg' },
+                // 🚨 File path changed: "high top fade.jpeg" -> "high-top-fade.jpeg"
+                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high-top-fade.jpeg' },
+                // 🚨 File path changed: "side swept scissor cut.jpeg" -> "side-swept-scissor-cut.jpeg"
+                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side-swept-scissor-cut.jpeg' },
             ],
         },
         female: {
@@ -335,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner.style.display = 'inline-block'; 
         
         try {
+            // This is the Netlify Function call
             const response = await fetch('/.netlify/functions/tryon', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
