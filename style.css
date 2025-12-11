@@ -45,43 +45,54 @@ body {
 }
 
 /* ================================================== */
-/* DESKTOP LAYOUT: TWO-COLUMN STRUCTURE */
+/* DESKTOP LAYOUT: SINGLE COLUMN WITH TOP FILTERS */
 /* ================================================== */
 
 #two-column-layout {
-    display: flex;
-    width: 100%;
-    margin: 0; 
-    height: calc(100vh - var(--header-height)); 
+    /* Change to single-column layout, centered */
+    display: block; 
+    max-width: 1200px; 
+    margin: 0 auto;
+    height: auto;
 }
 
-/* --- 1. Filter Sidebar (LEFT) --- */
+/* Hide the old sidebar since filters are moved to main content */
 #filter-sidebar {
-    width: var(--sidebar-width);
-    flex-shrink: 0; 
-    background-color: #fff;
-    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.05);
-    padding: 10px;
-    overflow-y: auto; 
-    display: flex;
-    flex-direction: column;
+    display: none; 
 }
 
-/* --- 2. Main Content (RIGHT) --- */
+/* --- Main Content (Full Width/Centered) --- */
 #main-content {
-    flex-grow: 1;
-    padding: 20px;
+    width: 100%;
+    max-width: 800px; /* Constrain main content for better centering */
+    margin: 0 auto;
+    padding: 20px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow-y: auto; 
 }
 
+/* --- NEW: Top Filters Container (Gender & Complexion) --- */
+#top-filters {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Filter Sections inside #top-filters (Desktop override) */
+#top-filters .filter-section {
+    flex-grow: 1; 
+    max-width: 400px;
+    margin: 0; /* Remove auto margins from previous mobile style */
+}
+
 /* --- FILTER SECTION STYLES (Larger Pill Buttons) --- */
 
 .filter-section {
     width: 100%;
-    margin: 0 0 10px 0; 
     padding: 0;
     background-color: #fff;
     border-radius: 6px;
@@ -179,7 +190,7 @@ body {
     margin-top: 5px; 
 }
 
-/* Gender/General Option Buttons (Adapted for sidebar) */
+/* Gender/General Option Buttons */
 .gender-option {
     padding: 8px 10px;
     border: 1px solid #ccc; 
@@ -220,6 +231,7 @@ body {
 #hairstyle-gallery {
     padding: 0;
     width: 100%; 
+    max-width: 800px;
     margin-top: 20px; 
 }
 #hairstyle-gallery .filter-content-group {
@@ -329,17 +341,33 @@ body {
 }
 
 /* ================================================== */
-/* 📱 MOBILE MEDIA QUERY (Smaller Camera, Compact Filters) */
+/* 📱 MOBILE MEDIA QUERY */
 /* ================================================== */
 
 @media (max-width: 768px) {
+    
+    /* Responsive viewport size */
     #central-viewport {
-        /* Optimized for Mobile: 90% of viewport width, maximum 350px */
         width: 90vw; 
         height: 90vw;
         max-width: 350px; 
         max-height: 350px;
-        margin: 10px auto; 
+        margin: 10px auto 20px auto; 
+    }
+
+    /* Stack top filters vertically on mobile */
+    #top-filters {
+        flex-direction: column; 
+        gap: 0;
+        align-items: center; 
+        margin-bottom: 10px;
+    }
+    
+    /* Ensure top filters take reasonable width */
+    #top-filters .filter-section {
+        width: 95%; 
+        max-width: none;
+        margin: 8px auto; 
     }
 
     
@@ -349,32 +377,23 @@ body {
         padding: 0; 
         margin: 0;
     }
-    
-    #filter-sidebar {
-        width: 100%; 
-        padding: 10px 0; 
-        box-shadow: none; 
-        order: 1; 
-    }
 
     #main-content {
         width: 100%;
         padding: 10px 0; 
         order: 0; 
     }
-
+    
     /* MOBILE FILTER PILLS (Centering and using fixed percentage for compactness) */
     .filter-section {
         margin: 8px auto; 
         padding: 0;
         background-color: #fff;
-        /* Reduce max width for a more centralized/compact look */
         width: 90%; 
         max-width: 350px; 
     }
     
     .filter-section.collapsed h3 {
-        /* Keep pill width constrained */
         width: 95%; 
         max-width: none; 
         border-radius: 20px; 
@@ -390,12 +409,12 @@ body {
     /* Complexion tiles must show text labels on mobile */
     .complexion-tile {
         width: 40px; 
-        height: 40px; /* Reduced size slightly */
+        height: 40px; 
     }
     .complexion-tile p {
         display: block; 
         font-size: 0.6em;
-        margin-top: 45px; /* Push label below the circle */
+        margin-top: 45px; 
         text-align: center;
         width: 40px;
         white-space: normal;
