@@ -2,8 +2,14 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   
-  # 👇 ADD THIS SECTION
   [functions.tryon]
     external_packages = [
       "@google/genai" 
     ]
+
+# 💡 CRITICAL: ADD THIS SECTION
+# This maps the URL the frontend calls to your function file's name.
+[[redirects]]
+  from = "/api/run_model"
+  to = "/.netlify/functions/tryon"
+  status = 200
