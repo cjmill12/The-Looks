@@ -22,32 +22,37 @@ export async function handler(event) {
       return { statusCode: 400, body: 'Missing baseImage or prompt in request body.' };
     }
     
-    // --- CRITICAL FIX: Use the dedicated editImage method for image manipulation ---
+    // --- FINAL FIX: Using the generateImages method for inpainting/editing ---
     
-    // We pass the Base64 data directly as the 'image' parameter
-    const response = await ai.models.editImage({
-      model: 'imagen-3.0-generate-002', // The best model for editing/inpainting tasks
+    // The model used here, 'imagen-3.0-generate-002', is the one designed 
+    // for this task, and it IS accessible via generateImages when structured 
+    // this way for API key users.
+    const response = await ai.models.generateImages({
+      model: 'imagen-3.0-generate-002', 
       
-      // The Base64 image data without the 'data:image/jpeg;base64,' prefix
-      image: baseImage, 
-      
-      // The instruction for the AI (apply new hairstyle)
+      // The prompt now includes instruction to perform the edit
       prompt: prompt,
       
       config: {
-        // Pass negative prompt for quality control
+        // Pass the original image as the base for editing/inpainting
+        baseImage: baseImage, 
+        
+        // Negative prompt
         negativePrompt: negativePrompt, 
-        aspectRatio: '1:1', // Maintain a square aspect ratio
+        
+        // The hairstyle try-on is an image manipulation task (inpainting)
+        outputMimeType: 'image/jpeg',
+        aspectRatio: '1:1',
         numberOfImages: 1
       }
     });
 
-    // --- Response Parsing for editImage ---
-    // The response structure for editImage is response.generatedImages[0].imageBytes
-    const generatedImageBase64 = response.generatedImages[0].imageBytes;
+    // --- Response Parsing for generateImages ---
+    // The response structure for generateImages is response.generatedImages[0].image.imageBytes
+    const generatedImageBase64 = response.generatedImages[0].image.imageBytes;
 
     if (!generatedImageBase64) {
-         console.warn("EditImage failed to return an image.");
+         console.warn("Image Generation failed to return image bytes.");
          return {
             statusCode: 500,
             body: JSON.stringify({ error: "Generation failed: The image could not be edited by the AI model." }),
