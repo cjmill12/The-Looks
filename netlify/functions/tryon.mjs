@@ -4,7 +4,7 @@ import { GoogleGenAI } from '@google/genai';
 
 // Helper function to create the Part object for image input
 function base64ToGenerativePart(base64Data, mimeType) {
-  // We explicitly check and remove the data URI prefix just in case the JS failed.
+  // CRITICAL FIX: Ensure only the pure base64 string is sent to the API
   const cleanBase64 = base64Data.startsWith('data:') 
     ? base64Data.split(',')[1] 
     : base64Data;
@@ -21,6 +21,7 @@ function base64ToGenerativePart(base64Data, mimeType) {
 export async function handler(event) {
   
   const ai = new GoogleGenAI({ 
+    // Ensure the Netlify environment variable is used
     apiKey: process.env.GEMINI_API_KEY 
   }); 
 
@@ -29,6 +30,7 @@ export async function handler(event) {
   }
 
   try {
+    // We already fixed the frontend to send 'baseImage'
     const { baseImage, prompt } = JSON.parse(event.body);
 
     if (!baseImage || !prompt) {
@@ -38,50 +40,23 @@ export async function handler(event) {
     // Prepare the image part
     const imagePart = base64ToGenerativePart(baseImage, "image/jpeg");
 
-    // 💡 FIX: Switch to the PRO model for better identity preservation and editing control
-    // The prompt already contains the explicit identity preservation instruction.
+    // 💡 FIX: Reverting to the high-capability image model you mentioned
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-pro', // Using the more capable PRO model
+      model: 'gemini-2.5-flash-image', // Targeting the image editing model
       contents: [
         imagePart,
-        { text: prompt }, // The instruction for the AI (apply new hairstyle)
+        { text: prompt }, // The explicit identity-preserving prompt from the last HTML fix
       ],
     });
     
-    // --- FINAL CRITICAL FIX: The response from multimodal chat models (even PRO) is TEXT ---
-    
-    // The model is likely returning a text description or a hallucinated image URL, not the base64 data.
-    // If the PRO model cannot return a base64 image object directly (which is often the case 
-    // for models not dedicated to image generation), the response will be text.
-    
-    // TO CONFIRM THE DATA FLOW AND UNBLOCK YOU:
-    // We will send back the *original* image if the generated data is missing, 
-    // or try to extract the generated image if it exists.
-    
-    let generatedImageBase64 = baseImage; // Default to the original image to confirm the API works
+    // 💡 CRITICAL FIX: The response structure that this specific image model uses
+    // This is the structure that reliably holds the generated base64 image data.
+    const generatedImageBase64 = response.candidates[0].content.parts[0].inlineData.data;
 
-    // Attempt to extract the generated image (if the model is configured for it)
-    try {
-        const generatedPart = response.candidates?.[0]?.content?.parts?.find(
-            part => part.inlineData && part.inlineData.mimeType.startsWith('image/')
-        );
-        
-        if (generatedPart) {
-            generatedImageBase64 = generatedPart.inlineData.data;
-            console.log("SUCCESS: Extracted generated image data.");
-        } else {
-            // Log the text response if no image was found
-            const textResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || "No text response found.";
-            console.log("WARNING: PRO model returned text instead of image. Text:", textResponse);
-            // Revert to original image for flow check
-            generatedImageBase64 = baseImage;
-        }
-    } catch (e) {
-        console.warn("Could not parse image response from model. Sending back original image for check.", e);
-        generatedImageBase64 = baseImage;
+    if (!generatedImageBase64) {
+        throw new Error("API responded successfully but did not return a generated image base64 string.");
     }
-
-
+    
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -96,7 +71,7 @@ export async function handler(event) {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        error: `Netlify Function Error. Check API key/deployment. Detail: ${error.message}`
+        error: `Netlify Function Error. Check API Key/Model response. Detail: ${error.message}`
       }),
     };
   }
