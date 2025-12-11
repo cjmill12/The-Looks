@@ -513,7 +513,7 @@ body {
         <div id="filter-section-wrapper">
             
             <div id="complexion-selector" class="filter-section collapsed">
-                <h3><span>Complexion</span><span class="icon"></span></h3>
+                <h3><span>Complexion (Optional)</span><span class="icon"></span></h3>
                 <div class="filter-content-group">
                     <div id="complexion-options-group" class="filter-options-group">
                         <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light"></div>
@@ -611,21 +611,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedPrompt = null; 
     let cameraStarted = false; 
     let selectedGender = 'Male'; // Set default gender
-    let selectedComplexion = null;
+    let selectedComplexion = null; // Stays null if not selected
 
     // --- CONSTANTS ---
     const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor lighting, poor composition, low quality"; 
 
     // --- Helper Functions ---
     
+    // Function to check if Try On button should be visible (COMPLEXION IS NOW OPTIONAL)
     function updateTryOnButtonVisibility() {
-        if (capturedImageBase64 && selectedPrompt && selectedComplexion) {
+        // Button is visible when an image is captured AND a style is selected.
+        if (capturedImageBase64 && selectedPrompt) {
             tryOnBtn.style.display = 'block';
             tryOnBtn.disabled = false;
-            if (statusMessage.textContent.includes('Processing')) {
-                 // Do not overwrite key messages
-            } else {
-                 statusMessage.textContent = "All set! Click 'Generate My New Look' below.";
+            if (!statusMessage.textContent.includes('Processing')) {
+                 const complexionStatus = selectedComplexion ? `(${selectedComplexion} Complexion selected)` : '(Complexion Auto-Detected)';
+                 statusMessage.textContent = `All set! Click 'Generate My New Look' below ${complexionStatus}.`;
             }
         } else {
             tryOnBtn.style.display = 'none';
@@ -654,11 +655,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Function to handle complexion tile selection (Sets selectedComplexion)
     function handleComplexionSelect(tile) {
+        const isSelected = tile.classList.contains('selected');
         const complexionTiles = complexionGroup.querySelectorAll('.complexion-tile');
+        
+        // Deselect all
         complexionTiles.forEach(t => t.classList.remove('selected'));
-        tile.classList.add('selected');
-        selectedComplexion = tile.dataset.complexion;
+        
+        if (!isSelected) {
+            // Select the clicked tile
+            tile.classList.add('selected');
+            selectedComplexion = tile.dataset.complexion;
+            
+        } else {
+            // If already selected, clicking it again deselects it
+            selectedComplexion = null;
+        }
+        
         updateTryOnButtonVisibility(); 
     }
     
@@ -672,17 +686,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTryOnButtonVisibility(); 
         
         if (capturedImageBase64) {
-             statusMessage.textContent = `Style selected. Choose a complexion to unlock the 'Generate' button.`;
+             statusMessage.textContent = `Style selected. Click 'Generate' or select a complexion (optional).`;
         }
     }
     
-    // Function to start camera stream (CRITICAL JS FIX)
     async function startCamera() {
         try {
-            // Explicit constraints to favor smaller, constrained video output
             const constraints = { 
                 video: {
-                    facingMode: 'user', // Use front camera
+                    facingMode: 'user', 
                     width: { ideal: 250 }, 
                     height: { ideal: 250 }
                 }
@@ -691,7 +703,6 @@ document.addEventListener('DOMContentLoaded', () => {
             videoFeed.srcObject = stream;
             cameraStarted = true;
             
-            // IMPORTANT: Add 'playsinline' attribute to prevent full-screen takeover on iOS
             videoFeed.setAttribute('playsinline', '');
             
             centralViewport.classList.add('active'); 
@@ -722,7 +733,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function captureImage() {
         const context = canvas.getContext('2d');
-        // Use the size of the video element to prevent distortion on capture
         const width = videoFeed.videoWidth || centralViewport.offsetWidth;
         const height = videoFeed.videoHeight || centralViewport.offsetHeight;
 
@@ -738,17 +748,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         stopCamera();
         
-        statusMessage.textContent = "Image captured. Select a hairstyle and complexion, then click 'Generate'.";
+        statusMessage.textContent = "Image captured. Select a hairstyle to unlock the 'Generate' button.";
         
         takeSelfieBtn.style.display = 'none';
         
         updateTryOnButtonVisibility(); 
     }
     
-    // Try On button logic (Updated button text)
+    // Try On button logic 
     tryOnBtn.addEventListener('click', async () => {
-        if (!capturedImageBase64 || !selectedPrompt || !selectedComplexion) {
-            statusMessage.textContent = "Please capture a selfie, select a style, and choose a complexion first.";
+        // Now only check for captured image and selected prompt
+        if (!capturedImageBase64 || !selectedPrompt) {
+            statusMessage.textContent = "Please capture a selfie and select a hairstyle first.";
             return;
         }
 
@@ -757,7 +768,12 @@ document.addEventListener('DOMContentLoaded', () => {
         spinner.style.display = 'block';
         statusMessage.textContent = "Processing your new look... This may take a moment.";
         
-        const finalPrompt = `A high quality, professional studio portrait of a ${selectedGender} model with a ${selectedComplexion} complexion, featuring a new hairstyle: ${selectedPrompt}. The face should be clear and well-lit.`;
+        // CONDITIONAL PROMPT CONSTRUCTION
+        const complexionClause = selectedComplexion 
+            ? ` with a ${selectedComplexion} complexion,` 
+            : `,`; // Just a comma if complexion is not selected
+            
+        const finalPrompt = `A high quality, professional studio portrait of a ${selectedGender} model${complexionClause} featuring a new hairstyle: ${selectedPrompt}. The face should be clear and well-lit.`;
         
         try {
             const response = await fetch('/api/run_model', {
@@ -858,7 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
     takeSelfieBtn.textContent = "▶️";
     spinner.style.display = 'none';
     tryOnBtn.style.display = 'none';
-    centralViewport.classList.add('active'); // Keep the box visible, showing status message
+    centralViewport.classList.add('active'); 
 });
     </script>
 </body>
