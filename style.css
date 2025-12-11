@@ -1,398 +1,463 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Get DOM elements
-    const videoFeed = document.getElementById('video-feed');
-    const aiResultImg = document.getElementById('ai-result');
-    const canvas = document.getElementById('hidden-canvas');
-    const centralViewport = document.getElementById('central-viewport');
-    
-    // Buttons and Controls
-    // Using the new IDs from the updated index.html
-    const startCameraBtn = document.getElementById('start-camera-btn');
-    const captureSelfieBtn = document.getElementById('capture-selfie-btn'); 
-    const tryOnBtn = document.getElementById('try-on-btn');
-    const spinner = document.getElementById('loading-spinner');
-    
-    const statusMessage = document.getElementById('status-message');
-    
-    // Filter elements (using IDs for sections)
-    const genderSelector = document.getElementById('gender-selector');
-    const complexionSelector = document.getElementById('complexion-selector');
-    const complexionGroup = document.getElementById('complexion-options-group');
-    const galleryContainer = document.getElementById('hairstyle-gallery'); 
-    
-    // State tracking variables
-    let capturedImageBase64 = null; 
-    let selectedPrompt = null; 
-    let cameraStarted = false; 
-    let selectedGender = null;
-    let selectedComplexion = null;
+/* --- Global Colors --- */
+:root {
+    --primary-color: #1D2124; 
+    --text-on-dark: #FFFFFF; 
+    --background-color: #f4f7f6;
+    --text-color: #333; 
+    --highlight-color: #28a745; 
+    --thumbnail-size: 60px;
+    --gallery-gap: 10px; 
+    --sidebar-width: 200px; 
+    --header-height: 40px;
+    --viewport-size: 300px; /* Desktop circular viewport size */
+}
 
-    // --- CONSTANTS ---
-    const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor quality, bad anatomy.";
-    
-    // --- Complexion Data and Prompt Database (PATHS REVERTED TO SPACES) ---
-    const complexionData = [
-        { id: 'fair', name: 'Fair', color: '#F0E6D2' },
-        { id: 'medium', name: 'Medium', color: '#E0C79A' },
-        { id: 'olive', name: 'Olive', color: '#C0A88D' },
-        { id: 'brown', name: 'Brown', color: '#966F53' },
-        { id: 'dark_brown', name: 'Dark Brown', color: '#6A4A3C' },
-        { id: 'deep', name: 'Deep', color: '#442C2E' },
-    ];
-    
-    const promptDatabase = {
-        male: {
-            fair: [
-                { name: 'Fringe', prompt: 'Photorealistic inpainting, perfect masking, medium forward fringe, light golden brown, 4K resolution.', img: '/styles/forward fringe.jpeg' },
-                { name: 'Spiked Charm', prompt: 'Flawless composite, high-detail spiked texture, short cut with sharp fade, light brown color.', img: '/styles/spiked charm.jpeg' },
-            ],
-            medium: [
-                { name: 'Wavy Quiff', prompt: 'Flawless composite, high volume wavy quiff, medium brown hair color, cinematic portrait lighting.', img: '/styles/wavy quiff.jpeg' },
-                { name: 'Sleek Side Part', prompt: 'Seamless photo-merge, ultra-clean classic side-part, medium brown color, sharp definition.', img: '/styles/sleek side part.jpeg' },
-            ],
-            olive: [
-                { name: 'Tousled Top', prompt: 'Perfectly masked, highly textured and tousled top with short sides, dark brown color, high resolution.', img: '/styles/tousled top.jpeg' },
-                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural curls.jpeg' },
-            ],
-            brown: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side swept scissor cut.jpeg' },
-            ],
-            dark_brown: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Natural Curls', prompt: 'Soft texture natural curls, dark espresso brown color, ultra HD quality.', img: '/styles/natural curls.jpeg' },
-            ],
-            deep: [
-                { name: 'High Top Fade', prompt: 'Ultra-realistic, sharp high-top fade, dark black color, high contrast lighting.', img: '/styles/high top fade.jpeg' },
-                { name: 'Textured Scissor', prompt: 'Perfect composite, defined short texture on the fringe, high-contrast fade, dark black color.', img: '/styles/side swept scissor cut.jpeg' },
-            ],
-        },
-        female: {
-            // Note: Placeholder names also reverted
-            fair: [ { name: 'Long Bob', prompt: 'Shoulder length layered bob, light blonde highlights.', img: '/styles/placeholder bob.jpeg' }],
-            deep: [ { name: 'Afro Puff', prompt: 'Voluminous afro puff hairstyle, natural black color, defined curls.', img: '/styles/placeholder afro.jpeg' }],
-        }
-    };
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0; 
+    text-align: center;
+    -webkit-user-select: none;
+    user-select: none;
+    overflow-x: hidden; 
+}
+
+/* --- Header and Logo Styling (MINIMAL BANNER) --- */
+#app-header {
+    padding: 0; 
+    background-color: #FFFFFF;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 0; 
+    height: var(--header-height); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky; 
+    top: 0;
+    z-index: 100;
+}
+
+#main-logo {
+    height: 30px; 
+    width: auto;
+}
+
+/* --- Main Layout: Two Columns for Desktop/Tablet --- */
+#two-column-layout {
+    display: flex;
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding-top: 20px;
+}
+
+#filter-sidebar {
+    width: var(--sidebar-width);
+    padding: 10px 10px;
+    box-sizing: border-box;
+    /* Desktop appearance */
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    margin-right: 20px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+#main-content {
+    flex-grow: 1;
+    padding: 0 10px;
+}
 
 
-    // --- Helper function to manage filter collapse/expand state ---
-    function setFilterState(sectionElement, isExpanded) {
-        sectionElement.classList.toggle('expanded', isExpanded);
-        sectionElement.classList.toggle('collapsed', !isExpanded);
+/* --- Central Viewport (Camera/Result) --- */
+#central-viewport {
+    width: var(--viewport-size);
+    height: var(--viewport-size);
+    margin: 0 auto;
+    border-radius: 50%; /* Circular viewport */
+    overflow: hidden; 
+    background-color: #E0E0E0;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#central-viewport.active {
+    background-color: #000; /* Darkens when camera is active */
+}
+
+#video-feed, #ai-result {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#status-message {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    z-index: 5;
+    font-weight: bold;
+    max-width: 80%;
+}
+
+
+/* --- Controls and Buttons --- */
+#controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px; 
+    padding: 20px 0;
+    margin-bottom: 10px;
+}
+
+.main-action-btn {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main-action-btn:hover:not(:disabled) {
+    background-color: #444; 
+}
+
+.main-action-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Try On Button specific styling for loading spinner */
+#try-on-btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.loading-indicator {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* --- Filter Section Styling (Pill / Collapsible) --- */
+.filter-section {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden; 
+}
+
+.filter-section h3 {
+    margin: 0;
+    padding: 10px 15px;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: normal;
+}
+
+/* Arrow indicator for collapsed state */
+.filter-section.collapsed h3::after {
+    content: '▼';
+    font-size: 0.8em;
+    transition: transform 0.2s;
+}
+
+/* Arrow indicator for expanded state */
+.filter-section.expanded h3::after {
+    content: '▲';
+    font-size: 0.8em;
+    transform: rotate(180deg);
+}
+
+.filter-content-group {
+    padding: 15px;
+    display: none;
+    /* Optional: Max height transition for smooth collapse */
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.filter-section.expanded .filter-content-group {
+    display: block;
+    max-height: 1000px; 
+    padding: 15px;
+}
+
+.filter-options-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* --- Gender Options (Desktop/Sidebar) --- */
+.gender-option {
+    background-color: #f0f0f0;
+    color: var(--primary-color);
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-grow: 1; /* Makes them fill the available sidebar space */
+    text-align: center;
+}
+
+.gender-option:hover {
+    background-color: #e0e0e0;
+}
+
+.gender-option.selected {
+    background-color: var(--highlight-color);
+    color: var(--text-on-dark);
+    border-color: var(--highlight-color);
+    font-weight: bold;
+}
+
+/* --- Complexion Tiles (Desktop/Sidebar) --- */
+.complexion-tile {
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent; 
+    box-sizing: border-box;
+    transition: transform 0.1s, border-color 0.2s;
+    position: relative;
+    /* Desktop: Text is hidden, tile is the colored circle */
+}
+
+.complexion-tile:hover {
+    transform: scale(1.05);
+}
+
+.complexion-tile.selected {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 0 2px var(--highlight-color);
+}
+
+.complexion-tile p {
+    /* Hide text label on desktop/sidebar */
+    display: none; 
+}
+
+
+/* --- Inspiration Gallery (Desktop) --- */
+#hairstyle-gallery {
+    margin-top: 20px;
+    padding: 0;
+    border: none; 
+}
+#hairstyle-gallery h3 {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 0;
+}
+
+#hairstyle-gallery .filter-content-group {
+    padding: 10px 0 0; 
+}
+
+.style-option {
+    width: 100px;
+    height: 120px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: border-color 0.2s;
+    margin-bottom: 5px;
+}
+
+.style-option img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+}
+
+.style-option p {
+    font-size: 0.75em;
+    margin: 2px 0 0;
+    color: var(--text-color);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.style-option.selected {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
+}
+
+
+/* ========================================= */
+/* --- MOBILE SPECIFIC STYLING (max-width: 768px) --- */
+/* ========================================= */
+@media (max-width: 768px) {
+    
+    /* Revert two-column layout to a single column */
+    #two-column-layout {
+        flex-direction: column;
+        padding-top: 10px;
+    }
+
+    /* Sidebar and main content take up full width */
+    #filter-sidebar {
+        width: 95%; 
+        max-width: none;
+        margin: 0 auto 10px auto; 
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
+    }
+
+    #main-content {
+        padding: 0 10px;
+        order: -1; /* Place main content first on mobile */
+    }
+
+    /* Filter sections: Give them a light background and border */
+    .filter-section {
+        margin: 8px auto; 
+        padding: 0;
+        background-color: #fff;
+        width: 95%; 
+        max-width: none;
+        border: 1px solid #ddd; 
+        border-radius: 8px; /* Ensure mobile sections look like pills */
     }
     
-    // --- Generic Toggle Handler for Collapsible Sections ---
-    document.querySelectorAll('.filter-section h3').forEach(header => {
-        header.addEventListener('click', (e) => {
-            const section = e.currentTarget.parentElement;
-            const isCurrentlyExpanded = section.classList.contains('expanded');
-            
-            // Collapse all filter sections first
-            document.querySelectorAll('.filter-section').forEach(s => setFilterState(s, false));
-
-            // Only expand the clicked section if it was previously collapsed
-            if (!isCurrentlyExpanded) {
-                 setFilterState(section, true);
-            }
-            e.stopPropagation(); 
-        });
-    });
-
-
-    // --- Camera Initialization Function ---
-    function startCamera() {
-        if (cameraStarted) return;
-        
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            statusMessage.textContent = "Attempting to access camera...";
-            startCameraBtn.disabled = true;
-
-            videoFeed.setAttribute('playsinline', ''); 
-
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    videoFeed.srcObject = stream;
-                    
-                    centralViewport.classList.add('active'); 
-                    videoFeed.style.display = 'block'; 
-                    aiResultImg.style.display = 'none'; 
-                    
-                    return videoFeed.play(); 
-                })
-                .then(() => {
-                    cameraStarted = true;
-                    startCameraBtn.style.display = 'none'; // Hide Start button
-                    captureSelfieBtn.style.display = 'block'; // Show Capture button
-                    captureSelfieBtn.textContent = '📸 Take Selfie';
-                    
-                    startCameraBtn.disabled = false;
-                    statusMessage.textContent = "Camera ready. Click 'Take Selfie' below!";
-                })
-                .catch(err => {
-                    console.error("Camera access error (getUserMedia or play failed):", err);
-                    startCameraBtn.disabled = false; 
-                    statusMessage.textContent = "Error: Cannot access camera. Check browser permissions.";
-                    centralViewport.classList.remove('active'); 
-                });
-        }
+    /* Collapsed Header (Light grey pill, standard appearance) */
+    .filter-section.collapsed h3 {
+        background-color: #f7f7f7;
+        color: var(--text-color);
+        border-radius: 8px;
+        width: 100%; 
+        margin: 0; 
+        padding: 10px 15px;
+        box-shadow: none;
     }
-
-    // --- INITIAL STATE SETUP ---
-    statusMessage.textContent = "Select your Gender and Complexion to begin.";
-    tryOnBtn.style.display = 'none'; 
-    captureSelfieBtn.style.display = 'none';
-    videoFeed.style.display = 'none'; 
-    tryOnBtn.disabled = true;
-
-    // All steps start collapsed
-    setFilterState(genderSelector, false); 
-    setFilterState(complexionSelector, false); 
-    setFilterState(galleryContainer, false); 
     
-    renderComplexionSelector(); 
-    renderFinalGallery();
-
-
-    // --- FILTER STEP 1: Gender Selection Logic ---
-    document.querySelectorAll('.gender-option').forEach(button => {
-        button.addEventListener('click', (e) => {
-            document.querySelectorAll('.gender-option').forEach(btn => btn.classList.remove('selected'));
-            e.currentTarget.classList.add('selected');
-
-            selectedGender = e.currentTarget.getAttribute('data-gender');
-            
-            // Reset downstream selections
-            selectedComplexion = null;
-            selectedPrompt = null; 
-            
-            renderComplexionSelector(); 
-            
-            // Action: Collapse Step 1, Expand Step 2
-            setFilterState(genderSelector, false);
-            setFilterState(complexionSelector, true);
-            setFilterState(galleryContainer, false); 
-            
-            statusMessage.textContent = "1. Gender selected. Now choose your 2. complexion.";
-        });
-    });
-
-
-    // --- FILTER STEP 2: Complexion Selector Generation ---
-    function renderComplexionSelector() {
-        complexionGroup.innerHTML = ''; 
-        
-        complexionData.forEach(c => {
-            const tile = document.createElement('div');
-            tile.classList.add('complexion-tile');
-            tile.setAttribute('data-complexion', c.id);
-            
-            // Create the inner circle element (the color swatch)
-            const circle = document.createElement('div');
-            circle.classList.add('complexion-circle');
-            circle.style.backgroundColor = c.color;
-            
-            const label = document.createElement('p');
-            label.textContent = c.name;
-            
-            tile.appendChild(circle); // Append the circle
-            tile.appendChild(label); // Append the text
-            complexionGroup.appendChild(tile);
-            
-            tile.addEventListener('click', (e) => {
-                document.querySelectorAll('.complexion-tile').forEach(t => t.classList.remove('selected'));
-                e.currentTarget.classList.add('selected');
-                
-                selectedComplexion = e.currentTarget.getAttribute('data-complexion');
-                
-                renderFinalGallery();
-
-                // Collapse Step 2, Automatically Expand Inspiration (Step 3)
-                setFilterState(complexionSelector, false);
-                setFilterState(galleryContainer, true);
-
-                statusMessage.textContent = "2. Complexion selected. Now choose your 3. Inspiration style below!";
-            });
-        });
+    .filter-section.collapsed h3::after {
+        content: '▼';
+        color: var(--text-color);
+    }
+    
+    /* Expanded Header */
+    .filter-section.expanded h3 {
+        border-bottom: 1px solid #ddd;
+    }
+    
+    /* Gender Options (Mobile: Full-width buttons) */
+    .gender-option {
+        width: 100%;
+        margin-bottom: 5px; 
+        padding: 10px 15px; 
+        box-sizing: border-box;
+        border-radius: 8px;
+        flex-grow: 0; /* Override desktop flex-grow */
     }
 
-
-    // --- FINAL STEP 3: Render the Filtered Gallery ---
-    function renderFinalGallery() {
-        const galleryOptionsGroup = galleryContainer.querySelector('.filter-options-group');
-        galleryOptionsGroup.innerHTML = ''; 
-        
-        if (!selectedGender || !selectedComplexion) {
-            galleryOptionsGroup.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 15px;">Please complete Gender and Complexion selections first.</p>';
-            return;
-        }
-        
-        const filteredStyles = promptDatabase[selectedGender] && promptDatabase[selectedGender][selectedComplexion] 
-                             ? promptDatabase[selectedGender][selectedComplexion]
-                             : [];
-        
-        if (filteredStyles.length === 0) {
-            statusMessage.textContent = `No styles available for this selection yet. Please choose another option.`;
-            galleryOptionsGroup.innerHTML = '<p style="text-align: center; width: 100%; margin-top: 15px;">No styles found.</p>';
-            return;
-        }
-
-        filteredStyles.forEach(style => {
-            const optionDiv = document.createElement('div');
-            optionDiv.classList.add('style-option');
-            optionDiv.setAttribute('data-prompt', style.prompt);
-            optionDiv.setAttribute('data-name', style.name);
-
-            const img = document.createElement('img');
-            img.src = style.img; 
-            img.alt = style.name;
-            img.classList.add('style-thumbnail');
-
-            const p = document.createElement('p');
-            p.textContent = style.name; 
-
-            optionDiv.appendChild(img);
-            optionDiv.appendChild(p);
-            galleryOptionsGroup.appendChild(optionDiv);
-            
-            optionDiv.addEventListener('click', handleStyleSelection);
-        });
-
-        statusMessage.textContent = "3. Select your final style and click 'Start Camera' above.";
+    .gender-option.selected {
+        /* Maintain highlight color */
+        color: var(--text-on-dark);
+        background-color: var(--highlight-color);
     }
 
-    // --- Style Selection Handler ---
-    function handleStyleSelection(e) {
-        document.querySelectorAll('.style-option').forEach(opt => opt.classList.remove('selected'));
-        e.currentTarget.classList.add('selected');
-        
-        selectedPrompt = e.currentTarget.getAttribute('data-prompt');
-        setFilterState(galleryContainer, false); 
-        
-        if (capturedImageBase64) {
-            // We have a photo, allow generation
-            tryOnBtn.disabled = false;
-            statusMessage.textContent = `Style selected: ${e.currentTarget.getAttribute('data-name')}. Click 'Try On Selected Hairstyle' to generate.`;
-        } else if (cameraStarted) {
-            // Camera is running, tell them to capture
-            statusMessage.textContent = `Style selected: ${e.currentTarget.getAttribute('data-name')}. Click 'Take Selfie' to capture.`;
-        } else {
-            // Camera is off, tell them to start
-            statusMessage.textContent = `Style selected: ${e.currentTarget.getAttribute('data-name')}. Click 'Start Camera' to begin.`;
-        }
+    /* Complexion Options (Mobile: Small circles with text underneath) */
+    #complexion-options-group {
+        /* Align content centrally, wrapping */
+        flex-direction: row; 
+        justify-content: space-around;
+        gap: 15px 5px;
+    }
+    
+    .complexion-tile {
+        width: 45px; 
+        height: 45px; /* Size of the circle */
+        position: relative;
+        /* Use flex on the tile to center the inner content (like text) */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* The tile is the colored circle itself */
+    }
+    
+    .complexion-tile.selected {
+        border-color: var(--highlight-color);
+        box-shadow: 0 0 0 2px var(--highlight-color);
+    }
+    
+    .complexion-tile p {
+        /* Text label displayed below the circle */
+        display: block; 
+        font-size: 0.7em;
+        margin-top: 50px; /* Push label below the circle/border area */
+        position: absolute; 
+        text-align: center;
+        width: 45px;
+        white-space: normal;
+        color: var(--text-color);
     }
 
+    /* Inspiration Gallery Optimization (Three columns) */
+    #hairstyle-gallery {
+        margin-top: 10px; 
+        padding-bottom: 20px;
+        width: 95%; 
+        max-width: none; 
+        border: none;
+    }
+    #hairstyle-gallery h3 {
+        width: 100%;
+        border-radius: 8px;
+    }
+    
+    .style-option {
+        width: calc(33.33% - 10px); /* 3 columns on mobile */
+        height: 120px;
+    }
+    .filter-inspiration .filter-options-group {
+        gap: 10px;
+        justify-content: flex-start; 
+    }
 
-    // --- 1. START CAMERA BUTTON LISTENER ---
-    startCameraBtn.addEventListener('click', startCamera);
-
-
-    // --- 2. CAPTURE/RETAKE BUTTON LISTENER ---
-    captureSelfieBtn.addEventListener('click', () => {
-        // If the button says 'Retake Selfie', reset and show the camera feed
-        if (captureSelfieBtn.textContent.includes('Retake')) {
-            capturedImageBase64 = null;
-            aiResultImg.src = ''; 
-            aiResultImg.style.display = 'none';
-            videoFeed.style.display = 'block';
-            
-            // Hide Try On button
-            tryOnBtn.style.display = 'none'; 
-            tryOnBtn.disabled = true; 
-            
-            captureSelfieBtn.textContent = '📸 Take Selfie';
-            statusMessage.textContent = "Camera ready. Take a new selfie!";
-            return;
-        }
-        
-        // --- CAPTURE SELFIE LOGIC ---
-        if (videoFeed.readyState !== 4) { 
-            statusMessage.textContent = "Camera feed not ready yet. Please wait a moment.";
-            return; 
-        }
-        
-        // Capture image data
-        canvas.width = videoFeed.videoWidth;
-        canvas.height = videoFeed.videoHeight;
-        const context = canvas.getContext('2d');
-        context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        capturedImageBase64 = dataUrl.split(',')[1]; 
-        
-        // State Transition (Camera -> Captured Image)
-        videoFeed.style.display = 'none'; 
-        aiResultImg.src = dataUrl;
-        aiResultImg.style.display = 'block'; 
-        
-        // Update Controls/Status
-        captureSelfieBtn.textContent = '🔄 Retake Selfie'; // Change to Retake icon
-        tryOnBtn.style.display = 'block'; // Show Generate button
-
-        if (selectedPrompt) {
-            tryOnBtn.disabled = false; 
-            statusMessage.textContent = "Selfie captured! Click 'Try On Selected Hairstyle' or 'Retake Selfie'.";
-        } else {
-            tryOnBtn.disabled = true; 
-            statusMessage.textContent = "Selfie captured! Now, please select your Inspiration style.";
-            
-            // Prompt user to select style
-            document.querySelectorAll('.filter-section').forEach(s => setFilterState(s, false));
-            setFilterState(galleryContainer, true);
-        }
-    });
-
-
-    // --- 3. TRY ON BUTTON LISTENER ---
-    tryOnBtn.addEventListener('click', async () => {
-        if (!capturedImageBase64 || !selectedPrompt) {
-            statusMessage.textContent = "Error: Please take a selfie AND select a style!";
-            return;
-        }
-
-        const selectedStyleName = document.querySelector('.style-option.selected').getAttribute('data-name');
-        statusMessage.textContent = `Applying your selected style: ${selectedStyleName}... This may take a moment.`;
-        tryOnBtn.disabled = true;
-        spinner.style.display = 'inline-block'; 
-        
-        try {
-            // This is the Netlify Function call
-            const response = await fetch('/.netlify/functions/tryon', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    baseImage: capturedImageBase64,
-                    prompt: `Edit the hair in this image using the following instruction: ${selectedPrompt}. Ensure the final result is photorealistic, seamlessly blended, and maintains the subject's face and original lighting.`,
-                    negativePrompt: NEGATIVE_PROMPT 
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // --- SUCCESS BLOCK ---
-            aiResultImg.src = `data:image/jpeg;base64,${data.generatedImageBase64}`;
-            aiResultImg.style.display = 'block';
-            statusMessage.textContent = `Done! Your new look is ready. Click 'Retake Selfie' to try another look.`;
-            
-            // Cleanup on successful completion
-            tryOnBtn.disabled = true; 
-            spinner.style.display = 'none'; 
-            tryOnBtn.style.display = 'none'; // Hide Generate button
-
-            // The Capture/Retake button remains visible as '🔄 Retake Selfie'
-            
-        } catch (error) {
-            // --- ERROR BLOCK ---
-            console.error('AI Processing Error:', error);
-            statusMessage.textContent = `Error during AI try-on: ${error.message}. Please try again.`;
-            
-            // Cleanup on error: keep image visible, restore try-on button
-            tryOnBtn.disabled = false; 
-            spinner.style.display = 'none'; 
-            tryOnBtn.style.display = 'block';
-        }
-    });
-});
+}
