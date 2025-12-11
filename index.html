@@ -342,9 +342,12 @@ body {
 #hairstyle-gallery .filter-content-group {
      padding: 10px 5px; 
 }
+/* *** FIX FOR HORIZONTAL SCROLL *** */
 #hairstyle-gallery .filter-options-group {
+    display: flex; /* Ensure it's a flex container */
+    flex-wrap: nowrap; /* CRUCIAL: Forces all items onto one line */
     white-space: nowrap; 
-    overflow-x: scroll; 
+    overflow-x: scroll; /* Enables horizontal scrolling */
     overflow-y: hidden; 
     scroll-snap-type: x mandatory;
     gap: 8px;
