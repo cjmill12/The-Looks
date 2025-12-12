@@ -67,7 +67,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center; 
-    gap: 15px; /* Reduced gap for tighter layout */
+    gap: 15px; 
 }
 
 /* --- 1. GENDER BUTTONS (Top Section) --- */
@@ -146,16 +146,15 @@ body {
     position: relative;
     width: 60%; 
     height: 45%; 
-    background-color: #333; /* Dark body */
+    background-color: #333; 
     border-radius: 6px;
-    border: 8px solid #555; /* Frame */
+    border: 8px solid #555; 
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* The top prism/viewfinder element using ::before */
 #camera-placeholder-icon::before {
     content: '';
     position: absolute;
@@ -168,7 +167,6 @@ body {
     border-radius: 4px 4px 0 0; 
 }
 
-/* The lens element using a span */
 .icon-lens {
     width: 50%;
     height: 80%;
@@ -181,7 +179,6 @@ body {
     justify-content: center;
 }
 
-/* The inner lens circle/iris */
 .icon-lens::before {
     content: '';
     width: 50%;
@@ -203,7 +200,6 @@ body {
     max-width: 100% !important;
     max-height: 100% !important;
     z-index: 1; 
-    /* Initially hidden */
     display: none; 
 }
 
@@ -239,8 +235,8 @@ body {
 
 /* --- MODIFIED: SHRINK CAMERA BUTTON --- */
 #take-selfie-btn {
-    width: 50px; /* Reduced from 70px */
-    height: 50px; /* Reduced from 70px */
+    width: 50px; 
+    height: 50px; 
     padding: 0;
     border-radius: 50%; 
     background-color: var(--primary-color);
@@ -248,7 +244,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px; /* Reduced icon size */
+    font-size: 24px; 
     line-height: 1;
 }
 
@@ -267,12 +263,12 @@ body {
     margin-bottom: 10px;
 }
 
-/* --- 3. FILTER SECTION (Now individual sections) --- */
+/* --- 3. FILTER SECTION --- */
 
 .filter-section {
     width: 90%; 
     max-width: var(--content-max-width);
-    margin: 0 auto; /* Center the filter sections */
+    margin: 0 auto; 
     padding: 0;
     background-color: #fff;
     border-radius: 6px;
@@ -414,7 +410,6 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    /* MODIFIED: Increased width for larger image */
     width: 85px; 
     flex-shrink: 0;
     border: 2px solid transparent; 
@@ -422,21 +417,27 @@ body {
     cursor: pointer;
 }
 
+/* ADDED: Hover effect to style options */
+.style-option:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+    transform: scale(1.05); 
+}
+
 .style-option.selected {
     border-color: var(--highlight-color);
-    border-radius: 10px; /* Slightly adjusted to look good with circle */
+    border-radius: 10px; 
     box-shadow: 0 0 10px rgba(40, 167, 69, 0.7); 
-    transform: scale(1.1); /* Slightly smaller enlargement effect */
+    transform: scale(1.1); 
     z-index: 10; 
 }
 
 /* --- MODIFIED: LARGER, CIRCULAR THUMBNAILS --- */
 .style-thumbnail {
-    width: 80px; /* Increased size from 65px */
-    height: 80px; /* Increased size from 65px */
-    border-radius: 50%; /* Made circular */
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%; 
     object-fit: cover;
-    margin-bottom: 4px; /* Space between image and text */
+    margin-bottom: 4px; 
 }
 
 .style-option p {
@@ -510,12 +511,10 @@ body {
     }
     
     .style-option {
-        /* MODIFIED: Larger mobile option width */
         width: 85px; 
         flex-shrink: 0;
     }
     .style-thumbnail {
-        /* MODIFIED: Larger mobile thumbnail size */
         width: 80px; 
         height: 80px; 
     }
@@ -539,53 +538,113 @@ body {
         </div>
         
         <div id="hairstyle-gallery" class="filter-section expanded">
-            <h3><span>Hairstyle Inspiration</span><span class="icon"></span></h3>
+            <h3><span>Hairstyle Inspiration (21 Male Styles)</span><span class="icon"></span></h3>
             <div class="filter-content-group">
                 <div class="filter-options-group">
                     
-                    <div class="style-option" data-prompt="a slicked-back undercut with brushed up blonde hair">
-                        <img class="style-thumbnail" src="styles/brushed up blonde.jpeg" alt="Brushed Up Blonde">
-                        <p>Brushed Up Blonde</p>
+                    <div class="style-option" data-prompt="a clean, high-fade military crew cut, dark brown color.">
+                        <img class="style-thumbnail" src="styles/style1.png" alt="Crew Cut">
+                        <p>High Fade Crew</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a short cut with a heavy forward fringe">
-                        <img class="style-thumbnail" src="styles/forward fringe.jpeg" alt="Forward Fringe">
-                        <p>Forward Fringe</p>
+                    <div class="style-option" data-prompt="a swept back modern quiff with medium volume and subtle texture.">
+                        <img class="style-thumbnail" src="styles/style2.png" alt="Swept Quiff">
+                        <p>Modern Quiff</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a classic high top fade with sharp lines">
-                        <img class="style-thumbnail" src="styles/high top fade.jpeg" alt="High Top Fade">
+                    <div class="style-option" data-prompt="a classic side part with short, clean sides and a matte finish.">
+                        <img class="style-thumbnail" src="styles/style3.png" alt="Classic Side Part">
+                        <p>Side Part Classic</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a short, choppy textured crop with an even fringe.">
+                        <img class="style-thumbnail" src="styles/style4.png" alt="Textured Crop">
+                        <p>Textured Crop</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a sleek, formal slicked-back style with high shine and tight sides.">
+                        <img class="style-thumbnail" src="styles/style5.png" alt="Sleek Slick Back">
+                        <p>Sleek Slick Back</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a short afro texture with defined curls and a low fade on the temples.">
+                        <img class="style-thumbnail" src="styles/style6.png" alt="Defined Curls">
+                        <p>Defined Curls</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a voluminous hairstyle with natural long waves falling to the shoulders.">
+                        <img class="style-thumbnail" src="styles/style7.png" alt="Long Wavy">
+                        <p>Shoulder Waves</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="a high top fade with sharp corners and clean edges.">
+                        <img class="style-thumbnail" src="styles/style8.png" alt="High Top Fade">
                         <p>High Top Fade</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a voluminous hairstyle with natural curls">
-                        <img class="style-thumbnail" src="styles/natural curls.jpeg" alt="Natural Curls">
-                        <p>Natural Curls</p>
+                    <div class="style-option" data-prompt="a messy, tousled top with high texture and natural movement.">
+                        <img class="style-thumbnail" src="styles/style9.png" alt="Messy Tousled">
+                        <p>Messy Tousled</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="a full pompadour with high volume on the crown and a medium taper.">
+                        <img class="style-thumbnail" src="styles/style10.png" alt="Full Pompadour">
+                        <p>Full Pompadour</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="a disconnected undercut with long hair brushed forward and textured.">
+                        <img class="style-thumbnail" src="styles/style11.png" alt="Disconnected Undercut">
+                        <p>Disconnected</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="short hair with a heavy forward fringe covering the forehead.">
+                        <img class="style-thumbnail" src="styles/style12.png" alt="Forward Fringe">
+                        <p>Heavy Fringe</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a clean side swept scissor cut">
-                        <img class="style-thumbnail" src="styles/side swept scissor cut.jpeg" alt="Side Swept Scissor Cut">
-                        <p>Side Swept Scissor Cut</p>
+                    <div class="style-option" data-prompt="tight, neat cornrow braids running back in straight lines.">
+                        <img class="style-thumbnail" src="styles/style13.png" alt="Cornrows">
+                        <p>Tight Cornrows</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="a faux hawk style with high texture running down the center.">
+                        <img class="style-thumbnail" src="styles/style14.png" alt="Faux Hawk">
+                        <p>Textured Faux Hawk</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="a mop-top style with bangs covering the eyes and long sides.">
+                        <img class="style-thumbnail" src="styles/style15.png" alt="Mop Top">
+                        <p>Mop Top Bangs</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a sleek, formal side part style">
-                        <img class="style-thumbnail" src="styles/sleek side part.jpeg" alt="Sleek Side Part">
-                        <p>Sleek Side Part</p>
+                    <div class="style-option" data-prompt="a two-block cut style, with the top hair covering the short sides.">
+                        <img class="style-thumbnail" src="styles/style16.png" alt="Two Block">
+                        <p>Two-Block Cut</p>
+                    </div>
+
+                    <div class="style-option" data-prompt="a french crop with a sharp, blunt fringe and shaved sides.">
+                        <img class="style-thumbnail" src="styles/style17.png" alt="French Crop">
+                        <p>French Crop</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a fun, short spiked hairstyle">
-                        <img class="style-thumbnail" src="styles/spiked charm.jpeg" alt="Spiked Charm">
-                        <p>Spiked Charm</p>
+                    <div class="style-option" data-prompt="a low taper fade with soft, wavy hair pushed slightly to the side.">
+                        <img class="style-thumbnail" src="styles/style18.png" alt="Low Taper Wave">
+                        <p>Low Taper Wave</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a short haircut with a tousled and textured top">
-                        <img class="style-thumbnail" src="styles/tousled top.jpeg" alt="Tousled Top">
-                        <p>Tousled Top</p>
+                    <div class="style-option" data-prompt="a classic bowl cut with a retro, even length all around.">
+                        <img class="style-thumbnail" src="styles/style19.png" alt="Bowl Cut">
+                        <p>Classic Bowl Cut</p>
                     </div>
                     
-                    <div class="style-option" data-prompt="a modern wavy quiff with volume">
-                        <img class="style-thumbnail" src="styles/wavy quiff.jpeg" alt="Wavy Quiff">
-                        <p>Wavy Quiff</p>
+                    <div class="style-option" data-prompt="long, straight hair reaching past the shoulders, center parted.">
+                        <img class="style-thumbnail" src="styles/style20.png" alt="Long Straight">
+                        <p>Long Straight</p>
+                    </div>
+                    
+                    <div class="style-option" data-prompt="tight micro twists/locks hairstyle.">
+                        <img class="style-thumbnail" src="styles/style21.png" alt="Micro Locks">
+                        <p>Micro Locks</p>
                     </div>
                     
                 </div>
@@ -634,7 +693,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiResultImg = document.getElementById('ai-result');
     const canvas = document.getElementById('hidden-canvas');
 
-    // Placeholder Icon element
     const cameraPlaceholderIcon = document.getElementById('camera-placeholder-icon');
 
     // Buttons and Controls
@@ -667,7 +725,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
 
     function updateTryOnButtonVisibility() {
-        // Only show 'Try On' if an image is captured AND a style is selected
         if (imageCaptured && selectedPrompt) {
             tryOnBtn.style.display = 'block';
             tryOnBtn.disabled = false;
@@ -689,6 +746,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (gender === 'Female') {
             femaleGenderBtn.classList.add('selected');
         }
+        
+        // FUTURE FEATURE: Add logic here to filter styles based on selectedGender
+        
         updateTryOnButtonVisibility();
     }
 
@@ -741,23 +801,20 @@ document.addEventListener('DOMContentLoaded', () => {
     async function startCamera() {
         if (cameraStarted) return; 
 
-        // 1. Temporarily change the status message to indicate loading
         statusMessage.textContent = "Requesting camera access...";
 
         try {
             const constraints = {
                 video: {
-                    facingMode: 'user', // Requesting the front camera
+                    facingMode: 'user', 
                     width: { ideal: 250 },
                     height: { ideal: 250 }
                 }
             };
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             
-            // 2. Success: Attach the stream to the video element
             videoFeed.srcObject = stream;
             
-            // Wait for the video element to load the stream metadata before continuing
             await new Promise(resolve => {
                 videoFeed.onloadedmetadata = () => {
                     videoFeed.play();
@@ -768,12 +825,10 @@ document.addEventListener('DOMContentLoaded', () => {
             cameraStarted = true;
             imageCaptured = false;
 
-            // 3. Update visibility: Show video, hide icon
             cameraPlaceholderIcon.style.display = 'none'; 
             aiResultImg.style.display = 'none';
             videoFeed.style.display = 'block'; 
 
-            // 4. Update Controls
             takeSelfieBtn.textContent = "📸";
             takeSelfieBtn.disabled = false;
             tryOnBtn.style.display = 'none';
@@ -781,15 +836,12 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = "Adjust your face in the box, then click 📸 to capture.";
 
         } catch (error) {
-            // 5. Error Handling: Revert state and display error
             console.error('Error accessing camera:', error);
 
-            // Revert status and button
             statusMessage.textContent = `Error: Cannot start camera. Check permissions/device settings. (${error.name})`;
             takeSelfieBtn.textContent = "📸";
             takeSelfieBtn.disabled = true; 
             
-            // Ensure the placeholder remains visible if the camera failed to start
             cameraPlaceholderIcon.style.display = 'block';
             videoFeed.style.display = 'none';
             
@@ -813,11 +865,11 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = width;
         canvas.height = height;
         
-        // Draw image from the video frame
         context.drawImage(videoFeed, 0, 0, width, height);
 
         const fullDataURL = canvas.toDataURL('image/jpeg');
 
+        // Extract Base64 part only
         const parts = fullDataURL.split(',');
         capturedImageBase64 = parts.length > 1 ? parts[1] : fullDataURL;
 
@@ -847,6 +899,13 @@ document.addEventListener('DOMContentLoaded', () => {
             cameraPlaceholderIcon.style.display = 'block';
             imageCaptured = false;
             capturedImageBase64 = null;
+            selectedPrompt = null; // Reset selected prompt on restart
+
+            // Clear previous selection visually
+            galleryContainer.querySelectorAll('.style-option').forEach(o => {
+                o.classList.remove('selected');
+                o.style.transform = '';
+            });
 
             takeSelfieBtn.textContent = "📸";
             takeSelfieBtn.disabled = true;
@@ -862,26 +921,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Try On button logic (remains the same)
+    // --- UPDATED TRY ON BUTTON LOGIC WITH DETAILED LOADING STATES ---
     tryOnBtn.addEventListener('click', async () => {
         if (!capturedImageBase64 || !selectedPrompt) {
             statusMessage.textContent = "Please capture a selfie and select a hairstyle first.";
             return;
         }
 
+        // --- START LOADING STATE ---
         tryOnBtn.disabled = true;
         tryOnBtn.style.display = 'none';
+        takeSelfieBtn.style.display = 'none'; // Hide the capture button
         spinner.style.display = 'block';
-        statusMessage.textContent = "Processing your new look... This may take a moment.";
+        
+        statusMessage.textContent = "1/2. Uploading image and defining style...";
 
         const complexionClause = selectedComplexion
             ? ` with a ${selectedComplexion} complexion`
             : ``;
 
-        const finalPrompt = `STRICTLY use the provided image as the input mask. DO NOT change the background, the clothing, or the subject's face/identity. ONLY apply a new hairstyle: ${selectedPrompt}. The final result must be a high quality, professional studio portrait of a ${selectedGender} model${complexionClause} with NO other changes to the original image besides the hair.`;
+        const finalPrompt = `STRICTLY use the provided image as the base. DO NOT change the background, the clothing, or the subject's face/identity. ONLY apply the new hairstyle: ${selectedPrompt}. The final result must be a high quality, professional studio portrait of a ${selectedGender} model${complexionClause} with NO other changes besides the hair.`;
 
         try {
-            // Note: The API call assumes '/api/run_model' maps to your netlify/functions/tryon.mjs
+            // Update status right before the network call
+            statusMessage.textContent = "2/2. AI processing your new look (approx 15-30s)...";
+
             const response = await fetch('/api/run_model', {
                 method: 'POST',
                 headers: {
@@ -890,7 +954,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     baseImage: capturedImageBase64,
                     prompt: finalPrompt,
-                    negativePrompt: NEGATIVE_PROMPT
+                    negativePrompt: NEGATIVE_PROMPT 
                 })
             });
 
@@ -911,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = `Success! Your new look is ready. Click the Play button to start a new session.`;
 
             takeSelfieBtn.style.display = 'block';
-            takeSelfieBtn.textContent = "▶️";
+            takeSelfieBtn.textContent = "▶️"; // Change to Restart icon
             takeSelfieBtn.disabled = false;
 
             spinner.style.display = 'none';
@@ -920,12 +984,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             // --- ERROR BLOCK ---
             console.error('AI Processing Error:', error);
-            statusMessage.textContent = `Error during AI try-on: ${error.message}. Please try again.`;
+            statusMessage.textContent = `Error during AI try-on: ${error.message}. Please check console and retry.`;
 
+            // Reset controls to allow retry
             tryOnBtn.disabled = false;
             tryOnBtn.style.display = 'block';
-            spinner.style.display = 'none';
             takeSelfieBtn.style.display = 'none';
+            spinner.style.display = 'none';
         }
     });
 
