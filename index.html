@@ -115,11 +115,21 @@ body {
     width: 90%;
     max-width: var(--content-max-width);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* This now manages the vertical stack of the row + try-on button */
     align-items: center;
     justify-content: center;
     gap: 15px;
     padding: 0 10px;
+}
+
+/* NEW: Horizontal row for viewport and controls */
+#camera-and-controls-row {
+    display: flex;
+    align-items: center; /* Vertically center the items (viewport and controls) */
+    justify-content: center; 
+    gap: 15px; /* Space between viewport and button column */
+    width: 100%;
+    max-width: var(--content-max-width);
 }
 
 #central-viewport {
@@ -138,57 +148,48 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer; 
+    flex-shrink: 0; /* Prevent the viewport from shrinking */
 }
 
-/* --- PURE CSS CAMERA ICON STYLES --- */
+/* --- DOTTED HEADSHOT SILHOUETTE STYLES --- */
 
 #camera-placeholder-icon {
     position: relative;
     width: 60%; 
-    height: 45%; 
-    background-color: #333; 
-    border-radius: 6px;
-    border: 8px solid #555; 
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    height: 60%; 
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    /* Dotted Border Style */
+    border: 3px dashed #777; 
+    border-radius: 6px;
+    background-color: #e8e8e8;
 }
 
+/* Head (Circle) */
 #camera-placeholder-icon::before {
     content: '';
     position: absolute;
-    top: -16px; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30%;
-    height: 10px; 
-    background-color: #333;
-    border-radius: 4px 4px 0 0; 
-}
-
-.icon-lens {
-    width: 50%;
-    height: 80%;
-    background-color: #fff;
+    top: 15%; 
+    width: 40%;
+    height: 40%;
+    background-color: #aaa;
     border-radius: 50%;
-    border: 5px solid #000;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.icon-lens::before {
+/* Shoulders (Arc) */
+#camera-placeholder-icon::after {
     content: '';
-    width: 50%;
-    height: 50%;
-    background-color: #555;
-    border-radius: 50%;
-    border: 3px solid #000;
+    position: absolute;
+    bottom: -15%; 
+    width: 80%;
+    height: 60%;
+    background-color: #aaa;
+    border-radius: 50% 50% 0 0; 
 }
 
-/* --- End Pure CSS Camera Icon Styles --- */
+/* --- End Dotted Headshot Silhouette Styles --- */
 
 
 /* Ensure video and result images fill the viewport */
@@ -216,16 +217,20 @@ body {
     z-index: 100; 
 }
 
+/* CONTROLS (holds the button and spinner) */
 #controls {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 400px;
+    justify-content: center; /* Vertically center the button/spinner */
+    width: 50px; /* Minimal width */
+    height: var(--viewport-size-mobile); /* Match viewport height for centering */
+    max-height: var(--viewport-size-desktop); 
+    
 }
 
 .main-action-btn {
-    margin-bottom: 10px;
+    /* Removed top/bottom margin */
     cursor: pointer;
     border: none;
     font-size: 16px; 
@@ -246,6 +251,7 @@ body {
     justify-content: center;
     font-size: 24px; 
     line-height: 1;
+    margin: 0; /* Ensure no external margin pushes it around */
 }
 
 /* Try On Hairstyle Button Styling */
@@ -475,6 +481,11 @@ body {
         max-height: 300px !important;
     }
     
+    /* Ensure the controls height matches the viewport in mobile view */
+    #controls {
+        height: 80vw;
+    }
+    
     .filter-section.collapsed h3 {
         width: 95%; 
     }
@@ -653,21 +664,20 @@ body {
 
 
         <div id="central-section">
-            <div id="central-viewport">
-                <div id="camera-placeholder-icon">
-                    <span class="icon-lens"></span>
+            <div id="camera-and-controls-row"> <div id="central-viewport">
+                    <div id="camera-placeholder-icon">
+                        </div>
+                    
+                    <video id="video-feed" autoplay playsinline></video>
+                    <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
+                    <p id="status-message">Tap the silhouette above to start your live feed.</p>
                 </div>
                 
-                <video id="video-feed" autoplay playsinline></video>
-                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
-                <p id="status-message">Tap the camera icon above to start your live feed.</p>
-            </div>
-            
-            <div id="controls">
-                <button id="take-selfie-btn" class="main-action-btn">📸</button>
-                <div id="loading-spinner" class="spinner"></div>
-            </div>
-        </div>
+                <div id="controls">
+                    <button id="take-selfie-btn" class="main-action-btn">📸</button>
+                    <div id="loading-spinner" class="spinner"></div>
+                </div>
+            </div> </div>
 
         <button id="try-on-btn" class="main-action-btn" style="display: none;">Generate My New Look</button>
 
@@ -909,7 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             takeSelfieBtn.textContent = "📸";
             takeSelfieBtn.disabled = true;
-            statusMessage.textContent = "Tap the camera icon above to start your live feed.";
+            statusMessage.textContent = "Tap the silhouette above to start your live feed.";
             updateTryOnButtonVisibility();
         }
     });
