@@ -49,9 +49,10 @@ body {
     top: 0;
     z-index: 100;
 }
+/* 2. Looks Logo (Bigger) */
 #main-logo {
-    max-width: 100px !important; 
-    height: 35px !important; 
+    max-width: 130px !important; /* Increased width */
+    height: 45px !important; /* Increased height */
     object-fit: contain; 
 }
 
@@ -82,20 +83,22 @@ body {
     padding: 0 10px;
 }
 
+/* 1. Male/Female buttons (Smaller and Modern UI) */
 .gender-button {
     flex-grow: 1;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
+    padding: 8px 12px; /* Smaller padding */
+    border: 1px solid #ddd; /* Softer border */
+    background-color: #ffffff; /* White background */
     color: var(--text-color);
-    border-radius: 8px;
+    border-radius: 20px; /* Pill shape for modern look */
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: bold;
+    font-size: 0.85em; /* Smaller font */
+    font-weight: 500; /* Lighter font weight */
     text-align: center;
     transition: all 0.2s;
     user-select: none;
     line-height: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Soft shadow for lift */
 }
 
 .gender-button:hover {
@@ -106,6 +109,7 @@ body {
     background-color: var(--primary-color);
     color: var(--text-on-dark);
     border-color: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(29, 33, 36, 0.2); /* Stronger shadow when selected */
 }
 
 
@@ -303,7 +307,7 @@ body {
     border-radius: 15px; /* Smaller radius */
     height: 30px; /* Smaller height */
     width: auto; /* Auto width to fit content */
-    max-width: 150px; /* Max width to keep it small */
+    max-width: 180px; /* Max width to keep it small */
     padding: 0 15px; /* Horizontal padding */
     justify-content: center;
     overflow: hidden; 
@@ -397,7 +401,7 @@ body {
     max-width: var(--content-max-width);
     margin: 0 auto;
     padding: 0 10px;
-    text-align: center; /* <-- UPDATED: Centered */
+    text-align: center; /* Centered */
 }
 #style-inspiration-section p {
     font-size: 0.9em; 
@@ -485,7 +489,7 @@ body {
     /* Keep the small button centered in mobile */
     .filter-section.collapsed h3 {
         width: 95%; 
-        max-width: 150px; 
+        max-width: 180px; /* Adjusted max-width */
     }
 
     #style-inspiration-section {
@@ -563,7 +567,7 @@ body {
         </div>
 
         <div id="additional-filters-selector" class="filter-section collapsed">
-            <h3><span>Additional Filters</span><span class="icon"></span></h3>
+            <h3><span>+ Additional Filters</span><span class="icon"></span></h3>
             <div class="filter-content-group">
                 <p style="font-size: 0.9em; font-weight: bold; margin-bottom: 5px;">Complexion (Optional)</p>
                 <div id="complexion-options-group" class="filter-options-group">
@@ -576,7 +580,8 @@ body {
         </div>
         
         <div id="style-inspiration-section">
-            <p>Get the Look</p> <div id="hairstyle-options-group" class="filter-options-group">
+            <p>Get the Look</p>
+            <div id="hairstyle-options-group" class="filter-options-group">
                 
                 <div class="style-option" data-prompt="A short haircut with a tousled and textured top, dark brown color, sharp side profile.">
                     <img class="style-thumbnail" src="styles/style1.png" alt="Tousled Short Crop">
