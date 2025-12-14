@@ -436,18 +436,23 @@ body {
     border: 2px solid transparent; 
     transition: all 0.3s ease-out; 
     cursor: pointer;
+    /* NEW: Ensures the element scales upward, making it pop better */
+    transform-origin: center bottom; 
 }
 
+/* UPDATED: More dramatic scale and shadow on hover */
 .style-option:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
-    transform: scale(1.05); 
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4); 
+    transform: scale(1.2); 
+    z-index: 11; /* Higher z-index to overlap neighbors */
 }
 
+/* UPDATED: More dramatic scale and shadow on selection */
 .style-option.selected {
     border-color: var(--highlight-color);
     border-radius: 10px; 
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.7); 
-    transform: scale(1.1); 
+    box-shadow: 0 0 12px rgba(40, 167, 69, 0.9); 
+    transform: scale(1.2); 
     z-index: 10; 
 }
 
@@ -693,7 +698,7 @@ body {
                 </div>
                 <div class="style-option" data-prompt="A medium-length wavy cut with beachy texture, sandy blonde color, soft and casual movement.">
                     <img class="style-thumbnail" src="styles/female/style10.png" alt="Beachy Waves">
-                    <p>Beachy Waves</</p>
+                    <p>Beachy Waves</p>
                 </div>
                 <div class="style-option" data-prompt="A short bob with flipped-out ends, caramel brown color, playful and retro-inspired shape.">
                     <img class="style-thumbnail" src="styles/female/style11.png" alt="Flipped Bob">
