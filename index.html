@@ -3,247 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Looks | Virtual Try-On & Booking</title>
+    <title>Looks | AI Try-On & Booking</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
-    
-    <style>
-        :root {
-            --accent: #e63946;
-            --bg: #0f0f0f;
-            --card: #1a1a1a;
-            --text: #ffffff;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            text-transform: uppercase;
-        }
-
-        /* Try-On Section */
-        #try-on-display {
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: var(--card);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px dashed #333;
-            margin-bottom: 20px;
-        }
-
-        #try-on-display img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Booking Button */
-        .primary-btn {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .primary-btn:active { transform: scale(0.98); }
-
-        /* Booking Modal */
-        #booking-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--card);
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 24px;
-            position: relative;
-        }
-
-        label { display: block; margin: 15px 0 5px; font-size: 0.9rem; color: #aaa; }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            color: white;
-            box-sizing: border-box;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: white;
-            color: black;
-            border: none;
-            border-radius: 12px;
-            margin-top: 25px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #status-msg {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="style.css"> </head>
 <body>
 
 <div class="container">
     <header>
         <div class="logo">LOOKS</div>
-        <p style="color: #888;">AI Virtual Try-On</p>
+        <p class="subtitle">Powered by Nano Banana AI</p>
     </header>
 
     <div id="try-on-display">
-        <span id="placeholder-text">Try on a style to begin...</span>
-        <img id="ai-result-img" style="display:none;">
+        <div id="loading-overlay" style="display:none;">Processing Look...</div>
+        <img id="ai-result-img" src="placeholder-initial.jpg" alt="Your New Look">
     </div>
+
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="filterStyles('all')">All</button>
+        <button class="filter-btn" onclick="filterStyles('coily')">Coily</button>
+        <button class="filter-btn" onclick="filterStyles('curly')">Curly</button>
+        <button class="filter-btn" onclick="filterStyles('straight')">Straight</button>
+    </div>
+
+    <div id="style-grid" class="style-grid">
+        </div>
 
     <button id="open-booking-btn" class="primary-btn">Book This Style Now</button>
 </div>
 
 <div id="booking-modal">
     <div class="modal-content">
-        <h2 style="margin-top:0;">Confirm Booking</h2>
-        <p id="selected-style-name" style="color: var(--accent); font-weight: bold;"></p>
+        <h2>Secure Your Spot</h2>
+        <p id="confirm-style-text"></p>
 
-        <label>Pick a Date</label>
-        <input type="text" id="booking-date" placeholder="Select Date">
+        <div class="form-group">
+            <label>Select Date</label>
+            <input type="text" id="booking-date" placeholder="Tap to pick date">
+        </div>
 
-        <label>Available Times</label>
-        <select id="booking-time">
-            <option value="">Select a date first...</option>
-        </select>
+        <div class="form-group">
+            <label>Available Times</label>
+            <select id="booking-time">
+                <option value="">Select a date first...</option>
+            </select>
+        </div>
 
-        <label>Your Name</label>
-        <input type="text" id="client-name" placeholder="Full Name">
+        <div class="form-group">
+            <input type="text" id="client-name" placeholder="Full Name">
+        </div>
 
-        <label>Email Address</label>
-        <input type="email" id="client-email" placeholder="email@example.com">
+        <div class="form-group">
+            <input type="email" id="client-email" placeholder="Email Address">
+        </div>
 
-        <button id="final-confirm-btn" class="submit-btn">Complete Appointment</button>
-        <div id="status-msg"></div>
+        <button id="final-confirm-btn" class="submit-btn">Confirm Appointment</button>
+        <p id="status-msg"></p>
         
-        <button onclick="document.getElementById('booking-modal').style.display='none'" style="background:none; border:none; color:#888; width:100%; margin-top:15px; cursor:pointer;">Cancel</button>
+        <button class="close-modal" onclick="closeModal()">Back to Styles</button>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <script>
-    // --- APP STATE ---
-    let selectedStyleLabel = "Mid Fade with Texture"; // Mock label from your AI logic
-    const aiResultImg = document.getElementById('ai-result-img');
+    // DATA: Our inclusive style library
+    const hairstyles = [
+        { id: 1, name: "Low Taper Fade", texture: "coily", complexion: "deep", img: "style1.jpg" },
+        { id: 2, name: "Mid Fade", texture: "straight", complexion: "light", img: "style2.jpg" },
+        { id: 3, name: "Textured Waves", texture: "curly", complexion: "medium", img: "style3.jpg" },
+        // More styles added here...
+    ];
 
-    // --- MODAL LOGIC ---
-    const modal = document.getElementById('booking-modal');
-    document.getElementById('open-booking-btn').onclick = () => {
-        document.getElementById('selected-style-name').innerText = selectedStyleLabel;
-        modal.style.display = 'flex';
+    let currentSelectedStyle = hairstyles[0];
+
+    // Initialize Page
+    window.onload = () => {
+        renderStyles('all');
     };
 
-    // --- CALENDAR INIT ---
-    flatpickr("#booking-date", {
-        minDate: "today",
-        dateFormat: "Y-m-d",
-        onChange: function(selectedDates, dateStr) {
-            loadSlots(dateStr);
-        }
-    });
-
-    // Mock time slots - In Phase 2, this will check Supabase for availability
-    function loadSlots(date) {
-        const timeSelect = document.getElementById('booking-time');
-        timeSelect.innerHTML = '';
-        const slots = ["09:00", "10:30", "13:00", "14:30", "16:00"];
-        slots.forEach(s => {
-            const el = document.createElement('option');
-            el.value = s; el.textContent = s;
-            timeSelect.appendChild(el);
+    // UI Logic: Filter and Render
+    function renderStyles(filter) {
+        const grid = document.getElementById('style-grid');
+        grid.innerHTML = '';
+        
+        const filtered = filter === 'all' ? hairstyles : hairstyles.filter(h => h.texture === filter);
+        
+        filtered.forEach(style => {
+            const div = document.createElement('div');
+            div.className = `style-card ${currentSelectedStyle.id === style.id ? 'active' : ''}`;
+            div.innerHTML = `<img src="${style.img}" alt="${style.name}"><p>${style.name}</p>`;
+            div.onclick = () => selectStyle(style);
+            grid.appendChild(div);
         });
     }
 
-    // --- SUBMIT TO NETLIFY FUNCTION ---
-    document.getElementById('final-confirm-btn').onclick = async () => {
-        const status = document.getElementById('status-msg');
-        status.textContent = "Processing...";
+    function selectStyle(style) {
+        currentSelectedStyle = style;
+        document.getElementById('ai-result-img').src = style.img; // Simulating Nano Banana fast-swap
+        renderStyles(document.querySelector('.filter-btn.active').innerText.toLowerCase());
+    }
 
-        const bookingData = {
+    // Booking Flow Logic
+    const modal = document.getElementById('booking-modal');
+    document.getElementById('open-booking-btn').onclick = () => {
+        document.getElementById('confirm-style-text').innerText = `Style: ${currentSelectedStyle.name}`;
+        modal.style.display = 'flex';
+    };
+
+    function closeModal() { modal.style.display = 'none'; }
+
+    // Calendar Integration
+    flatpickr("#booking-date", {
+        minDate: "today",
+        onChange: (selectedDates, dateStr) => {
+            // Mock available times
+            const select = document.getElementById('booking-time');
+            select.innerHTML = '<option value="10:00">10:00 AM</option><option value="14:00">02:00 PM</option>';
+        }
+    });
+
+    // FINAL SUBMISSION (to Netlify Function)
+    document.getElementById('final-confirm-btn').onclick = async () => {
+        const payload = {
             name: document.getElementById('client-name').value,
             email: document.getElementById('client-email').value,
             date: document.getElementById('booking-date').value,
             time: document.getElementById('booking-time').value,
-            style: selectedStyleLabel,
-            image: aiResultImg.src || "https://placeholder.com/image.jpg"
+            style: currentSelectedStyle.name,
+            image: currentSelectedStyle.img
         };
 
-        try {
-            const response = await fetch('/.netlify/functions/save-booking', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bookingData)
-            });
+        const response = await fetch('/.netlify/functions/save-booking', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
 
-            if (response.ok) {
-                status.style.color = "#4BB543";
-                status.textContent = "Confirmed! Check your email.";
-                setTimeout(() => modal.style.display = 'none', 2000);
-            } else {
-                const err = await response.json();
-                status.textContent = "Error: " + err.error;
-            }
-        } catch (e) {
-            status.textContent = "Connection error. Try again.";
+        if(response.ok) {
+            document.getElementById('status-msg').innerText = "Booked! Check your email.";
         }
     };
 </script>
-
 </body>
 </html>
