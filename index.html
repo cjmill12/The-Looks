@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOOKS | AI Virtual Try-On</title>
+    <title>Looks | Virtual Try-On & Booking</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
@@ -40,13 +40,13 @@
         }
 
         .logo {
-            font-size: 2.5rem;
-            font-weight: 900;
-            letter-spacing: 0.15em;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
             text-transform: uppercase;
         }
 
-        /* Hero Display for Nano Banana */
+        /* Try-On Section */
         #try-on-display {
             width: 100%;
             aspect-ratio: 1/1;
@@ -56,8 +56,8 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 1px solid #333;
-            margin-bottom: 25px;
+            border: 2px dashed #333;
+            margin-bottom: 20px;
         }
 
         #try-on-display img {
@@ -66,22 +66,23 @@
             object-fit: cover;
         }
 
+        /* Booking Button */
         .primary-btn {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             background-color: var(--accent);
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: transform 0.2s;
         }
 
         .primary-btn:active { transform: scale(0.98); }
 
-        /* Modal Overlay */
+        /* Booking Modal */
         #booking-modal {
             display: none;
             position: fixed;
@@ -101,29 +102,35 @@
             position: relative;
         }
 
+        label { display: block; margin: 15px 0 5px; font-size: 0.9rem; color: #aaa; }
+        
         input, select {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: #2a2a2a;
             border: 1px solid #444;
             border-radius: 8px;
             color: white;
             box-sizing: border-box;
-            margin-bottom: 15px;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             background: white;
             color: black;
             border: none;
             border-radius: 12px;
-            font-weight: 800;
+            margin-top: 25px;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        #status-msg { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+        #status-msg {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -131,10 +138,12 @@
 <div class="container">
     <header>
         <div class="logo">LOOKS</div>
+        <p style="color: #888;">AI Virtual Try-On</p>
     </header>
 
     <div id="try-on-display">
-        <img id="ai-result-img" src="placeholder.jpg"> 
+        <span id="placeholder-text">Try on a style to begin...</span>
+        <img id="ai-result-img" style="display:none;">
     </div>
 
     <button id="open-booking-btn" class="primary-btn">Book This Style Now</button>
@@ -142,14 +151,22 @@
 
 <div id="booking-modal">
     <div class="modal-content">
-        <h2 style="margin-top:0">Confirm Booking</h2>
-        
+        <h2 style="margin-top:0;">Confirm Booking</h2>
+        <p id="selected-style-name" style="color: var(--accent); font-weight: bold;"></p>
+
+        <label>Pick a Date</label>
         <input type="text" id="booking-date" placeholder="Select Date">
+
+        <label>Available Times</label>
         <select id="booking-time">
-            <option value="">Select a time</option>
+            <option value="">Select a date first...</option>
         </select>
+
+        <label>Your Name</label>
         <input type="text" id="client-name" placeholder="Full Name">
-        <input type="email" id="client-email" placeholder="Email Address">
+
+        <label>Email Address</label>
+        <input type="email" id="client-email" placeholder="email@example.com">
 
         <button id="final-confirm-btn" class="submit-btn">Complete Appointment</button>
         <div id="status-msg"></div>
@@ -159,47 +176,71 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
-    // Calendar Setup
+    // --- APP STATE ---
+    let selectedStyleLabel = "Mid Fade with Texture"; // Mock label from your AI logic
+    const aiResultImg = document.getElementById('ai-result-img');
+
+    // --- MODAL LOGIC ---
+    const modal = document.getElementById('booking-modal');
+    document.getElementById('open-booking-btn').onclick = () => {
+        document.getElementById('selected-style-name').innerText = selectedStyleLabel;
+        modal.style.display = 'flex';
+    };
+
+    // --- CALENDAR INIT ---
     flatpickr("#booking-date", {
         minDate: "today",
-        theme: "dark",
-        onChange: (dates, str) => {
-            const select = document.getElementById('booking-time');
-            select.innerHTML = '<option value="10:00">10:00 AM</option><option value="14:00">2:00 PM</option>';
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr) {
+            loadSlots(dateStr);
         }
     });
 
-    // Modal Controls
-    document.getElementById('open-booking-btn').onclick = () => {
-        document.getElementById('booking-modal').style.display = 'flex';
-    };
+    // Mock time slots - In Phase 2, this will check Supabase for availability
+    function loadSlots(date) {
+        const timeSelect = document.getElementById('booking-time');
+        timeSelect.innerHTML = '';
+        const slots = ["09:00", "10:30", "13:00", "14:30", "16:00"];
+        slots.forEach(s => {
+            const el = document.createElement('option');
+            el.value = s; el.textContent = s;
+            timeSelect.appendChild(el);
+        });
+    }
 
-    // Booking Submission
+    // --- SUBMIT TO NETLIFY FUNCTION ---
     document.getElementById('final-confirm-btn').onclick = async () => {
         const status = document.getElementById('status-msg');
-        status.textContent = "Saving...";
+        status.textContent = "Processing...";
 
-        const payload = {
+        const bookingData = {
             name: document.getElementById('client-name').value,
             email: document.getElementById('client-email').value,
             date: document.getElementById('booking-date').value,
             time: document.getElementById('booking-time').value,
-            style: "AI Selection", // Pulled from your GenAI label
-            image: document.getElementById('ai-result-img').src
+            style: selectedStyleLabel,
+            image: aiResultImg.src || "https://placeholder.com/image.jpg"
         };
 
         try {
-            const res = await fetch('/.netlify/functions/save-booking', {
+            const response = await fetch('/.netlify/functions/save-booking', {
                 method: 'POST',
-                body: JSON.stringify(payload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookingData)
             });
-            if (res.ok) {
-                status.textContent = "Confirmed!";
-                setTimeout(() => document.getElementById('booking-modal').style.display='none', 2000);
+
+            if (response.ok) {
+                status.style.color = "#4BB543";
+                status.textContent = "Confirmed! Check your email.";
+                setTimeout(() => modal.style.display = 'none', 2000);
+            } else {
+                const err = await response.json();
+                status.textContent = "Error: " + err.error;
             }
         } catch (e) {
-            status.textContent = "Error saving booking.";
+            status.textContent = "Connection error. Try again.";
         }
     };
 </script>
