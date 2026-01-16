@@ -37,7 +37,7 @@ body {
     min-height: 100vh;
 }
 
-/* --- Header and Logo Styling (MINIMAL BANNER) --- */
+/* --- Header and Logo Styling --- */
 #app-header {
     padding: 0; 
     background-color: #FFFFFF;
@@ -54,13 +54,13 @@ body {
 #main-title-container {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between the image and the text */
+    gap: 8px;
     margin: 0;
     padding: 0;
 }
 
 #header-logo {
-    height: 30px; /* Small size for the logo */
+    height: 30px; 
     width: 30px; 
     object-fit: contain;
     flex-shrink: 0;
@@ -76,10 +76,6 @@ body {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-/* ================================================== */
-/* SINGLE-COLUMN LAYOUT */
-/* ================================================== */
-
 #main-app-container {
     flex-grow: 1; 
     width: 100%;
@@ -91,7 +87,7 @@ body {
     gap: 15px; 
 }
 
-/* --- 1. GENDER BUTTONS --- */
+/* --- Gender Buttons --- */
 .gender-buttons-container {
     display: flex;
     justify-content: space-between;
@@ -120,10 +116,6 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
 }
 
-.gender-button:hover {
-    background-color: #f0f0f0;
-}
-
 .gender-button.selected {
     background-color: var(--primary-color);
     color: var(--text-on-dark);
@@ -131,7 +123,7 @@ body {
     box-shadow: 0 2px 5px rgba(29, 33, 36, 0.2); 
 }
 
-/* --- 2. CAMERA SECTION (CENTRAL HUB) --- */
+/* --- Camera Section (Circular) --- */
 #central-section {
     width: 90%;
     max-width: var(--content-max-width);
@@ -143,17 +135,16 @@ body {
     padding: 0 10px;
 }
 
-/* UPDATED: Viewport is now a circle and larger than inspiration thumbnails */
 #central-viewport {
     position: relative; 
     width: 160px !important; 
     height: 160px !important;
     margin: 0; 
-    border-radius: 50%; /* Circle shape */
+    border-radius: 50%; /* Circular shape */
     overflow: hidden;
     background-color: #e0e0e0; 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-    border: 3px solid #FFFFFF; /* White border to separate from background */
+    border: 3px solid #FFFFFF;
     display: flex; 
     align-items: center;
     justify-content: center;
@@ -161,17 +152,20 @@ body {
     flex-shrink: 0; 
 }
 
-/* --- DOTTED HEADSHOT SILHOUETTE STYLES --- */
+/* Ensure child elements respect the circular boundary */
+#video-feed, #ai-result, #camera-placeholder-icon {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50%; 
+    object-fit: cover !important;
+    display: none;
+}
+
 #camera-placeholder-icon {
-    position: relative;
-    width: 100%; 
-    height: 100%; 
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    flex-direction: column;
     background-color: #e8e8e8;
-    box-sizing: border-box;
+    position: relative;
 }
 
 #camera-placeholder-icon::before {
@@ -194,17 +188,6 @@ body {
     border-radius: 50% 50% 0 0; 
 }
 
-#video-feed, #ai-result {
-    width: 100% !important;
-    height: 100% !important; 
-    display: block;
-    object-fit: cover !important; 
-    max-width: 100% !important;
-    max-height: 100% !important;
-    z-index: 1; 
-    display: none; 
-}
-
 #status-message {
     position: absolute;
     bottom: 0;
@@ -218,23 +201,29 @@ body {
     z-index: 100; 
 }
 
-/* --- Circular Button Styling --- */
+/* --- Action Buttons --- */
+#controls-footer-row {
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+    width: 90%; 
+    max-width: var(--content-max-width);
+    padding: 0 10px;
+    min-height: 60px; 
+    align-items: center;
+    position: relative; 
+    flex-wrap: wrap;
+}
+
 .main-action-btn {
     cursor: pointer;
     border: none;
     transition: all 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.main-action-btn:active {
-    transform: scale(0.9); 
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .circular-action-btn {
     width: 50px; 
     height: 50px; 
-    padding: 0;
     border-radius: 50%; 
     background-color: var(--primary-color);
     color: var(--text-on-dark);
@@ -242,366 +231,59 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 24px; 
-    line-height: 1;
-    margin: 0; 
-    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-#camera-capture-btn {
-    border: 4px solid var(--text-on-dark);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-#generate-look-btn {
-    background-color: var(--highlight-color);
-    color: white; 
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
-}
-
-#redo-selfie-btn {
-    background-color: white;
-    color: var(--primary-color); 
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
+#camera-capture-btn { border: 4px solid #fff; }
+#generate-look-btn { background-color: var(--highlight-color); color: white; }
+#redo-selfie-btn { background-color: white; color: var(--primary-color); border: 1px solid #ddd; }
 
 #book-appointment-btn {
     width: 100%;
-    height: 45px; 
-    padding: 0 20px;
+    height: 45px;
     border-radius: 25px;
     background-color: var(--secondary-highlight);
-    color: white; 
-    font-size: 1.1em;
+    color: white;
     font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); 
-    margin-top: 10px;
     display: none;
-    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
 }
 
-#book-appointment-btn:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.6);
-}
+/* --- Filter/Gallery Styles (Condensed) --- */
+.filter-section { width: 90%; max-width: var(--content-max-width); }
+.filter-section.collapsed .filter-content-group { display: none; }
+.filter-section h3 { font-size: 0.8em; cursor: pointer; background: #f0f0f0; padding: 10px; border-radius: 20px; text-align: center; margin-bottom: 10px; }
+.complexion-tile { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+.complexion-tile.selected { border-color: var(--highlight-color); }
+.filter-options-group { display: flex; gap: 8px; justify-content: center; }
 
-#controls-footer-row {
-    display: flex;
-    justify-content: center; 
-    gap: 30px; 
-    width: 90%; 
-    max-width: var(--content-max-width);
-    padding: 0 10px;
-    min-height: 50px; 
-    align-items: center;
-    position: relative; 
-    flex-wrap: wrap;
-}
+#style-inspiration-section { width: 90%; max-width: var(--content-max-width); }
+.hairstyle-options-group-wrapper { display: flex; overflow-x: auto; gap: 10px; padding: 10px 0; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+.style-option { flex: 0 0 120px; scroll-snap-align: center; transition: transform 0.3s; }
+.style-option.selected { transform: scale(1.15); }
+.style-thumbnail { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid transparent; }
+.style-option.selected .style-thumbnail { border-color: var(--highlight-color); }
+.style-option p { display: none; }
+
+/* --- Modal --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay.visible { display: flex; }
+.booking-modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
+.modal-close-btn { position: absolute; top: 10px; right: 10px; border: none; background: none; font-size: 20px; cursor: pointer; }
+.modal-content input, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+.submit-btn { width: 100%; padding: 12px; background: var(--secondary-highlight); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
 #loading-spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* --- 3. FILTER SECTION --- */
-
-.filter-section {
-    width: 90%; 
-    max-width: var(--content-max-width);
-    margin: 0 auto; 
-    padding: 0;
-    background-color: #fff;
-    border-radius: 6px;
-    text-align: left; 
-}
-
-.filter-section h3 {
-    font-size: 0.9em;
-    font-weight: bold;
-    margin: 0; 
-    padding: 8px 10px;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    cursor: pointer;
-    background-color: #fff;
-    border-radius: 6px;
-    transition: all 0.2s ease-in-out;
-}
-
-.filter-section.collapsed h3 {
-    background-color: #f0f0f0; 
-    color: #666;
-    border-radius: 15px; 
-    height: 28px;
-    width: auto; 
-    max-width: 160px; 
-    padding: 0 15px; 
-    justify-content: center;
-    overflow: hidden; 
-    margin: 0 auto 10px auto; 
-    font-size: 0.75em;
-}
-
-.filter-section.collapsed h3 span {
-    display: inline;
-    line-height: 28px; 
-}
-
-.filter-section.collapsed h3::after {
-    content: none;
-}
-
-.filter-section.expanded h3 {
-    background-color: var(--primary-color); 
-    color: var(--text-on-dark);
-    border-radius: 6px 6px 0 0; 
-    height: auto;
-    width: 100%;
-    max-width: var(--content-max-width); 
-    padding: 8px 10px;
-    margin: 0;
-    justify-content: space-between; 
-}
-
-.filter-section h3::after {
-    content: '▶'; 
-    font-size: 0.8em;
-    margin-left: 5px;
-    transition: transform 0.2s;
-    line-height: 1;
-}
-
-.filter-section.expanded h3::after {
-    content: '▼'; 
-    color: var(--text-on-dark);
-}
-
-.filter-content-group {
-    padding: 5px 10px 10px 10px;
-    background-color: #f9f9f9;
-    border-radius: 0 0 6px 6px;
-}
-
-.filter-section.collapsed .filter-content-group {
-    display: none;
-}
-
-.filter-options-group {
-    display: flex;
-    flex-wrap: wrap; 
-    gap: 8px;
-    justify-content: flex-start; 
-    margin-top: 5px; 
-}
-
-/* Complexion Tiles */
-#complexion-options-group {
-    justify-content: flex-start; 
-    gap: 6px; 
-    padding-top: 5px;
-}
-
-.complexion-tile {
-    width: 30px; 
-    height: 30px; 
-    border: 2px solid transparent; 
-    flex-shrink: 0; 
+    width: 30px;
+    height: 30px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--highlight-color);
     border-radius: 50%;
-    cursor: pointer;
-}
-
-.complexion-tile p {
-    display: none; 
-}
-
-.complexion-tile.selected {
-    border-color: var(--highlight-color);
-    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); 
-}
-
-/* --- Hairstyle Gallery (INSPIRATION) --- */
-#style-inspiration-section {
-    width: 90%;
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: 0 10px;
-    text-align: center; 
-}
-#style-inspiration-section p {
-    font-size: 0.9em; 
-    font-weight: bold;
-    margin: 0 0 5px 0;
-}
-
-.hairstyle-options-group-wrapper {
-    display: flex; 
-    flex-wrap: nowrap;
-    white-space: nowrap; 
-    overflow-x: scroll; 
-    overflow-y: hidden; 
-    scroll-snap-type: x mandatory; 
-    scroll-behavior: smooth;
-    gap: 8px;
-    padding-bottom: 10px; 
-    -webkit-overflow-scrolling: touch;
-}
-
-.style-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 120px; 
-    flex-shrink: 0;
-    border: 2px solid transparent;
-    transition: all 0.3s ease-out; 
-    cursor: pointer;
-    transform-origin: center bottom;
-}
-
-.style-option:hover {
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-.style-option.selected {
-    border-color: var(--highlight-color);
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(40, 167, 69, 0.9) !important;
-    transform: scale(1.2) !important; 
-    z-index: 10 !important; 
-}
-
-.style-thumbnail {
-    width: 120px;
-    height: 120px; 
-    border-radius: 50%; 
-    object-fit: cover;
-    object-position: top;
-    margin-bottom: 0px; 
-}
-
-.style-option p {
+    animation: spin 1s linear infinite;
     display: none;
 }
-
-/* --- Modal Styles --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.3s;
-}
-
-.modal-overlay.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-.booking-modal {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
-.booking-modal h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-    font-size: 1.5em;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #666;
-}
-
-.modal-content label {
-    display: block;
-    margin-top: 10px;
-    text-align: left;
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-.modal-content input, .modal-content select, .modal-content button.submit-btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-.modal-content button.submit-btn {
-    margin-top: 20px;
-    background-color: var(--secondary-highlight);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.modal-content button.submit-btn:hover {
-    background-color: #0056b3;
-}
-
-#reference-image-preview {
-    width: 100%;
-    height: auto;
-    max-height: 100px;
-    object-fit: contain;
-    margin-top: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    display: block;
-}
-
-/* 📱 MOBILE MEDIA QUERY OPTIMIZATIONS */
-
-@media (max-width: 600px) {
-    #main-app-container {
-        padding: 10px 0;
-        gap: 15px; 
-    }
-    
-    .gender-buttons-container,
-    #central-section,
-    #style-inspiration-section,
-    #additional-filters-selector,
-    #controls-footer-row {
-        width: 95%;
-        max-width: 95%;
-        box-sizing: border-box;
-        padding: 0 10px;
-    }
-}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -614,34 +296,29 @@ body {
     </div>
 
     <div id="main-app-container">
-        
         <div class="gender-buttons-container">
             <button id="male-gender-btn" class="gender-button selected">Male</button>
             <button id="female-gender-btn" class="gender-button">Female</button>
         </div>
 
         <div id="additional-filters-selector" class="filter-section collapsed">
-            <h3><span>+ Additional Filters</span><span class="icon"></span></h3>
+            <h3>+ Additional Filters</h3>
             <div class="filter-content-group">
-                <p style="font-size: 0.9em; font-weight: bold; margin-bottom: 5px;">Complexion (Optional)</p>
                 <div id="complexion-options-group" class="filter-options-group">
-                    <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light" data-complexion-code="default"></div>
-                    <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium" data-complexion-code="default"></div>
-                    <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark" data-complexion-code="ds"></div>
-                    <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep" data-complexion-code="ds"></div>
+                    <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion-code="default"></div>
+                    <div class="complexion-tile" style="background-color: #D6A476;" data-complexion-code="default"></div>
+                    <div class="complexion-tile" style="background-color: #A97A52;" data-complexion-code="ds"></div>
+                    <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion-code="ds"></div>
                 </div>
             </div>
         </div>
         
         <div id="central-section">
             <div id="central-viewport">
-                <div id="camera-placeholder-icon"></div>
-                
+                <div id="camera-placeholder-icon" style="display: flex;"></div>
                 <video id="video-feed" autoplay playsinline></video>
-                
-                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
-                
-                <p id="status-message">Tap the circle to take a selfie.</p>
+                <img id="ai-result">
+                <p id="status-message">Tap the circle to start</p>
             </div>
         </div>
         
@@ -649,8 +326,8 @@ body {
             <button id="camera-capture-btn" class="circular-action-btn main-action-btn" disabled>📸</button> 
             <button id="redo-selfie-btn" class="circular-action-btn main-action-btn" style="display: none;">🔄</button>
             <button id="generate-look-btn" class="circular-action-btn main-action-btn" style="display: none;">✨</button>
-            <div id="loading-spinner" class="spinner" style="display: none;"></div>
-            <button id="book-appointment-btn" class="main-action-btn" style="display: none;">Book Appointment</button>
+            <div id="loading-spinner"></div>
+            <button id="book-appointment-btn">Book Appointment</button>
         </div>
 
         <div id="style-inspiration-section">
@@ -658,7 +335,6 @@ body {
             <div id="male-hairstyle-options-group" class="hairstyle-options-group-wrapper"></div>
             <div id="female-hairstyle-options-group" class="hairstyle-options-group-wrapper" style="display: none;"></div>
         </div>
-
     </div>
 
     <canvas id="hidden-canvas" style="display: none;"></canvas>
@@ -668,27 +344,13 @@ body {
             <button class="modal-close-btn" id="modal-close-btn">&times;</button>
             <h2>Book Your Look</h2>
             <div class="modal-content">
-                <p>You are booking the style reference below:</p>
-                <img id="reference-image-preview" src="" alt="AI Generated Style Reference">
-                <p style="font-size: 0.8em; margin-top: 5px; color: #555;">**Style Selected: <span id="selected-style-name"></span>**</p>
-                
+                <img id="reference-image-preview" style="width:100%; border-radius:8px; margin-bottom:10px;">
                 <form id="booking-form">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
-
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
-
-                    <label for="date">Select Date</label>
-                    <input type="date" id="date" name="date" required>
-
-                    <label for="time">Select Time</label>
-                    <select id="time" name="time" required>
-                        <option value="">Loading availability...</option>
-                    </select>
-
-                    <button type="submit" class="submit-btn" id="booking-submit-btn" disabled>Confirm Booking</button>
-                    <p id="booking-status-message" style="margin-top: 10px; color: #dc3545; font-weight: bold;"></p>
+                    <input type="text" id="name" placeholder="Full Name" required>
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="date" id="date" required>
+                    <select id="time" required><option value="10:00">10:00 AM</option></select>
+                    <button type="submit" class="submit-btn">Confirm Booking</button>
                 </form>
             </div>
         </div>
@@ -696,177 +358,87 @@ body {
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- ELEMENT REFERENCES ---
     const videoFeed = document.getElementById('video-feed');
     const aiResultImg = document.getElementById('ai-result');
-    const cameraPlaceholder = document.getElementById('camera-placeholder-icon');
-    const statusMessage = document.getElementById('status-message');
-    const cameraCaptureBtn = document.getElementById('camera-capture-btn');
-    const generateLookBtn = document.getElementById('generate-look-btn');
-    const redoSelfieBtn = document.getElementById('redo-selfie-btn');
-    const bookAppointmentBtn = document.getElementById('book-appointment-btn');
-    const maleGenderBtn = document.getElementById('male-gender-btn');
-    const femaleGenderBtn = document.getElementById('female-gender-btn');
-    const maleStyleOptionsGroup = document.getElementById('male-hairstyle-options-group');
-    const femaleStyleOptionsGroup = document.getElementById('female-hairstyle-options-group');
-    const filtersAccordion = document.getElementById('additional-filters-selector');
-    const complexionGroup = document.getElementById('complexion-options-group');
-    const bookingModal = document.getElementById('booking-modal-overlay');
-    const closeBookingBtn = document.getElementById('modal-close-btn');
-
-    // --- STATE VARIABLES ---
+    const placeholder = document.getElementById('camera-placeholder-icon');
+    const statusMsg = document.getElementById('status-message');
+    const captureBtn = document.getElementById('camera-capture-btn');
+    const generateBtn = document.getElementById('generate-look-btn');
+    const redoBtn = document.getElementById('redo-selfie-btn');
+    const bookBtn = document.getElementById('book-appointment-btn');
+    const spinner = document.getElementById('loading-spinner');
+    
     let cameraStarted = false;
-    let selectedGender = 'Male';
     let selectedPrompt = null;
-    let selectedStyleLabel = null;
-    let currentFilterCode = 'default';
+    let imageCaptured = false;
 
-    // --- STYLE DATA ---
-    const ALL_MALE_STYLES = [
-        { code: 'default', src: "styles/male/style1.png", label: "Tousled Short Crop", prompt: "A short haircut with a tousled top and natural texture, clean sides, modern masculine look." },
-        { code: 'default', src: "styles/male/style2.png", label: "Wavy Clean Fade", prompt: "A clean mid-fade on sides with a messy wavy top, styled with light cream, natural finish." },
-        { code: 'default', src: "styles/male/style3.png", label: "Classic Side-Part", prompt: "A classic side-part with a smooth taper, professional polished finish, short length." },
-        { code: 'default', src: "styles/male/style4.png", label: "Short Curly Crop", prompt: "Natural curls on top with high skin fade on sides, textured and defined curly look." },
-        { code: 'default', src: "styles/male/style5.png", label: "Layered Shag Cut", prompt: "A relaxed layered shag with ear-length sides, effortless messy look, medium length." },
-        { code: 'default', src: "styles/male/style6.png", prompt: "A textured buzz cut with a low skin fade on the sides, clean and sharp masculine style." },
-        { code: 'default', src: "styles/male/style7.png", prompt: "A modern quiff with high volume on top, medium fade sides, styled with matte wax." },
-        { code: 'default', src: "styles/male/style8.png", prompt: "A textured fringe with short sides, hair swept forward, youthful and effortless." },
-        { code: 'default', src: "styles/male/style9.png", prompt: "A sleek back pompadour with a sharp side part, polished wet look, medium length." },
-        { code: 'default', src: "styles/male/style10.png", prompt: "A cropped caesar cut with short blunt fringe, textured top, low taper fade." },
-        { code: 'default', src: "styles/male/style11.png", prompt: "A long messy top with disconnected undercut, high contrast look, edgy and modern." },
-        { code: 'default', src: "styles/male/style12.png", prompt: "A classic crew cut, very short and uniform, masculine and low-maintenance." },
-        { code: 'default', src: "styles/male/style13.png", prompt: "A messy ivy league cut, side-parted with natural texture, clean-cut yet relaxed." },
-        { code: 'default', src: "styles/male/style14.png", prompt: "A medium-length bro flow, hair swept back behind ears, natural waves, classic look." },
-        { code: 'default', src: "styles/male/style15.png", prompt: "A sharp flat top with faded sides, structured and bold military-inspired style." },
-        { code: 'default', src: "styles/male/style16.png", prompt: "A relaxed man bun with undercut, hair gathered at crown, medium to long length." },
-        { code: 'default', src: "styles/male/style17.png", prompt: "A spiky textured top with burst fade sides, modern streetwear-inspired hairstyle." },
-        { code: 'default', src: "styles/male/style18.png", prompt: "A side-swept undercut, hair length on one side, clean shaved other side." },
-        { code: 'default', src: "styles/male/style19.png", prompt: "A messy surfer hair look, chin-length layers with salt-spray texture." },
-        { code: 'default', src: "styles/male/style20.png", prompt: "A classic slick-back with long taper, hair groomed straight back, traditional." },
-        { code: 'default', src: "styles/male/style21.png", prompt: "A faux-hawk with low fade, hair styled to a point in center, bold and textured." },
-        { code: 'ds', src: "styles/male/ds/1.png", label: "Low Fade Coils", prompt: "A low taper fade with short tight sponge coils on top, clean hairline, natural texture." },
-        { code: 'ds', src: "styles/male/ds/2.png", label: "Classic Afro", prompt: "A classic medium-length afro with a perfectly rounded shape, natural volume and density." },
-        { code: 'ds', src: "styles/male/ds/3.png", label: "Tapered Twists", prompt: "Short hair twists with a sharp taper fade on the sides and back, neat and modern." },
-        { code: 'ds', src: "styles/male/ds/4.png", label: "360 Waves", prompt: "A short haircut with deep 360 wave pattern, high gloss finish, with a clean drop fade." }
+    const MALE_STYLES = [
+        { code: 'default', src: "styles/male/style1.png", label: "Short Crop", prompt: "A short textured crop" },
+        { code: 'ds', src: "styles/male/ds/1.png", label: "Fade", prompt: "A clean skin fade with coils" }
     ];
 
-    const ALL_FEMALE_STYLES = [
-        { src: "styles/female/style1.png", label: "Soft Wavy Layers", prompt: "A shoulder-length cut with soft waves and natural volume, warm brunette color, gentle face-framing layers." },
-        { src: "styles/female/style2.png", label: "Long Loose Curls", prompt: "A long layered hairstyle with loose romantic curls, dark brown with subtle caramel highlights, high shine." },
-        { src: "styles/female/style3.png", label: "Sleek Chin Bob", prompt: "A sleek straight bob cut at chin length, jet black, sharp clean edges, sophisticated look." },
-        { src: "styles/female/style4.png", label: "Textured Wavy Lob", prompt: "A textured lob (long bob) with subtle beachy waves, ash blonde with dark roots, effortless messy finish." },
-        { src: "styles/female/style5.png", label: "Choppy Pixie Cut", prompt: "A short pixie cut with choppy layers and a side-swept fringe, platinum blonde, edgy and modern." }
-    ];
-
-    // --- UTILITY ---
-    function shuffleArray(array) {
-        let currentIndex = array.length, randomIndex;
-        while (currentIndex !== 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-        }
-        return array;
-    }
-
-    // --- CAMERA ---
     async function startCamera() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
             videoFeed.srcObject = stream;
             videoFeed.style.display = 'block';
-            cameraPlaceholder.style.display = 'none';
-            statusMessage.textContent = "Position your face and tap 📸";
-            cameraCaptureBtn.disabled = false;
+            placeholder.style.display = 'none';
             cameraStarted = true;
-        } catch (err) {
-            statusMessage.textContent = "Camera access denied.";
-        }
+            captureBtn.disabled = false;
+            statusMsg.textContent = "Tap 📸 to take selfie";
+        } catch (e) { statusMsg.textContent = "Camera access denied"; }
     }
 
-    function captureImage() {
-        if (!cameraStarted) return;
+    function updateButtonVisibility() {
+        captureBtn.style.display = (!imageCaptured && cameraStarted) ? 'flex' : 'none';
+        redoBtn.style.display = imageCaptured ? 'flex' : 'none';
+        generateBtn.style.display = (imageCaptured && selectedPrompt) ? 'flex' : 'none';
+    }
+
+    captureBtn.onclick = () => {
         const canvas = document.getElementById('hidden-canvas');
-        const context = canvas.getContext('2d');
         canvas.width = videoFeed.videoWidth;
         canvas.height = videoFeed.videoHeight;
-        context.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+        canvas.getContext('2d').drawImage(videoFeed, 0, 0);
         aiResultImg.src = canvas.toDataURL('image/jpeg');
         aiResultImg.style.display = 'block';
         videoFeed.style.display = 'none';
-        cameraCaptureBtn.style.display = 'none';
-        redoSelfieBtn.style.display = 'flex';
-        if (selectedPrompt) generateLookBtn.style.display = 'flex';
-        statusMessage.textContent = "Select a style then tap ✨";
-    }
+        imageCaptured = true;
+        updateButtonVisibility();
+        statusMsg.textContent = "Select a style then tap ✨";
+    };
 
-    // --- GALLERY ---
-    function handleGenderSelect(gender) {
-        selectedGender = gender;
-        selectedPrompt = null;
-        if (gender === 'Male') {
-            maleGenderBtn.classList.add('selected');
-            femaleGenderBtn.classList.remove('selected');
-            maleStyleOptionsGroup.style.display = 'flex';
-            femaleStyleOptionsGroup.style.display = 'none';
-            filtersAccordion.style.display = 'block';
-            updateMaleStyleGallery(currentFilterCode);
-        } else {
-            femaleGenderBtn.classList.add('selected');
-            maleGenderBtn.classList.remove('selected');
-            maleStyleOptionsGroup.style.display = 'none';
-            femaleStyleOptionsGroup.style.display = 'flex';
-            filtersAccordion.style.display = 'none';
-            updateFemaleStyleGallery();
-        }
-    }
+    redoBtn.onclick = () => {
+        imageCaptured = false;
+        aiResultImg.style.display = 'none';
+        videoFeed.style.display = 'block';
+        updateButtonVisibility();
+    };
 
-    function updateMaleStyleGallery(filterCode) {
-        currentFilterCode = filterCode;
-        maleStyleOptionsGroup.innerHTML = '';
-        let styles = ALL_MALE_STYLES.filter(s => s.code === filterCode);
-        shuffleArray([...styles]).forEach(style => {
-            maleStyleOptionsGroup.appendChild(createStyleOption(style));
+    placeholder.onclick = startCamera;
+
+    // Gallery Logic
+    function renderGallery(styles) {
+        const container = document.getElementById('male-hairstyle-options-group');
+        container.innerHTML = '';
+        styles.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'style-option';
+            div.innerHTML = `<img class="style-thumbnail" src="${s.src}">`;
+            div.onclick = () => {
+                document.querySelectorAll('.style-option').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+                selectedPrompt = s.prompt;
+                updateButtonVisibility();
+            };
+            container.appendChild(div);
         });
     }
 
-    function updateFemaleStyleGallery() {
-        femaleStyleOptionsGroup.innerHTML = '';
-        shuffleArray([...ALL_FEMALE_STYLES]).forEach(style => {
-            femaleStyleOptionsGroup.appendChild(createStyleOption(style));
-        });
-    }
-
-    function createStyleOption(style) {
-        const div = document.createElement('div');
-        div.className = 'style-option';
-        div.innerHTML = `<img class="style-thumbnail" src="${style.src}" alt="${style.label}"><p>${style.label}</p>`;
-        div.addEventListener('click', () => {
-            document.querySelectorAll('.style-option').forEach(el => el.classList.remove('selected'));
-            div.classList.add('selected');
-            selectedPrompt = style.prompt;
-            selectedStyleLabel = style.label || "the style";
-            if (aiResultImg.style.display === 'block') generateLookBtn.style.display = 'flex';
-        });
-        return div;
-    }
-
-    // --- INITIALIZE ---
-    cameraPlaceholder.addEventListener('click', startCamera);
-    cameraCaptureBtn.addEventListener('click', captureImage);
-    maleGenderBtn.addEventListener('click', () => handleGenderSelect('Male'));
-    femaleGenderBtn.addEventListener('click', () => handleGenderSelect('Female'));
-    filtersAccordion.querySelector('h3').addEventListener('click', () => filtersAccordion.classList.toggle('collapsed'));
+    renderGallery(MALE_STYLES);
     
-    document.querySelectorAll('.complexion-tile').forEach(tile => {
-        tile.addEventListener('click', () => {
-            document.querySelectorAll('.complexion-tile').forEach(t => t.classList.remove('selected'));
-            tile.classList.add('selected');
-            updateMaleStyleGallery(tile.dataset.complexionCode);
-        });
-    });
-
-    handleGenderSelect('Male');
+    document.getElementById('male-gender-btn').onclick = () => renderGallery(MALE_STYLES);
+    document.querySelector('.filter-section h3').onclick = () => document.querySelector('.filter-section').classList.toggle('collapsed');
 });
     </script>
 </body>
