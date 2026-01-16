@@ -153,6 +153,7 @@ body {
     flex-shrink: 0; 
 }
 
+/* --- Silhouette Headshot Overlay --- */
 #camera-placeholder-icon {
     position: relative;
     width: 60%; 
@@ -370,6 +371,7 @@ body {
 .booking-modal {
     background: white; padding: 20px; border-radius: 8px;
     width: 90%; max-width: 400px;
+    position: relative;
 }
 
 @media (max-width: 600px) {
@@ -435,19 +437,115 @@ body {
             <button class="modal-close-btn" id="modal-close-btn">&times;</button>
             <h2>Book Your Look</h2>
             <div class="modal-content">
+                <p>You are booking the style reference below:</p>
                 <img id="reference-image-preview" src="">
+                <p><strong>Style: <span id="selected-style-name"></span></strong></p>
                 <form id="booking-form">
-                    <label>Your Name</label><input type="text" required>
-                    <label>Email</label><input type="email" required>
+                    <label>Your Name</label><input type="text" id="name" required>
+                    <label>Email</label><input type="email" id="email" required>
                     <button type="submit" class="submit-btn">Confirm Booking</button>
+                    <p id="booking-status-message"></p>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        // JS logic from 'looks stable html.txt' would go here to handle 
-        // gallery rendering, camera, and AI generation.
+    document.addEventListener('DOMContentLoaded', () => {
+        const videoFeed = document.getElementById('video-feed');
+        const aiResultImg = document.getElementById('ai-result');
+        const cameraPlaceholderIcon = document.getElementById('camera-placeholder-icon');
+        const cameraCaptureBtn = document.getElementById('camera-capture-btn');
+        const redoSelfieBtn = document.getElementById('redo-selfie-btn');
+        const generateLookBtn = document.getElementById('generate-look-btn');
+        const bookAppointmentBtn = document.getElementById('book-appointment-btn');
+        const statusMessage = document.getElementById('status-message');
+        
+        const maleStyleGroup = document.getElementById('male-hairstyle-options-group');
+        const femaleStyleGroup = document.getElementById('female-hairstyle-options-group');
+        const maleBtn = document.getElementById('male-gender-btn');
+        const femaleBtn = document.getElementById('female-gender-btn');
+
+        let selectedGender = 'Male';
+        let selectedPrompt = null;
+        let selectedStyleLabel = null;
+
+        // --- Camera Logic ---
+        cameraPlaceholderIcon.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                videoFeed.srcObject = stream;
+                videoFeed.style.display = 'block';
+                cameraPlaceholderIcon.style.display = 'none';
+                cameraCaptureBtn.disabled = false;
+                statusMessage.textContent = "Smile and take your photo!";
+            } catch (err) {
+                console.error("Camera error:", err);
+                statusMessage.textContent = "Camera access denied.";
+            }
+        });
+
+        cameraCaptureBtn.addEventListener('click', () => {
+            const canvas = document.getElementById('hidden-canvas');
+            canvas.width = videoFeed.videoWidth;
+            canvas.height = videoFeed.videoHeight;
+            canvas.getContext('2d').drawImage(videoFeed, 0, 0);
+            const data = canvas.toDataURL('image/png');
+            aiResultImg.src = data;
+            aiResultImg.style.display = 'block';
+            videoFeed.style.display = 'none';
+            cameraCaptureBtn.style.display = 'none';
+            redoSelfieBtn.style.display = 'flex';
+            generateLookBtn.style.display = 'flex';
+            statusMessage.textContent = "Perfect! Now pick a style.";
+        });
+
+        redoSelfieBtn.addEventListener('click', () => {
+            aiResultImg.style.display = 'none';
+            videoFeed.style.display = 'block';
+            cameraCaptureBtn.style.display = 'flex';
+            redoSelfieBtn.style.display = 'none';
+            generateLookBtn.style.display = 'none';
+            bookAppointmentBtn.style.display = 'none';
+        });
+
+        // --- Gallery Logic ---
+        function renderGallery(gender) {
+            const container = gender === 'Male' ? maleStyleGroup : femaleStyleGroup;
+            container.innerHTML = ''; // Simplified for restoration
+            // Assume styles are loaded here as per original stable version
+            maleStyleGroup.style.display = gender === 'Male' ? 'flex' : 'none';
+            femaleStyleGroup.style.display = gender === 'Female' ? 'flex' : 'none';
+        }
+
+        maleBtn.addEventListener('click', () => { 
+            selectedGender = 'Male'; 
+            maleBtn.classList.add('selected'); 
+            femaleBtn.classList.remove('selected');
+            renderGallery('Male');
+        });
+
+        femaleBtn.addEventListener('click', () => { 
+            selectedGender = 'Female'; 
+            femaleBtn.classList.add('selected'); 
+            maleBtn.classList.remove('selected');
+            renderGallery('Female');
+        });
+
+        // --- Booking Modal ---
+        bookAppointmentBtn.addEventListener('click', () => {
+            document.getElementById('booking-modal-overlay').classList.add('visible');
+            document.getElementById('reference-image-preview').src = aiResultImg.src;
+            document.getElementById('selected-style-name').textContent = selectedStyleLabel || "Selected Hairstyle";
+        });
+
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('booking-modal-overlay').classList.remove('visible');
+        });
+
+        // Initialize
+        maleBtn.click();
+    });
     </script>
 </body>
 </html>
