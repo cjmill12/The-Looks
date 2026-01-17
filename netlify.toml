@@ -1,15 +1,15 @@
+[build]
+  command = "npm run build"
+  functions = "netlify/functions"
+  publish = "."
+
 [functions]
-  directory = "netlify/functions"
   node_bundler = "esbuild"
   
-  [functions.tryon]
-    external_packages = [
-      "@google/genai" 
-    ]
-
-# 💡 CRITICAL: ADD THIS SECTION
-# This maps the URL the frontend calls to your function file's name.
 [[redirects]]
-  from = "/api/run_model"
-  to = "/.netlify/functions/tryon"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
+
+[dev]
+  framework = "#static"
