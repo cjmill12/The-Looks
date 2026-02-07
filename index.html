@@ -612,9 +612,11 @@ body {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     gap: 20px;
-    padding: 0 calc(50vw - 60px) 20px; /* Center first/last items */
+    padding: 0 calc(50vw - 60px) 20px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    scroll-padding: 0 calc(50vw - 60px);
+    overscroll-behavior-x: contain;
 }
 
 .hairstyle-options-group-wrapper::-webkit-scrollbar {
@@ -629,13 +631,14 @@ body {
     width: 120px;
     flex-shrink: 0;
     border: 3px solid transparent;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
     transform-origin: center;
     border-radius: var(--border-radius-md);
     padding: 6px;
-    scroll-snap-align: center; /* Snap to center like Snapchat */
+    scroll-snap-align: center;
     scroll-snap-stop: always;
+    will-change: transform;
 }
 
 .style-option:hover {
@@ -652,6 +655,7 @@ body {
         0 4px 10px rgba(14, 165, 233, 0.15);
     transform: scale(1.2);
     z-index: 10;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .style-thumbnail {
@@ -839,6 +843,12 @@ body {
         padding: 8px 0 20px;
         gap: 12px;
     }
+    
+    #central-section {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+    }
 
     #filters-combined-row {
         gap: 12px;
@@ -889,10 +899,11 @@ body {
     }
 
     #central-viewport {
-        width: 70vw;
+        width: 100vw;
         height: 70vw;
-        max-width: 300px;
+        max-width: 100vw;
         max-height: 300px;
+        border-radius: 0;
     }
 
     .circular-action-btn {
@@ -1214,6 +1225,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
     let loadingMessageInterval = null;
+    let lastHapticTime = 0;
+    const HAPTIC_DEBOUNCE = 100; // Minimum 100ms between scroll haptics
 
     // Haptic feedback helper (vibration on mobile)
     function triggerHaptic(pattern = 10) {
@@ -1223,6 +1236,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             // Silently fail if vibration not supported
+        }
+    }
+    
+    // Debounced haptic for scrolling (prevents spam)
+    function triggerScrollHaptic() {
+        const now = Date.now();
+        if (now - lastHapticTime >= HAPTIC_DEBOUNCE) {
+            triggerHaptic(5);
+            lastHapticTime = now;
         }
     }
 
@@ -1378,6 +1400,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!closestOption.classList.contains('selected')) {
                 allOptions.forEach(o => o.classList.remove('selected'));
                 closestOption.classList.add('selected');
+                
+                // Very light debounced haptic on snap - feels like Snapchat
+                triggerScrollHaptic();
             }
             if (selectedPrompt !== closestOption.dataset.prompt) {
                 selectedPrompt = closestOption.dataset.prompt;
