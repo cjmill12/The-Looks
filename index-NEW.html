@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looks - Virtual Hairstyle Try-On</title>
+    
+    <style>
+/* --- PROFESSIONAL COLOR SCHEME --- */
+:root {
+    /* Elite Color Palette */
+    --primary-color: #0f172a;
+    --primary-light: #1e293b;
+    --accent-color: #0ea5e9;
+    --accent-hover: #0284c7;
+    --success-color: #059669;
+    --success-hover: #047857;
+    --text-on-dark: #FFFFFF;
+    --background-color: #f8fafc;
+    --surface-color: #FFFFFF;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    
+    /* Sizing */
+    --header-height: 64px;
+    --viewport-size-desktop: 360px;
+    --viewport-size-mobile: 320px;
+    --content-max-width: 440px;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-full: 9999px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    -webkit-user-select: none;
+    user-select: none;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* --- PROFESSIONAL HEADER --- */
+#app-header {
+    padding: 0 20px;
+    background-color: var(--surface-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+#main-title-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+#main-title {
+    color: var(--primary-color);
+    font-size: 2em;
+    font-weight: 300;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+/* Remove logo - using text only */
+#header-logo {
+    display: none;
+}
+
+/* --- MAIN CONTAINER WITH BETTER SPACING --- */
+#main-app-container {
+    flex-grow: 1;
+    width: 100%;
+    padding: 16px 0 32px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* --- COMBINED FILTERS ROW (Compact, at bottom) --- */
+#filters-combined-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+    max-width: 320px;
+    margin: 4px auto 0;
+    padding: 8px 14px;
+    background-color: transparent;
+    border-radius: var(--border-radius-full);
+    box-shadow: none;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.filter-label {
+    font-size: 0.65em;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-separator {
+    width: 1px;
+    height: 36px;
+    background-color: rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+/* --- COMPACT GENDER BUTTONS --- */
+.gender-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.gender-button {
+    flex: 0 0 auto;
+    min-width: 58px;
+    padding: 5px 12px;
+    border: 1.5px solid var(--border-color);
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.gender-button:hover {
+    background-color: #f9fafb;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.gender-button.selected {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(26, 31, 54, 0.2);
+}
+
+/* --- CAMERA SECTION - POLISHED --- */
+#central-section {
+    width: 90%;
+    max-width: var(--content-max-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 16px;
+}
+
+#central-viewport {
+    position: relative;
+    width: var(--viewport-size-mobile);
+    height: var(--viewport-size-mobile);
+    max-width: var(--viewport-size-desktop);
+    max-height: var(--viewport-size-desktop);
+    margin: 0;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.03) 0%, rgba(148, 163, 184, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 1px 1px rgba(0, 0, 0, 0.03),
+        0 2px 2px rgba(0, 0, 0, 0.03),
+        0 4px 4px rgba(0, 0, 0, 0.03),
+        0 8px 8px rgba(0, 0, 0, 0.03),
+        0 16px 16px rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#central-viewport:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 2px 2px rgba(0, 0, 0, 0.05),
+        0 4px 4px rgba(0, 0, 0, 0.05),
+        0 8px 8px rgba(0, 0, 0, 0.05),
+        0 16px 16px rgba(0, 0, 0, 0.05),
+        0 32px 32px rgba(0, 0, 0, 0.05);
+}
+
+#camera-placeholder-icon {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    background-color: transparent;
+}
+
+/* Viewfinder corner brackets */
+#camera-placeholder-icon::before,
+#camera-placeholder-icon::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 3px solid #0ea5e9;
+}
+
+#camera-placeholder-icon::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 8px 0 0 0;
+    box-shadow: 
+        inset -3px 0 0 #0ea5e9,
+        inset 0 -3px 0 #0ea5e9;
+}
+
+#camera-placeholder-icon::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 8px 0;
+}
+
+/* Face guidance oval overlay */
+#face-guide-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 80%;
+    border: 3px dashed rgba(14, 165, 233, 0.6);
+    border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+    pointer-events: none;
+    z-index: 50;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#face-guide-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.viewfinder-corner {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 3px solid #0ea5e9;
+    pointer-events: none;
+}
+
+.viewfinder-corner.top-left {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 8px 0 0 0;
+}
+
+.viewfinder-corner.top-right {
+    top: 0;
+    right: 0;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 8px 0 0;
+}
+
+.viewfinder-corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 8px;
+}
+
+.viewfinder-corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 8px 0;
+}
+
+.viewfinder-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+}
+
+.viewfinder-crosshair::before,
+.viewfinder-crosshair::after {
+    content: '';
+    position: absolute;
+    background: #0ea5e9;
+    opacity: 0.4;
+}
+
+.viewfinder-crosshair::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.viewfinder-crosshair::after {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+}
+
+#video-feed, #ai-result {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 1;
+    display: none;
+}
+
+#status-message {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+    color: white;
+    padding: 16px 12px 12px;
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+    z-index: 100;
+    letter-spacing: 0.01em;
+}
+
+/* --- LIVE PREVIEW OVERLAY --- */
+#style-preview-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3), 0 8px 20px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 50;
+    object-fit: cover;
+    object-position: top;
+    display: none;
+}
+
+#style-preview-overlay.active {
+    opacity: 0.85;
+}
+
+#style-preview-overlay:hover {
+    opacity: 0.95;
+}
+
+/* --- PROFESSIONAL BUTTONS --- */
+.main-action-btn {
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.main-action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.main-action-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.circular-action-btn {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.95) 100%);
+    color: var(--text-on-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    line-height: 1;
+    margin: 0;
+    flex-shrink: 0;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.circular-action-btn:hover {
+    box-shadow: 
+        0 6px 10px rgba(0, 0, 0, 0.15),
+        0 3px 6px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* --- Camera Button (iPhone Style) --- */
+#camera-capture-btn {
+    width: 66px;
+    height: 66px;
+    background-color: transparent;
+    color: transparent;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+#camera-capture-btn::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease;
+}
+
+#camera-capture-btn:hover::before {
+    background-color: #f5f5f5;
+}
+
+#camera-capture-btn:active::before {
+    transform: translate(-50%, -50%) scale(0.88);
+    background-color: #e8e8e8;
+}
+
+#generate-look-btn {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+    box-shadow: 
+        0 4px 12px rgba(14, 165, 233, 0.3),
+        0 2px 4px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#generate-look-btn:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+    box-shadow: 
+        0 6px 18px rgba(14, 165, 233, 0.4),
+        0 3px 8px rgba(14, 165, 233, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+#redo-selfie-btn {
+    background-color: var(--surface-color);
+    color: var(--primary-color);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#redo-selfie-btn:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#book-appointment-btn {
+    width: auto;
+    min-width: 160px;
+    max-width: 200px;
+    height: 38px;
+    padding: 0 20px;
+    border-radius: var(--border-radius-full);
+    background: linear-gradient(135deg, var(--success-color) 0%, #0d9488 100%);
+    color: var(--text-on-dark);
+    font-size: 0.9em;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+    margin-top: 0;
+    display: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.02em;
+}
+
+#book-appointment-btn:hover {
+    background: linear-gradient(135deg, #0d9488 0%, var(--success-color) 100%);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px);
+}
+
+#book-appointment-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+#controls-footer-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 90%;
+    max-width: var(--content-max-width);
+    padding: 0 16px;
+    min-height: 64px;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+#loading-spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* --- VISIBLE FILTER PILLS --- */
+.filter-section {
+    width: 90%;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 16px;
+    background-color: transparent;
+    border-radius: 0;
+    text-align: center;
+}
+
+.filter-section h3 {
+    font-size: 0.85em;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    text-transform: none;
+    letter-spacing: 0;
+    display: none; /* Hide the header, show pills directly */
+}
+
+.filter-content-group {
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
+}
+
+.filter-section.collapsed .filter-content-group {
+    display: flex; /* Always show, even when "collapsed" */
+    justify-content: center;
+}
+
+.filter-section.expanded .filter-content-group {
+    display: flex;
+}
+
+/* Complexion label */
+.filter-content-group > p {
+    font-size: 0.85em;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.filter-options-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+#complexion-options-group {
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.complexion-tile {
+    width: 32px;
+    height: 32px;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.complexion-tile:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.complexion-tile p {
+    display: none;
+}
+
+.complexion-tile.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--surface-color), 0 0 0 4px var(--accent-color);
+    transform: scale(1.15);
+}
+
+/* --- HAIR COLOR FILTER TILES --- */
+.hair-color-tile {
+    width: 32px;
+    height: 32px;
+    border: 2px solid transparent;
+    flex-shrink: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.hair-color-tile:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hair-color-tile.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--surface-color), 0 0 0 4px var(--accent-color);
+    transform: scale(1.2);
+}
+
+/* --- HAIRSTYLE GALLERY - SNAPCHAT STYLE --- */
+#style-inspiration-section {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    position: relative;
+}
+
+#style-inspiration-section p {
+    font-size: 0.75em;
+    font-weight: 500;
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.hairstyle-options-group-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 20px;
+    padding: 0 calc(50vw - 60px) 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-padding: 0 calc(50vw - 60px);
+    overscroll-behavior-x: contain;
+}
+
+.hairstyle-options-group-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.style-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 120px;
+    flex-shrink: 0;
+    border: 3px solid transparent;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    transform-origin: center;
+    border-radius: var(--border-radius-md);
+    padding: 6px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    will-change: transform;
+}
+
+.style-option:hover {
+    transform: scale(1.05);
+}
+
+.style-option.selected {
+    border-color: var(--accent-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: 
+        0 0 0 2px var(--surface-color), 
+        0 0 0 4px var(--accent-color), 
+        0 8px 20px rgba(14, 165, 233, 0.25),
+        0 4px 10px rgba(14, 165, 233, 0.15);
+    transform: scale(1.2);
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.style-thumbnail {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    margin-bottom: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.style-option p {
+    display: none;
+}
+
+/* --- MODAL - MODERN DESIGN --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.booking-modal {
+    background: var(--surface-color);
+    padding: 32px;
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 440px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.booking-modal h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.75em;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.75em;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.modal-close-btn:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-color);
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 0;
+    box-sizing: border-box;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 1em;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: var(--surface-color);
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+.modal-content button.submit-btn {
+    width: 100%;
+    padding: 16px 32px;
+    margin-top: 24px;
+    background-color: var(--success-color);
+    color: var(--text-on-dark);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1em;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.modal-content button.submit-btn:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
+
+.modal-content button.submit-btn:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+#reference-image-preview {
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+    object-fit: contain;
+    margin-top: 12px;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--border-color);
+    display: block;
+}
+
+#booking-status-message {
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 600px) {
+    :root {
+        --header-height: 50px;
+        --content-max-width: 100%;
+    }
+
+    #main-title {
+        font-size: 1.5em;
+    }
+
+    #main-app-container {
+        padding: 8px 0 20px;
+        gap: 12px;
+    }
+    
+    #central-section {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+    }
+
+    #filters-combined-row {
+        gap: 12px;
+        width: 95%;
+        padding: 8px 12px;
+        margin: 6px auto 0;
+    }
+    
+    .filter-separator {
+        width: 1px;
+        height: 36px;
+    }
+    
+    .filter-label {
+        font-size: 0.65em;
+    }
+    
+    .gender-button {
+        min-width: 60px;
+        padding: 5px 12px;
+        font-size: 0.75em;
+    }
+    
+    .complexion-tile {
+        width: 30px;
+        height: 30px;
+    }
+    
+    #book-appointment-btn {
+        min-width: 140px;
+        max-width: 180px;
+        height: 36px;
+        font-size: 0.85em;
+        padding: 0 18px;
+    }
+    
+    #central-section,
+    #controls-footer-row {
+        width: 95%;
+        max-width: 95%;
+        padding: 0 12px;
+    }
+    
+    #style-inspiration-section {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+    }
+
+    #central-viewport {
+        width: 100vw;
+        height: 70vw;
+        max-width: 100vw;
+        max-height: 300px;
+        border-radius: 0;
+    }
+
+    .circular-action-btn {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+    
+    #camera-capture-btn {
+        width: 62px;
+        height: 62px;
+    }
+    
+    #camera-capture-btn::before {
+        width: 46px;
+        height: 46px;
+    }
+
+    #complexion-options-group {
+        justify-content: center;
+        gap: 12px;
+        padding-bottom: 0;
+        padding-top: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    
+    #complexion-options-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    .complexion-tile {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+    
+    .gender-button {
+        min-width: 52px;
+        padding: 4px 10px;
+        font-size: 0.72em;
+    }
+    
+    #filters-combined-row {
+        gap: 8px;
+        padding: 6px 10px;
+        max-width: 280px;
+    }
+    
+    .filter-separator {
+        height: 32px;
+    }
+    
+    #book-appointment-btn {
+        min-width: 140px;
+        max-width: 170px;
+        height: 34px;
+        font-size: 0.82em;
+        padding: 0 18px;
+    }
+
+    .hairstyle-options-group-wrapper {
+        gap: 16px;
+        padding: 0 calc(50vw - 60px) 16px;
+    }
+
+    .booking-modal {
+        padding: 24px;
+        width: 95%;
+    }
+
+    .booking-modal h2 {
+        font-size: 1.5em;
+    }
+}
+
+@media (min-width: 601px) {
+    #central-viewport {
+        width: var(--viewport-size-desktop);
+        height: var(--viewport-size-desktop);
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="app-header">
+        <div id="main-title-container">
+            <h1 id="main-title">Looks</h1>
+        </div>
+    </div>
+
+    <div id="main-app-container">
+        
+        <!-- SECTION 1: CAMERA/SELFIE (Hero Element) -->
+        <div id="central-section">
+            <div id="central-viewport">
+                <div id="camera-placeholder-icon">
+                    <span class="viewfinder-corner top-left"></span>
+                    <span class="viewfinder-corner top-right"></span>
+                    <span class="viewfinder-corner bottom-left"></span>
+                    <span class="viewfinder-corner bottom-right"></span>
+                    <span class="viewfinder-crosshair"></span>
+                </div>
+                <video id="video-feed" autoplay playsinline></video>
+                <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
+                <div id="face-guide-overlay"></div>
+                <p id="status-message">Tap to take selfie</p>
+            </div>
+        </div>
+        
+        <!-- SECTION 2: ACTION BUTTONS -->
+        <div id="controls-footer-row">
+            <button id="camera-capture-btn" class="circular-action-btn main-action-btn" disabled>📸</button>
+            <button id="redo-selfie-btn" class="circular-action-btn main-action-btn" style="display: none;">🔄</button>
+            <button id="generate-look-btn" class="circular-action-btn main-action-btn" style="display: none;">✨</button>
+            <div id="loading-spinner" style="display: none;"></div>
+            <button id="book-appointment-btn" class="main-action-btn" style="display: none;">Book Appointment</button>
+        </div>
+
+        <!-- SECTION 3: STYLE GALLERY (Snapchat-style) -->
+        <div id="style-inspiration-section">
+            <p>Swipe to browse styles</p>
+            <div id="male-hairstyle-options-group" class="hairstyle-options-group-wrapper"></div>
+            <div id="female-hairstyle-options-group" class="hairstyle-options-group-wrapper" style="display: none;">
+                <div class="style-option" data-prompt="A shoulder-length cut with soft waves and natural volume, warm brunette color, gentle face-framing layers.">
+                    <img class="style-thumbnail" src="styles/female/style1.png" alt="Soft Wavy Layers">
+                    <p>Soft Wavy Layers</p>
+                </div>
+                <div class="style-option" data-prompt="A long layered hairstyle with loose curls, dark brown color, flowing and romantic silhouette.">
+                    <img class="style-thumbnail" src="styles/female/style2.png" alt="Long Loose Curls">
+                    <p>Long Loose Curls</p>
+                </div>
+                <div class="style-option" data-prompt="A sleek straight bob cut at chin length, jet black color, sharp and modern profile.">
+                    <img class="style-thumbnail" src="styles/female/style3.png" alt="Sleek Chin Bob">
+                    <p>Sleek Chin Bob</p>
+                </div>
+                <div class="style-option" data-prompt="A textured lob with subtle waves, ash blonde color, effortless and airy finish.">
+                    <img class="style-thumbnail" src="styles/female/style4.png" alt="Textured Wavy Lob">
+                    <p>Textured Wavy Lob</p>
+                </div>
+                <div class="style-option" data-prompt="A short pixie cut with choppy layers, platinum blonde color, bold and edgy look.">
+                    <img class="style-thumbnail" src="styles/female/style5.png" alt="Choppy Pixie Cut">
+                    <p>Choppy Pixie Cut</p>
+                </div>
+                <div class="style-option" data-prompt="A long haircut with smooth straight strands, rich chestnut color, polished and elegant feel.">
+                    <img class="style-thumbnail" src="styles/female/style6.png" alt="Long Sleek Layers">
+                    <p>Long Sleek Layers</p>
+                </div>
+                <div class="style-option" data-prompt="A curly shoulder-length style with defined ringlets, deep black color, lively and full shape.">
+                    <img class="style-thumbnail" src="styles/female/style7.png" alt="Defined Curly Cut">
+                    <p>Defined Curly Cut</p>
+                </div>
+                <div class="style-option" data-prompt="A layered shag cut with curtain bangs, honey brown color, relaxed and trendy vibe.">
+                    <img class="style-thumbnail" src="styles/female/style8.png" alt="Layered Shag Cut">
+                    <p>Layered Shag Cut</p>
+                </div>
+                <div class="style-option" data-prompt="A blunt cut with long straight hair, cool dark brown color, clean and minimalist outline.">
+                    <img class="style-thumbnail" src="styles/female/style9.png" alt="Blunt Long Cut">
+                    <p>Blunt Long Cut</p>
+                </div>
+                <div class="style-option" data-prompt="A medium-length wavy cut with beachy texture, sandy blonde color, soft and casual movement.">
+                    <img class="style-thumbnail" src="styles/female/style10.png" alt="Beachy Waves">
+                    <p>Beachy Waves</p>
+                </div>
+                <div class="style-option" data-prompt="A short bob with flipped-out ends, caramel brown color, playful and retro-inspired shape.">
+                    <img class="style-thumbnail" src="styles/female/style11.png" alt="Flipped Bob">
+                    <p>Flipped Bob</p>
+                </div>
+                <div class="style-option" data-prompt="A long hairstyle with voluminous waves, golden blonde color, glamorous and flowing look.">
+                    <img class="style-thumbnail" src="styles/female/style12.png" alt="Voluminous Waves">
+                    <p>Voluminous Waves</p>
+                </div>
+                <div class="style-option" data-prompt="A cropped pixie with tapered sides, silver blonde color, sharp and confident style.">
+                    <img class="style-thumbnail" src="styles/female/style13.png" alt="Tapered Pixie">
+                    <p>Tapered Pixie</p>
+                </div>
+                <div class="style-option" data-prompt="A medium-length straight cut with subtle layers, natural black color, smooth and balanced profile.">
+                    <img class="style-thumbnail" src="styles/female/style14.png" alt="Straight Medium Cut">
+                    <p>Straight Medium Cut</p>
+                </div>
+                <div class="style-option" data-prompt="A long curly style with layered volume, auburn brown color, soft and expressive texture.">
+                    <img class="style-thumbnail" src="styles/female/style15.png" alt="Layered Curly Long">
+                    <p>Layered Curly Long</p>
+                </div>
+                <div class="style-option" data-prompt="An asymmetrical bob with one side longer, dark espresso color, modern and fashion-forward feel.">
+                    <img class="style-thumbnail" src="styles/female/style16.png" alt="Asymmetrical Bob">
+                    <p>Asymmetrical Bob</p>
+                </div>
+                <div class="style-option" data-prompt="A shoulder-length cut with feathered layers, light brown color, airy and lightweight finish.">
+                    <img class="style-thumbnail" src="styles/female/style17.png" alt="Feathered Layers">
+                    <p>Feathered Layers</p>
+                </div>
+                <div class="style-option" data-prompt="A sleek high ponytail with smooth strands, dark brown color, clean and lifted silhouette.">
+                    <img class="style-thumbnail" src="styles/female/style18.png" alt="Sleek High Ponytail">
+                    <p>Sleek High Ponytail</p>
+                </div>
+                <div class="style-option" data-prompt="A half-up hairstyle with loose waves, soft brunette color, romantic and relaxed look.">
+                    <img class="style-thumbnail" src="styles/female/style19.png" alt="Half-Up Waves">
+                    <p>Half-Up Waves</p>
+                </div>
+                <div class="style-option" data-prompt="A braided crown hairstyle with loose tendrils, warm brown color, delicate and elegant detail.">
+                    <img class="style-thumbnail" src="styles/female/style20.png" alt="Braided Crown">
+                    <p>Braided Crown</p>
+                </div>
+                <div class="style-option" data-prompt="A long straight hairstyle with blunt bangs, deep black color, bold and striking contrast.">
+                    <img class="style-thumbnail" src="styles/female/style21.png" alt="Blunt Bangs Long">
+                    <p>Blunt Bangs Long</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECTION 4: COMPACT FILTERS (Below styles, at bottom) -->
+        <div id="filters-combined-row">
+            <div class="filter-group">
+                <p class="filter-label">Gender</p>
+                <div class="gender-buttons-container">
+                    <button id="male-gender-btn" class="gender-button">Male</button>
+                    <button id="female-gender-btn" class="gender-button">Female</button>
+                </div>
+            </div>
+            
+            <div class="filter-separator"></div>
+            
+            <div class="filter-group">
+                <p class="filter-label">Skin Tone</p>
+                <div id="complexion-options-group" class="filter-options-group">
+                    <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light" data-complexion-code="default"></div>
+                    <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium" data-complexion-code="default"></div>
+                    <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark" data-complexion-code="ds"></div>
+                    <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep" data-complexion-code="ds"></div>
+                </div>
+            </div>
+            
+            <div class="filter-separator"></div>
+            
+            <div class="filter-group">
+                <p class="filter-label">Hair Color</p>
+                <div id="hair-color-options-group" class="filter-options-group">
+                    <div class="hair-color-tile" data-color="black" style="background-color: #1a1a1a;" title="Black"></div>
+                    <div class="hair-color-tile" data-color="dark-brown" style="background-color: #3d2817;" title="Dark Brown"></div>
+                    <div class="hair-color-tile" data-color="medium-brown" style="background-color: #6b4423;" title="Medium Brown"></div>
+                    <div class="hair-color-tile" data-color="blonde" style="background-color: #f4e4c1;" title="Blonde"></div>
+                    <div class="hair-color-tile" data-color="red" style="background-color: #8b3a26;" title="Red"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <canvas id="hidden-canvas" style="display: none;"></canvas>
+
+    <div id="booking-modal-overlay" class="modal-overlay">
+        <div class="booking-modal">
+            <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            <h2>Book Your Look</h2>
+            <div class="modal-content">
+                <p style="color: var(--text-secondary); margin-bottom: 12px;">You are booking the style reference below:</p>
+                <img id="reference-image-preview" src="" alt="AI Generated Style Reference">
+                <p style="font-size: 0.9em; margin-top: 8px; color: var(--text-secondary); font-weight: 600;">
+                    Style: <span id="selected-style-name" style="color: var(--primary-color);"></span>
+                </p>
+                
+                <form id="booking-form">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required placeholder="John Smith">
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="john@example.com">
+
+                    <label for="date">Select Date</label>
+                    <input type="date" id="date" name="date" required>
+
+                    <label for="time">Select Time</label>
+                    <select id="time" name="time" required>
+                        <option value="">Select a date first...</option>
+                    </select>
+
+                    <button type="submit" class="submit-btn" disabled>Confirm Booking</button>
+                    <p id="booking-status-message"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const videoFeed = document.getElementById('video-feed');
+    const aiResultImg = document.getElementById('ai-result');
+    const canvas = document.getElementById('hidden-canvas');
+    const cameraPlaceholderIcon = document.getElementById('camera-placeholder-icon');
+    const faceGuideOverlay = document.getElementById('face-guide-overlay');
+    const cameraCaptureBtn = document.getElementById('camera-capture-btn');
+    const redoSelfieBtn = document.getElementById('redo-selfie-btn');
+    const generateLookBtn = document.getElementById('generate-look-btn');
+    const bookAppointmentBtn = document.getElementById('book-appointment-btn');
+    const spinner = document.getElementById('loading-spinner');
+    const statusMessage = document.getElementById('status-message');
+    const stylePreviewOverlay = document.getElementById('style-preview-overlay');
+    const filtersAccordion = document.getElementById('additional-filters-selector');
+    const complexionGroup = document.getElementById('complexion-options-group');
+    const maleStyleOptionsGroup = document.getElementById('male-hairstyle-options-group');
+    const femaleStyleOptionsGroup = document.getElementById('female-hairstyle-options-group');
+    const maleGenderBtn = document.getElementById('male-gender-btn');
+    const femaleGenderBtn = document.getElementById('female-gender-btn');
+    const bookingModalOverlay = document.getElementById('booking-modal-overlay');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const bookingForm = document.getElementById('booking-form');
+    const referenceImagePreview = document.getElementById('reference-image-preview');
+    const selectedStyleNameSpan = document.getElementById('selected-style-name');
+    const dateInput = document.getElementById('date');
+    const timeSelect = document.getElementById('time');
+
+    let capturedImageBase64 = null;
+    let selectedPrompt = null;
+    let selectedStyleLabel = null;
+    let cameraStarted = false;
+    let selectedGender = 'Male';
+    let selectedComplexionCode = null;
+    let selectedHairColor = null;
+    let imageCaptured = false;
+    let aiGenerationComplete = false;
+    
+    // JSON-based style system
+    let ALL_STYLES_DATA = null;
+
+    const NEGATIVE_PROMPT = "extra fingers, blurry, low resolution, bad hands, deformed face, mask artifact, bad blending, unnatural hair hair color, ugly, tiling, duplicate, abstract, cartoon, distorted pupils, bad lighting, cropped, grainy, noise, poor lighting, poor composition, low quality, changed clothing, changed background, new outfit, new background, different lighting";
+
+    // Image path mapping - connects JSON paths to current file locations
+    const IMAGE_PATH_MAPPING = {
+        "male/light/red/001.jpg": "styles/male/style1.png",
+        "male/light/medium-brown/002.jpg": "styles/male/style2.png",
+        "male/light/black/003.jpg": "styles/male/style3.png",
+        "male/light/black/004.jpg": "styles/male/style4.png",
+        "male/light/red/005.jpg": "styles/male/style5.png",
+        "male/light/blonde/006.jpg": "styles/male/style6.png",
+        "male/light/dark-brown/007.jpg": "styles/male/style7.png",
+        "male/light/red/008.jpg": "styles/male/style8.png",
+        "male/light/dark-brown/009.jpg": "styles/male/style9.png",
+        "male/light/medium-brown/010.jpg": "styles/male/style10.png",
+        "male/light/blonde/011.jpg": "styles/male/style11.png",
+        "male/light/black/012.jpg": "styles/male/style12.png",
+        "male/light/dark-brown/013.jpg": "styles/male/style13.png",
+        "male/light/dark-brown/014.jpg": "styles/male/style14.png",
+        "male/light/red/015.jpg": "styles/male/style15.png",
+        "male/light/red/016.jpg": "styles/male/style16.png",
+        "male/light/black/017.jpg": "styles/male/style17.png",
+        "male/light/blonde/018.jpg": "styles/male/style18.png",
+        "male/light/black/019.jpg": "styles/male/style19.png",
+        "male/light/red/020.jpg": "styles/male/style20.png",
+        "male/light/red/021.jpg": "styles/male/style21.png",
+        "male/dark/black/022.jpg": "styles/male/ds/1.png",
+        "male/dark/black/023.jpg": "styles/male/ds/2.png",
+        "male/dark/black/024.jpg": "styles/male/ds/3.png",
+        "male/dark/black/025.jpg": "styles/male/ds/4.png",
+        "male/dark/red/026.jpg": "styles/male/ds/5.png",
+        "male/dark/black/027.jpg": "styles/male/ds/6.png",
+        "male/dark/black/028.jpg": "styles/male/ds/7.png",
+        "male/dark/red/029.jpg": "styles/male/ds/8.png",
+        "male/dark/black/030.jpg": "styles/male/ds/9.png",
+        "male/dark/red/031.jpg": "styles/male/ds/10.png",
+        "male/dark/black/032.jpg": "styles/male/ds/11.png",
+        "male/dark/red/033.jpg": "styles/male/ds/12.png",
+        "male/dark/black/034.jpg": "styles/male/ds/13.png",
+        "male/dark/black/035.jpg": "styles/male/ds/14.png",
+        "male/dark/black/036.jpg": "styles/male/ds/15.png",
+        "male/dark/black/037.jpg": "styles/male/ds/16.png",
+        "male/dark/black/038.jpg": "styles/male/ds/17.png",
+        "male/dark/black/039.jpg": "styles/male/ds/18.png"
+    };
+
+    function getActualImagePath(jsonPath) {
+        return IMAGE_PATH_MAPPING[jsonPath] || jsonPath;
+    }
+
+    async function loadStylesData() {
+        try {
+            const response = await fetch('styles-data.json');
+            ALL_STYLES_DATA = await response.json();
+            console.log('✅ Loaded', ALL_STYLES_DATA.male.length, 'male styles from JSON');
+            return true;
+        } catch (error) {
+            console.error('❌ Error loading styles-data.json:', error);
+            console.error('Make sure styles-data.json is in the same folder as index.html');
+            return false;
+        }
+    }
+
+    // Fun loading messages
+    const LOADING_MESSAGES = [
+        "✂️ Consulting our AI stylist...",
+        "💈 Mixing the perfect blend...",
+        "✨ Adding the finishing touches...",
+        "🎨 Creating your new look...",
+        "💇 Styling in progress...",
+        "🔮 Working some magic...",
+        "⚡ Almost there..."
+    ];
+    
+    let loadingMessageInterval = null;
+    let lastHapticTime = 0;
+    const HAPTIC_DEBOUNCE = 100; // Minimum 100ms between scroll haptics
+
+    // Haptic feedback helper (vibration on mobile)
+    function triggerHaptic(pattern = 10) {
+        try {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(pattern);
+            }
+        } catch (e) {
+            // Silently fail if vibration not supported
+        }
+    }
+    
+    // Debounced haptic for scrolling (prevents spam)
+    function triggerScrollHaptic() {
+        const now = Date.now();
+        if (now - lastHapticTime >= HAPTIC_DEBOUNCE) {
+            triggerHaptic(5);
+            lastHapticTime = now;
+        }
+    }
+
+    // Styles are now loaded from styles-data.json
+    // See loadStylesData() function above
+    
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function createStyleElement(style) {
+        const div = document.createElement('div');
+        div.className = 'style-option';
+        div.dataset.prompt = style.prompt;
+        div.dataset.complexionCode = style.code;
+        
+        const img = document.createElement('img');
+        img.className = 'style-thumbnail';
+        img.src = style.src;
+        img.alt = style.label;
+        
+        const p = document.createElement('p');
+        p.textContent = style.label;
+
+        div.appendChild(img);
+        div.appendChild(p);
+        
+        div.addEventListener('click', () => handleStyleSelect(div));
+        return div;
+    }
+
+    function renderStyles(container, stylesArray) {
+        container.innerHTML = '';
+        stylesArray.forEach(style => {
+            container.appendChild(createStyleElement(style));
+        });
+        setupScrollListeners(container);
+    }
+
+    function updateMaleStyleGallery(skinFilter = null, hairFilter = null) {
+        if (!ALL_STYLES_DATA || !ALL_STYLES_DATA.male) {
+            console.warn('⚠️ No styles data loaded yet');
+            return;
+        }
+        let filteredStyles = ALL_STYLES_DATA.male;
+        if (skinFilter) {
+            const skinMap = { 'default': 'light', 'ds': 'dark' };
+            const targetSkin = skinMap[skinFilter];
+            filteredStyles = filteredStyles.filter(s => s.skinTone === targetSkin);
+        }
+        if (hairFilter) {
+            filteredStyles = filteredStyles.filter(s => s.hairColor === hairFilter);
+        }
+        console.log(`🎨 Showing ${filteredStyles.length} styles (skin: ${skinFilter || 'all'}, hair: ${hairFilter || 'all'})`);
+        const stylesForRendering = filteredStyles.map(style => ({
+            code: style.skinTone === 'dark' ? 'ds' : 'default',
+            src: getActualImagePath(style.image),
+            label: style.name,
+            prompt: style.prompt
+        }));
+        const shuffledStyles = shuffle([...stylesForRendering]);
+        renderStyles(maleStyleOptionsGroup, shuffledStyles);
+        selectedPrompt = null;
+        selectedStyleLabel = null;
+        updateButtonVisibility();
+        maleStyleOptionsGroup.scrollLeft = 0;
+    }
+
+    function updateButtonVisibility() {
+        cameraCaptureBtn.style.display = 'none';
+        redoSelfieBtn.style.display = 'none';
+        generateLookBtn.style.display = 'none';
+        bookAppointmentBtn.style.display = 'none';
+        spinner.style.display = 'none';
+
+        if (spinner.classList.contains('active')) {
+            spinner.style.display = 'block';
+        } else if (aiGenerationComplete) {
+            redoSelfieBtn.style.display = 'flex';
+            bookAppointmentBtn.style.display = 'flex';
+            statusMessage.textContent = `Ready to book! Or try another style`;
+        } else if (imageCaptured) {
+            redoSelfieBtn.style.display = 'flex';
+            if (selectedPrompt) {
+                generateLookBtn.style.display = 'flex';
+                generateLookBtn.disabled = false;
+                statusMessage.textContent = `Tap ✨ to generate your new look`;
+            } else {
+                statusMessage.textContent = "Select a hairstyle below";
+            }
+        } else {
+            cameraCaptureBtn.style.display = 'flex';
+            cameraCaptureBtn.disabled = !cameraStarted;
+            if (cameraStarted) {
+                statusMessage.textContent = "Position your face, then tap 📸";
+            } else {
+                statusMessage.textContent = "Tap above to take a selfie";
+            }
+        }
+    }
+
+    function findClosestToCenter(scrollContainer, styleOptions) {
+        const containerCenter = scrollContainer.scrollLeft + (scrollContainer.clientWidth / 2);
+        let closestOption = null;
+        let minDifference = Infinity;
+
+        styleOptions.forEach(option => {
+            const optionCenter = option.offsetLeft + (option.offsetWidth / 2);
+            const difference = Math.abs(optionCenter - containerCenter);
+            if (difference < minDifference) {
+                minDifference = difference;
+                closestOption = option;
+            }
+        });
+        return closestOption;
+    }
+
+    function updateStyleSelectionOnScroll(scrollContainer, allOptions) {
+        if (scrollContainer.style.display === 'none') return;
+        const closestOption = findClosestToCenter(scrollContainer, allOptions);
+        if (closestOption) {
+            if (!closestOption.classList.contains('selected')) {
+                allOptions.forEach(o => o.classList.remove('selected'));
+                closestOption.classList.add('selected');
+                
+                // Very light debounced haptic on snap - feels like Snapchat
+                triggerScrollHaptic();
+            }
+            if (selectedPrompt !== closestOption.dataset.prompt) {
+                selectedPrompt = closestOption.dataset.prompt;
+                selectedStyleLabel = closestOption.querySelector('p').textContent || closestOption.dataset.prompt;
+                updateButtonVisibility();
+            }
+        }
+    }
+
+    const setupScrollListeners = (groupWrapper) => {
+        const allOptions = groupWrapper.querySelectorAll('.style-option');
+        if (allOptions.length === 0) return;
+
+        const scrollHandler = () => {
+            updateStyleSelectionOnScroll(groupWrapper, allOptions);
+        };
+
+        const oldHandler = groupWrapper._scrollHandler;
+        if (oldHandler) {
+            groupWrapper.removeEventListener('scroll', oldHandler);
+        }
+
+        groupWrapper.addEventListener('scroll', scrollHandler);
+        groupWrapper._scrollHandler = scrollHandler;
+        scrollHandler();
+    };
+
+    function handleGenderSelect(gender) {
+        triggerHaptic(10);
+        selectedComplexionCode = null;
+        selectedHairColor = null;
+        complexionGroup.querySelectorAll('.complexion-tile').forEach(t => t.classList.remove('selected'));
+        document.querySelectorAll('.hair-color-tile').forEach(t => t.classList.remove('selected'));
+        selectedGender = gender;
+        maleGenderBtn.classList.remove('selected');
+        femaleGenderBtn.classList.remove('selected');
+        
+        if (gender === 'Male') {
+            maleGenderBtn.classList.add('selected');
+            maleStyleOptionsGroup.style.display = 'flex';
+            femaleStyleOptionsGroup.style.display = 'none';
+            filtersAccordion.style.display = 'block';
+            updateMaleStyleGallery(null, null);
+        } else if (gender === 'Female') {
+            femaleGenderBtn.classList.add('selected');
+            maleStyleOptionsGroup.style.display = 'none';
+            femaleStyleOptionsGroup.style.display = 'flex';
+            filtersAccordion.style.display = 'none';
+            setupScrollListeners(femaleStyleOptionsGroup);
+        }
+        if (imageCaptured) resetSession();
+    }
+
+    function toggleFilterSection(section) {
+        if (section.classList.contains('collapsed')) {
+            section.classList.remove('collapsed');
+            section.classList.add('expanded');
+        } else {
+            section.classList.remove('expanded');
+            section.classList.add('collapsed');
+        }
+    }
+
+    function handleComplexionSelect(tile) {
+        if (selectedGender !== 'Male') return;
+        triggerHaptic(10);
+        const isSelected = tile.classList.contains('selected');
+        const complexionTiles = complexionGroup.querySelectorAll('.complexion-tile');
+        const code = tile.dataset.complexionCode;
+        complexionTiles.forEach(t => t.classList.remove('selected'));
+        let newFilterCode = null;
+        if (!isSelected) {
+            tile.classList.add('selected');
+            newFilterCode = code;
+        }
+        selectedComplexionCode = newFilterCode;
+        updateMaleStyleGallery(selectedComplexionCode, selectedHairColor);
+    }
+    
+    function handleHairColorSelect(tile) {
+        if (selectedGender !== 'Male') return;
+        triggerHaptic(10);
+        const hairColorTiles = document.querySelectorAll('.hair-color-tile');
+        const isSelected = tile.classList.contains('selected');
+        const color = tile.dataset.color;
+        hairColorTiles.forEach(t => t.classList.remove('selected'));
+        if (!isSelected) {
+            tile.classList.add('selected');
+            selectedHairColor = color;
+        } else {
+            selectedHairColor = null;
+        }
+        updateMaleStyleGallery(selectedComplexionCode, selectedHairColor);
+    }
+
+    function handleStyleSelect(styleOption) {
+        triggerHaptic(8); // Very light haptic - subtle feedback
+        const scrollContainer = styleOption.closest('.hairstyle-options-group-wrapper');
+        if (scrollContainer) {
+            const containerWidth = scrollContainer.clientWidth;
+            const optionWidth = styleOption.offsetWidth;
+            const scrollTarget = styleOption.offsetLeft - (containerWidth / 2) + (optionWidth / 2);
+            scrollContainer.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+        }
+    }
+
+    async function startCamera() {
+        if (cameraStarted) return;
+        statusMessage.textContent = "Requesting camera access...";
+        cameraCaptureBtn.disabled = true;
+        try {
+            const constraints = {
+                video: { facingMode: 'user', width: { ideal: 250 }, height: { ideal: 250 } }
+            };
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            videoFeed.srcObject = stream;
+            await new Promise(resolve => {
+                videoFeed.onloadedmetadata = () => {
+                    videoFeed.play();
+                    resolve();
+                };
+            });
+            cameraStarted = true;
+            imageCaptured = false;
+            aiGenerationComplete = false;
+            cameraPlaceholderIcon.style.display = 'none';
+            aiResultImg.style.display = 'none';
+            videoFeed.style.display = 'block';
+            
+            // Show face guide overlay with smooth fade-in
+            faceGuideOverlay.style.display = 'block';
+            setTimeout(() => faceGuideOverlay.classList.add('active'), 50);
+            
+            updateButtonVisibility();
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            statusMessage.textContent = `Camera access denied. Please check permissions.`;
+            cameraPlaceholderIcon.style.display = 'block';
+            videoFeed.style.display = 'none';
+            cameraStarted = false;
+            updateButtonVisibility();
+        }
+    }
+
+    function stopCamera() {
+        if (videoFeed.srcObject) {
+            videoFeed.srcObject.getTracks().forEach(track => track.stop());
+            videoFeed.srcObject = null;
+        }
+        cameraStarted = false;
+    }
+
+    function captureImage() {
+        if (!cameraStarted) return;
+        
+        triggerHaptic(20); // Medium haptic - satisfying capture feedback
+        
+        const context = canvas.getContext('2d');
+        const width = videoFeed.videoWidth || 250;
+        const height = videoFeed.videoHeight || 250;
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(videoFeed, 0, 0, width, width);
+        const fullDataURL = canvas.toDataURL('image/jpeg');
+        const parts = fullDataURL.split(',');
+        capturedImageBase64 = parts.length > 1 ? parts[1] : fullDataURL;
+        imageCaptured = true;
+        aiGenerationComplete = false;
+        videoFeed.style.display = 'none';
+        aiResultImg.style.display = 'block';
+        aiResultImg.src = fullDataURL;
+        
+        // Hide face guide overlay
+        faceGuideOverlay.classList.remove('active');
+        setTimeout(() => faceGuideOverlay.style.display = 'none', 400);
+        
+        stopCamera();
+        updateButtonVisibility();
+    }
+
+    function resetSession() {
+        stopCamera();
+        aiResultImg.style.display = 'none';
+        cameraPlaceholderIcon.style.display = 'block';
+        imageCaptured = false;
+        aiGenerationComplete = false;
+        capturedImageBase64 = null;
+        spinner.classList.remove('active');
+        
+        // Reset face guide overlay
+        faceGuideOverlay.classList.remove('active');
+        faceGuideOverlay.style.display = 'none';
+        
+        if(selectedGender === 'Male') {
+            updateMaleStyleGallery(selectedComplexionCode, selectedHairColor);
+        } else {
+            setupScrollListeners(femaleStyleOptionsGroup);
+        }
+        filtersAccordion.classList.remove('expanded');
+        filtersAccordion.classList.add('collapsed');
+        updateButtonVisibility();
+    }
+
+    cameraCaptureBtn.addEventListener('click', captureImage);
+    cameraPlaceholderIcon.addEventListener('click', () => {
+        if (!cameraStarted && !imageCaptured) {
+            triggerHaptic(10); // Light haptic
+            startCamera();
+        }
+    });
+    redoSelfieBtn.addEventListener('click', () => {
+        triggerHaptic(15); // Medium haptic
+        resetSession();
+        startCamera();
+    });
+
+    generateLookBtn.addEventListener('click', async () => {
+        if (!capturedImageBase64 || !selectedPrompt) {
+            statusMessage.textContent = "Please capture a selfie and select a hairstyle first.";
+            triggerHaptic([50, 100, 50]); // Double buzz error pattern
+            return;
+        }
+        
+        triggerHaptic(30); // Strong haptic - important action!
+
+        spinner.classList.add('active');
+        updateButtonVisibility();
+        
+        // Fun loading messages that rotate every 2 seconds
+        const loadingMessages = [
+            "✂️ Consulting our AI stylist...",
+            "💈 Mixing the perfect blend...",
+            "🎨 Adding the finishing touches...",
+            "✨ Creating your new look...",
+            "💇 Styling your hair...",
+            "🔮 Working some magic..."
+        ];
+        
+        let messageIndex = 0;
+        statusMessage.textContent = loadingMessages[0];
+        
+        const messageInterval = setInterval(() => {
+            messageIndex = (messageIndex + 1) % loadingMessages.length;
+            statusMessage.textContent = loadingMessages[messageIndex];
+        }, 2000);
+
+        const complexionClause = selectedComplexionCode
+            ? ` with a ${selectedComplexionCode === 'ds' ? 'darkest' : 'standard'} complexion`
+            : ``;
+        const finalPrompt = `STRICTLY operate in an inpainting/editing mode. The ONLY element to be changed is the subject's hair. PRESERVE the subject's face, identity, expression, clothing, and background EXACTLY as they appear in the original photograph. Apply the following hairstyle, matching its texture, color, and shape: ${selectedPrompt}. The final result must be a high quality, professional studio portrait of a ${selectedGender} model${complexionClause} with NO other changes besides the hair.`;
+        try {
+            const response = await fetch('/.netlify/functions/run_model', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    baseImage: capturedImageBase64,
+                    prompt: finalPrompt,
+                    negativePrompt: NEGATIVE_PROMPT
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            clearInterval(messageInterval); // Stop messages
+            
+            triggerHaptic([30, 50, 30, 50, 30]); // Triple success buzz!
+            
+            aiResultImg.src = `data:image/jpeg;base64,${data.generatedImageBase64}`;
+            aiResultImg.style.display = 'block';
+            videoFeed.style.display = 'none';
+            cameraPlaceholderIcon.style.display = 'none';
+            aiGenerationComplete = true;
+            imageCaptured = true;
+            capturedImageBase64 = data.generatedImageBase64;
+            spinner.classList.remove('active');
+            updateButtonVisibility();
+        } catch (error) {
+            clearInterval(messageInterval); // Stop messages on error
+            console.error('AI Processing Error:', error);
+            statusMessage.textContent = `Error: ${error.message}. Please try again.`;
+            spinner.classList.remove('active');
+            updateButtonVisibility();
+        }
+    });
+
+    bookAppointmentBtn.addEventListener('click', () => {
+        if (!aiGenerationComplete) {
+            statusMessage.textContent = "Please generate a look first before booking.";
+            triggerHaptic([50, 100, 50]); // Double buzz error
+            return;
+        }
+        triggerHaptic(20); // Medium haptic
+        referenceImagePreview.src = aiResultImg.src;
+        selectedStyleNameSpan.textContent = selectedStyleLabel;
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.setDate() + 1);
+        dateInput.min = tomorrow.toISOString().split('T')[0];
+        bookingModalOverlay.classList.add('visible');
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+        bookingModalOverlay.classList.remove('visible');
+    });
+
+    dateInput.addEventListener('change', async (e) => {
+        const selectedDate = e.target.value;
+        const submitButton = bookingForm.querySelector('.submit-btn');
+        if (!selectedDate) return;
+        timeSelect.innerHTML = '<option value="">Loading...</option>';
+        submitButton.disabled = true;
+        try {
+            const response = await fetch('/.netlify/functions/get-availability', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: selectedDate })
+            });
+            const data = await response.json();
+            if (data.availableSlots && data.availableSlots.length > 0) {
+                timeSelect.innerHTML = '<option value="">Select a time...</option>';
+                data.availableSlots.forEach(slot => {
+                    const option = document.createElement('option');
+                    option.value = slot.time;
+                    option.textContent = slot.time;
+                    timeSelect.appendChild(option);
+                });
+            } else {
+                timeSelect.innerHTML = '<option value="">No times available</option>';
+            }
+        } catch (error) {
+            console.error('Error fetching availability:', error);
+            timeSelect.innerHTML = '<option value="">Error - try again</option>';
+        }
+    });
+
+    timeSelect.addEventListener('change', (e) => {
+        const submitButton = bookingForm.querySelector('.submit-btn');
+        submitButton.disabled = !e.target.value;
+    });
+
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const bookingStatusMessage = document.getElementById('booking-status-message');
+        const submitButton = bookingForm.querySelector('.submit-btn');
+        submitButton.textContent = "Processing...";
+        submitButton.disabled = true;
+        bookingStatusMessage.style.color = '#f59e0b';
+        bookingStatusMessage.textContent = "Creating your appointment...";
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const bookingData = {
+            firstName: name.split(' ')[0] || '',
+            lastName: name.split(' ').slice(1).join(' ') || '',
+            email: email,
+            datetime: `${date}T${time}:00`,
+            appointmentType: selectedGender === 'Male' ? "Men's Cut" : "Women's Cut",
+            styleName: selectedStyleLabel,
+            stylePrompt: selectedPrompt,
+            imageReference: aiResultImg.src
+        };
+        try {
+            const response = await fetch('/.netlify/functions/create-booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookingData)
+            });
+            const result = await response.json();
+            if (result.success) {
+                bookingStatusMessage.style.color = 'var(--success-color)';
+                bookingStatusMessage.textContent = "✓ Booking confirmed!";
+                submitButton.textContent = "Confirmed!";
+                setTimeout(() => {
+                    bookingModalOverlay.classList.remove('visible');
+                    bookingForm.reset();
+                    submitButton.textContent = "Confirm Booking";
+                    submitButton.disabled = true;
+                    bookingStatusMessage.textContent = "";
+                    timeSelect.innerHTML = '<option value="">Select a date first...</option>';
+                }, 2500);
+            } else {
+                throw new Error(result.error || 'Booking failed');
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            bookingStatusMessage.style.color = '#ef4444';
+            bookingStatusMessage.textContent = `Error: ${error.message}`;
+            submitButton.textContent = "Try Again";
+            submitButton.disabled = false;
+        }
+    });
+
+    function initialize() {
+        if (maleGenderBtn) {
+            maleGenderBtn.addEventListener('click', () => handleGenderSelect('Male'));
+        }
+        if (femaleGenderBtn) {
+            femaleGenderBtn.addEventListener('click', () => handleGenderSelect('Female'));
+        }
+        if (filtersAccordion) {
+            filtersAccordion.classList.add('collapsed');
+        }
+        if (complexionGroup) {
+            complexionGroup.querySelectorAll('.complexion-tile').forEach(tile => {
+                tile.addEventListener('click', () => handleComplexionSelect(tile));
+            });
+        }
+        const hairColorGroup = document.getElementById('hair-color-options-group');
+        if (hairColorGroup) {
+            hairColorGroup.querySelectorAll('.hair-color-tile').forEach(tile => {
+                tile.addEventListener('click', () => handleHairColorSelect(tile));
+            });
+        }
+        handleGenderSelect('Male');
+    }
+
+    loadStylesData().then((success) => {
+        if (success) {
+            console.log('✅ Styles loaded, initializing app...');
+            initialize();
+        } else {
+            console.error('❌ Failed to load styles. Make sure styles-data.json exists!');
+            alert('Error: Could not load styles-data.json. Make sure the file is in the same folder as index.html');
+        }
+    });
+});
+    </script>
+</body>
+</html>

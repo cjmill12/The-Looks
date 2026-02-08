@@ -1,0 +1,394 @@
+{
+  "male": [
+    {
+      "id": "m_light_red_001",
+      "name": "Tousled Short Crop",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A short haircut with a tousled and textured top, dark brown color, sharp side profile.",
+      "image": "male/light/red/001.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_mediumbrown_002",
+      "name": "Wavy Clean Fade",
+      "skinTone": "light",
+      "hairColor": "medium-brown",
+      "hairColorLabel": "Medium Brown",
+      "prompt": "A clean fade with a slightly messy wavy top, medium brown color, defined jawline framing",
+      "image": "male/light/medium-brown/002.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_black_003",
+      "name": "Classic Side-Part",
+      "skinTone": "light",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A classic side-part with a smooth combed finish, ash black color, crisp temple blend.",
+      "image": "male/light/black/003.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_black_004",
+      "name": "Curly Short Crop",
+      "skinTone": "light",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A short curly crop with tight texture, deep black color, taper fade around the ears.",
+      "image": "male/light/black/004.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_005",
+      "name": "Layered Shag Cut",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A medium-length shag with layered volume, chestnut brown color, soft silhouette.",
+      "image": "male/light/red/005.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_blonde_006",
+      "name": "Textured Buzz",
+      "skinTone": "light",
+      "hairColor": "blonde",
+      "hairColorLabel": "Blonde",
+      "prompt": "A buzz cut with subtle texture on top, dark blonde color, strong and structured profile.",
+      "image": "male/light/blonde/006.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_darkbrown_007",
+      "name": "Modern Quiff",
+      "skinTone": "light",
+      "hairColor": "dark-brown",
+      "hairColorLabel": "Dark Brown",
+      "prompt": "A modern quiff with height and soft edges, dark brown color, low fade on the sides.",
+      "image": "male/light/dark-brown/007.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_008",
+      "name": "Textured Fringe",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A textured fringe with choppy layers, sandy brown color, relaxed and youthful feel.",
+      "image": "male/light/red/008.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_darkbrown_009",
+      "name": "Wavy Slick-Back",
+      "skinTone": "light",
+      "hairColor": "dark-brown",
+      "hairColorLabel": "Dark Brown",
+      "prompt": "A slick-back style with slight wave, espresso black color, clean undercut detail.",
+      "image": "male/light/dark-brown/009.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_mediumbrown_010",
+      "name": "Caesar Crop",
+      "skinTone": "light",
+      "hairColor": "medium-brown",
+      "hairColorLabel": "Medium Brown",
+      "prompt": "A cropped Caesar cut with short bangs, warm brown color, sharp and tidy shape.",
+      "image": "male/light/medium-brown/010.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_blonde_011",
+      "name": "Swept-Back Medium",
+      "skinTone": "light",
+      "hairColor": "blonde",
+      "hairColorLabel": "Blonde",
+      "prompt": "A medium-length swept-back style with natural flow, golden brown color, tapered sides.",
+      "image": "male/light/blonde/011.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_black_012",
+      "name": "Curly Undercut",
+      "skinTone": "light",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A curly undercut with defined top volume, jet black color, bold contrast in lengths.",
+      "image": "male/light/black/012.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_darkbrown_013",
+      "name": "Messy Medium Crop",
+      "skinTone": "light",
+      "hairColor": "dark-brown",
+      "hairColorLabel": "Dark Brown",
+      "prompt": "A messy medium crop with subtle waves, chocolate brown color, soft shadow fade.",
+      "image": "male/light/dark-brown/013.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_darkbrown_014",
+      "name": "Spiky Short Fade",
+      "skinTone": "light",
+      "hairColor": "dark-brown",
+      "hairColorLabel": "Dark Brown",
+      "prompt": "A spiky short top with controlled texture, dark brown color, sharp high fade.",
+      "image": "male/light/dark-brown/014.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_015",
+      "name": "Forward Brush Cut",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A long top with brushed-forward texture, deep mahogany color, tight sides for structure.",
+      "image": "male/light/red/015.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_016",
+      "name": "Textured Buzz Fade",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A low-maintenance textured buzz with slight stubble blend, dark ash brown color.",
+      "image": "male/light/red/016.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_black_017",
+      "name": "Smooth Pompadour",
+      "skinTone": "light",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A voluminous pompadour with smooth finish, black-brown color, clean and polished sides.",
+      "image": "male/light/black/017.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_blonde_018",
+      "name": "Surfer Waves",
+      "skinTone": "light",
+      "hairColor": "blonde",
+      "hairColorLabel": "Blonde",
+      "prompt": "A relaxed surfer-style wave with medium length, sandy blonde color, natural movement.",
+      "image": "male/light/blonde/018.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_black_019",
+      "name": "High-Contrast Crop",
+      "skinTone": "light",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A detailed crop with high contrast fade, smoky black color, strong forehead line.",
+      "image": "male/light/black/019.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_020",
+      "name": "Layered Side Sweep",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A medium layered cut with side sweep, warm auburn brown color, gentle taper.",
+      "image": "male/light/red/020.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_light_red_021",
+      "name": "Modern Mullet",
+      "skinTone": "light",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A modern mullet with short front and layered back flow, dark charcoal color, bold silhouette.",
+      "image": "male/light/red/021.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_022",
+      "name": "Low Fade Coils",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A low fade with short tight coils on top, natural black color, clean hairline finish.",
+      "image": "male/dark/black/022.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_023",
+      "name": "Classic Afro",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A classic afro with rounded shape, dense texture, bold and balanced silhouette.",
+      "image": "male/dark/black/023.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_024",
+      "name": "Short Twists Fade",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "Short twists with a taper fade, deep black color, neat and modern profile.",
+      "image": "male/dark/black/024.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_025",
+      "name": "Wave Crop",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A cropped cut with waves brushed forward, jet black color, sharp temple lines.",
+      "image": "male/dark/black/025.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_red_026",
+      "name": "High-Top Fade",
+      "skinTone": "dark",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A high-top fade with structured volume, natural black color, strong vertical shape.",
+      "image": "male/dark/red/026.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_027",
+      "name": "Clean Buzz Cut",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A buzz cut with precise edge-up, dark black color, minimal and clean look.",
+      "image": "male/dark/black/027.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_028",
+      "name": "Pulled-Back Locs",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "Medium-length locs pulled back, natural black color, relaxed and confident style.",
+      "image": "male/dark/black/028.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_red_029",
+      "name": "Sponge Curl Fade",
+      "skinTone": "dark",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A short curly fade with sponge-textured top, dense coils, smooth side blend.",
+      "image": "male/dark/red/029.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_030",
+      "name": "Straight Cornrows",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "Cornrow braids with straight-back pattern, natural black color, clean scalp lines.",
+      "image": "male/dark/black/030.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_red_031",
+      "name": "Tapered Afro",
+      "skinTone": "dark",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "A tapered afro with controlled volume, matte black color, soft rounded outline.",
+      "image": "male/dark/red/031.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_032",
+      "name": "Curly Frohawk",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A short frohawk with faded sides, tight curls, bold center emphasis.",
+      "image": "male/dark/black/032.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_red_033",
+      "name": "Finger Coils",
+      "skinTone": "dark",
+      "hairColor": "red",
+      "hairColorLabel": "Red/Auburn",
+      "prompt": "Defined finger coils with low taper, black color, glossy textured finish.",
+      "image": "male/dark/red/033.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_034",
+      "name": "Bald Fade Curls",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A bald fade with very short, naturally lying curls on top, dark black tone, crisp contrast.",
+      "image": "male/dark/black/034.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_035",
+      "name": "Freeform Locs",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "Freeform locs with medium length, natural texture, organic silhouette.",
+      "image": "male/dark/black/035.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_036",
+      "name": "Burst Fade Curls",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A burst fade with curly top, black color, rounded side profile.",
+      "image": "male/dark/black/036.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_037",
+      "name": "Short Box Braids",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "Short box braids with neat parting, dark black color, uniform structure.",
+      "image": "male/dark/black/037.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_038",
+      "name": "Flat Brush Cut",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A flat brush cut with subtle wave pattern, jet black color, sharp geometry.",
+      "image": "male/dark/black/038.jpg",
+      "tags": []
+    },
+    {
+      "id": "m_dark_black_039",
+      "name": "Short Afro Crop",
+      "skinTone": "dark",
+      "hairColor": "black",
+      "hairColorLabel": "Black",
+      "prompt": "A short afro crop with even density, natural black tone.",
+      "image": "male/dark/black/039.jpg",
+      "tags": []
+    }
+  ]
+}
