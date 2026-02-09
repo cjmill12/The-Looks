@@ -1594,7 +1594,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (aiGenerationComplete) {
             redoSelfieBtn.style.display = 'flex';
             bookAppointmentBtn.style.display = 'flex';
-            statusMessage.textContent = `Ready to book! Or try another style`;
+            // NEW: Also show generate button if they selected a different style
+            if (selectedPrompt) {
+                generateLookBtn.style.display = 'flex';
+                generateLookBtn.disabled = false;
+                statusMessage.textContent = `Try another style or book this one!`;
+            } else {
+                statusMessage.textContent = `Select another style or book this one!`;
+            }
         } else if (imageCaptured) {
             redoSelfieBtn.style.display = 'flex';
             if (selectedPrompt) {
@@ -1913,6 +1920,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cameraPlaceholderIcon.style.display = 'none';
             aiGenerationComplete = true;
             imageCaptured = true;
+            // Update the base image so next generation uses this result
             capturedImageBase64 = data.generatedImageBase64;
             spinner.classList.remove('active');
             updateButtonVisibility();
