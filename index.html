@@ -139,6 +139,57 @@ body {
     justify-content: center;
 }
 
+/* Filters wrapper and toggle */
+#filters-section-wrapper {
+    width: 100%;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+#filters-toggle-btn {
+    width: auto;
+    min-width: 140px;
+    padding: 8px 20px;
+    margin: 0 auto;
+    display: block;
+    background-color: var(--surface-color);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--border-radius-full);
+    color: var(--text-primary);
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#filters-toggle-btn:hover {
+    background-color: #f9fafb;
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+#filters-toggle-btn.filters-toggle-expanded {
+    background-color: var(--primary-color);
+    color: var(--text-on-dark);
+    border-color: var(--primary-color);
+}
+
+.toggle-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    margin-left: 4px;
+}
+
+#filters-toggle-btn.filters-toggle-expanded .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+#filters-combined-row {
+    margin-top: 12px;
+}
+
 .filter-group {
     display: flex;
     flex-direction: column;
@@ -235,12 +286,7 @@ body {
     overflow: hidden;
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.03) 0%, rgba(148, 163, 184, 0.05) 100%);
     backdrop-filter: blur(10px);
-    box-shadow: 
-        0 1px 1px rgba(0, 0, 0, 0.03),
-        0 2px 2px rgba(0, 0, 0, 0.03),
-        0 4px 4px rgba(0, 0, 0, 0.03),
-        0 8px 8px rgba(0, 0, 0, 0.03),
-        0 16px 16px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -998,8 +1044,8 @@ body {
     }
 
     #main-app-container {
-        padding: 6px 0 12px;
-        gap: 8px;
+        padding: 8px 0 15px;
+        gap: 14px;
     }
     
     #central-section {
@@ -1008,12 +1054,12 @@ body {
         padding: 0;
     }
 
-    /* SMALLER CAMERA - Key to fitting everything */
+    /* LARGER CAMERA - Hero element */
     #central-viewport {
         width: 100vw;
-        height: 50vw;
+        height: 60vw;
         max-width: 100vw;
-        max-height: 220px;
+        max-height: 280px;
         border-radius: 0;
     }
 
@@ -1169,6 +1215,17 @@ body {
         width: 95%;
         margin: 6px auto 10px;
         padding: 0 12px;
+    }
+    
+    #filters-section-wrapper {
+        width: 95%;
+        padding: 0 12px;
+    }
+    
+    #filters-toggle-btn {
+        font-size: 0.8em;
+        padding: 7px 16px;
+        min-width: 120px;
     }
     
     #book-appointment-btn {
@@ -1328,34 +1385,40 @@ body {
             </div>
         </div>
         
-        <!-- SECTION 4: COMPACT FILTERS (Single horizontal row) -->
-        <div id="filters-combined-row">
-            <div class="filter-group" id="gender-filter-group">
-                <p class="filter-label">Gender</p>
-                <div class="gender-buttons-container">
-                    <button id="male-gender-btn" class="gender-button">Male</button>
-                    <button id="female-gender-btn" class="gender-button">Female</button>
-                </div>
-            </div>
+        <!-- SECTION 4: COMPACT FILTERS (Collapsible) -->
+        <div id="filters-section-wrapper">
+            <button id="filters-toggle-btn" class="filters-toggle-collapsed">
+                🎨 Filters <span class="toggle-arrow">▼</span>
+            </button>
             
-            <div class="filter-separator"></div>
-            
-            <div class="filter-group">
-                <p class="filter-label">Skin</p>
-                <div id="complexion-options-group" class="filter-options-group">
-                    <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light" data-complexion-code="default"></div>
-                    <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium" data-complexion-code="default"></div>
-                    <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark" data-complexion-code="ds"></div>
-                    <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep" data-complexion-code="ds"></div>
+            <div id="filters-combined-row" style="display: none;">
+                <div class="filter-group" id="gender-filter-group">
+                    <p class="filter-label">Gender</p>
+                    <div class="gender-buttons-container">
+                        <button id="male-gender-btn" class="gender-button">Male</button>
+                        <button id="female-gender-btn" class="gender-button">Female</button>
+                    </div>
                 </div>
                 
-                <p class="filter-label" style="margin-top: 6px;">Hair</p>
-                <div id="hair-color-options-group" class="filter-options-group">
-                    <div class="hair-color-tile" data-color="black" style="background-color: #1a1a1a;" title="Black"></div>
-                    <div class="hair-color-tile" data-color="dark-brown" style="background-color: #3d2817;" title="Dark Brown"></div>
-                    <div class="hair-color-tile" data-color="medium-brown" style="background-color: #6b4423;" title="Medium Brown"></div>
-                    <div class="hair-color-tile" data-color="blonde" style="background-color: #f4e4c1;" title="Blonde"></div>
-                    <div class="hair-color-tile" data-color="red" style="background-color: #8b3a26;" title="Red"></div>
+                <div class="filter-separator"></div>
+                
+                <div class="filter-group">
+                    <p class="filter-label">Skin</p>
+                    <div id="complexion-options-group" class="filter-options-group">
+                        <div class="complexion-tile" style="background-color: #F8D7BE;" data-complexion="Light" data-complexion-code="default"></div>
+                        <div class="complexion-tile" style="background-color: #D6A476;" data-complexion="Medium" data-complexion-code="default"></div>
+                        <div class="complexion-tile" style="background-color: #A97A52;" data-complexion="Dark" data-complexion-code="ds"></div>
+                        <div class="complexion-tile" style="background-color: #6A3E26;" data-complexion="Deep" data-complexion-code="ds"></div>
+                    </div>
+                    
+                    <p class="filter-label" style="margin-top: 6px;">Hair</p>
+                    <div id="hair-color-options-group" class="filter-options-group">
+                        <div class="hair-color-tile" data-color="black" style="background-color: #1a1a1a;" title="Black"></div>
+                        <div class="hair-color-tile" data-color="dark-brown" style="background-color: #3d2817;" title="Dark Brown"></div>
+                        <div class="hair-color-tile" data-color="medium-brown" style="background-color: #6b4423;" title="Medium Brown"></div>
+                        <div class="hair-color-tile" data-color="blonde" style="background-color: #f4e4c1;" title="Blonde"></div>
+                        <div class="hair-color-tile" data-color="red" style="background-color: #8b3a26;" title="Red"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2093,6 +2156,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 tile.addEventListener('click', () => handleHairColorSelect(tile));
             });
         }
+        
+        // Filters toggle functionality
+        const filtersToggleBtn = document.getElementById('filters-toggle-btn');
+        const filtersRow = document.getElementById('filters-combined-row');
+        if (filtersToggleBtn && filtersRow) {
+            filtersToggleBtn.addEventListener('click', () => {
+                triggerHaptic(10);
+                const isExpanded = filtersRow.style.display !== 'none';
+                
+                if (isExpanded) {
+                    // Collapse
+                    filtersRow.style.display = 'none';
+                    filtersToggleBtn.classList.remove('filters-toggle-expanded');
+                    filtersToggleBtn.classList.add('filters-toggle-collapsed');
+                } else {
+                    // Expand
+                    filtersRow.style.display = 'flex';
+                    filtersToggleBtn.classList.remove('filters-toggle-collapsed');
+                    filtersToggleBtn.classList.add('filters-toggle-expanded');
+                }
+            });
+        }
+        
         handleGenderSelect('Male');
     }
 
