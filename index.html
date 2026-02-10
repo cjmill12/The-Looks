@@ -1686,7 +1686,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateButtonVisibility() {
         cameraCaptureBtn.style.display = 'none';
         redoSelfieBtn.style.display = 'none';
-        generateLookBtn.style.display = 'none';
+        generateLookBtn.style.display = 'none'; // Always hidden - auto-generates on tap!
         bookAppointmentBtn.style.display = 'none';
         spinner.style.display = 'none';
 
@@ -1695,23 +1695,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (aiGenerationComplete) {
             redoSelfieBtn.style.display = 'flex';
             bookAppointmentBtn.style.display = 'flex';
-            // NEW: Also show generate button if they selected a different style
-            if (selectedPrompt) {
-                generateLookBtn.style.display = 'flex';
-                generateLookBtn.disabled = false;
-                statusMessage.textContent = `Try another style or book this one!`;
-            } else {
-                statusMessage.textContent = `Select another style or book this one!`;
-            }
+            statusMessage.textContent = `Love it? Book now or tap another style!`;
         } else if (imageCaptured) {
             redoSelfieBtn.style.display = 'flex';
-            if (selectedPrompt) {
-                generateLookBtn.style.display = 'flex';
-                generateLookBtn.disabled = false;
-                statusMessage.textContent = `Tap ✨ to generate your new look`;
-            } else {
-                statusMessage.textContent = "Select a hairstyle below";
-            }
+            statusMessage.textContent = "Tap a hairstyle to see your new look!";
         } else {
             cameraCaptureBtn.style.display = 'flex';
             cameraCaptureBtn.disabled = !cameraStarted;
@@ -1850,6 +1837,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const optionWidth = styleOption.offsetWidth;
             const scrollTarget = styleOption.offsetLeft - (containerWidth / 2) + (optionWidth / 2);
             scrollContainer.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+        }
+        
+        // AUTO-GENERATE: If user has already captured a selfie, generate immediately!
+        if (imageCaptured && selectedPrompt && capturedImageBase64) {
+            // Small delay to let scroll animation finish
+            setTimeout(() => {
+                generateLookBtn.click(); // Trigger the generate function
+            }, 300);
         }
     }
 
