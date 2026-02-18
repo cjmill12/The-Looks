@@ -449,6 +449,66 @@
       "prompt": "A slicked-back style with a low fade, dark brown color, clean and polished finish.",
       "image": "styles/male/white/white.4.png",
       "tags": ["slicked-back", "fade", "polished", "clean"]
+    },
+    {
+      "id": "m_white_ashbrown_046",
+      "name": "Compact Pompadour",
+      "skinTone": "white",
+      "hairColor": "ash-brown",
+      "hairColorLabel": "Ash Brown",
+      "prompt": "A compact pompadour with subtle height, ash brown color, refined silhouette.",
+      "image": "styles/male/white/white.5.png",
+      "tags": ["pompadour", "classic", "refined", "volume"]
+    },
+    {
+      "id": "m_white_sandyblonde_047",
+      "name": "Soft Wave Medium",
+      "skinTone": "white",
+      "hairColor": "blonde",
+      "hairColorLabel": "Sandy Blonde",
+      "prompt": "A medium-length haircut with soft waves, sandy blonde color, natural movement.",
+      "image": "styles/male/white/white.6.png",
+      "tags": ["waves", "medium", "natural", "blonde"]
+    },
+    {
+      "id": "m_white_lightbrown_048",
+      "name": "Short Crew Cut",
+      "skinTone": "white",
+      "hairColor": "light-brown",
+      "hairColorLabel": "Light Brown",
+      "prompt": "A short crew cut with even length, light brown color, athletic and minimal look.",
+      "image": "styles/male/white/white.7.png",
+      "tags": ["crew-cut", "short", "athletic", "minimal"]
+    },
+    {
+      "id": "m_white_darkblonde_049",
+      "name": "Choppy Fringe",
+      "skinTone": "white",
+      "hairColor": "dark-blonde",
+      "hairColorLabel": "Dark Blonde",
+      "prompt": "A short haircut with choppy fringe, dark blonde color, casual youthful feel.",
+      "image": "styles/male/white/white.8.png",
+      "tags": ["fringe", "choppy", "casual", "youthful"]
+    },
+    {
+      "id": "m_white_brown_050",
+      "name": "Brushed-Back Undercut",
+      "skinTone": "white",
+      "hairColor": "medium-brown",
+      "hairColorLabel": "Brown",
+      "prompt": "An undercut with longer brushed-back top, brown color, sharp contrast.",
+      "image": "styles/male/white/white.9.png",
+      "tags": ["undercut", "brushed-back", "contrast", "sharp"]
+    },
+    {
+      "id": "m_white_darkblonde_051",
+      "name": "Uniform Buzz Cut",
+      "skinTone": "white",
+      "hairColor": "dark-blonde",
+      "hairColorLabel": "Dark Blonde",
+      "prompt": "A uniform buzz cut with clean edges, dark blonde color, bold and simple profile.",
+      "image": "styles/male/white/white.10.png",
+      "tags": ["buzz-cut", "minimal", "clean", "bold"]
     }
   ]
 }
