@@ -1621,10 +1621,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         let filteredStyles = ALL_STYLES_DATA.male;
-        if (skinFilter) {
+        if (skinFilter && skinFilter !== 'mixed') {
             const skinMap = { 'white': 'white', 'black': 'black', 'asian': 'asian', 'indian': 'indian', 'mixed': 'mixed' };
             const targetSkin = skinMap[skinFilter];
-            filteredStyles = filteredStyles.filter(s => s.skinTone === targetSkin);
+            const skinMatches = filteredStyles.filter(s => s.skinTone === targetSkin);
+            const mixedStyles = filteredStyles.filter(s => s.skinTone === 'mixed');
+            filteredStyles = [...skinMatches, ...mixedStyles];
+        } else if (skinFilter === 'mixed') {
+            filteredStyles = filteredStyles.filter(s => s.skinTone === 'mixed');
         }
         if (hairFilter) {
             filteredStyles = filteredStyles.filter(s => s.hairColor === hairFilter);
