@@ -1334,6 +1334,7 @@ body {
                         <div class="complexion-tile" style="background-color: #4A2912;" data-complexion="Black" data-complexion-code="black"></div>
                         <div class="complexion-tile" style="background-color: #D4A574;" data-complexion="Asian" data-complexion-code="asian"></div>
                         <div class="complexion-tile" style="background-color: #8B5E3C;" data-complexion="Indian" data-complexion-code="indian"></div>
+                        <div class="complexion-tile" style="background-color: #C68642;" data-complexion="Mixed" data-complexion-code="mixed"></div>
                     </div>
                     
                     <p class="filter-label" style="margin-top: 6px;">Hair</p>
@@ -1469,7 +1470,50 @@ document.addEventListener('DOMContentLoaded', () => {
         "styles/male/white/white.1.png": "styles/male/white/white.1.png",
         "styles/male/white/white.2.png": "styles/male/white/white.2.png",
         "styles/male/white/white.3.png": "styles/male/white/white.3.png",
-        "styles/male/white/white.4.png": "styles/male/white/white.4.png"
+        "styles/male/white/white.4.png": "styles/male/white/white.4.png",
+        "styles/male/white/white.5.png": "styles/male/white/white.5.png",
+        "styles/male/white/white.6.png": "styles/male/white/white.6.png",
+        "styles/male/white/white.7.png": "styles/male/white/white.7.png",
+        "styles/male/white/white.8.png": "styles/male/white/white.8.png",
+        "styles/male/white/white.9.png": "styles/male/white/white.9.png",
+        "styles/male/white/white.10.png": "styles/male/white/white.10.png",
+        "styles/male/black/black.1.png": "styles/male/black/black.1.png",
+        "styles/male/black/black.2.png": "styles/male/black/black.2.png",
+        "styles/male/black/black.3.png": "styles/male/black/black.3.png",
+        "styles/male/black/black.4.png": "styles/male/black/black.4.png",
+        "styles/male/black/black.5.png": "styles/male/black/black.5.png",
+        "styles/male/black/black.6.png": "styles/male/black/black.6.png",
+        "styles/male/black/black.7.png": "styles/male/black/black.7.png",
+        "styles/male/black/black.8.png": "styles/male/black/black.8.png",
+        "styles/male/black/black.9.png": "styles/male/black/black.9.png",
+        "styles/male/black/black.10.png": "styles/male/black/black.10.png",
+        "styles/male/asian/asian.1.png": "styles/male/asian/asian.1.png",
+        "styles/male/asian/asian.2.png": "styles/male/asian/asian.2.png",
+        "styles/male/asian/asian.3.png": "styles/male/asian/asian.3.png",
+        "styles/male/asian/asian.4.png": "styles/male/asian/asian.4.png",
+        "styles/male/asian/asian.5.png": "styles/male/asian/asian.5.png",
+        "styles/male/asian/asian.6.png": "styles/male/asian/asian.6.png",
+        "styles/male/asian/asian.7.png": "styles/male/asian/asian.7.png",
+        "styles/male/asian/asian.8.png": "styles/male/asian/asian.8.png",
+        "styles/male/asian/asian.9.png": "styles/male/asian/asian.9.png",
+        "styles/male/asian/asian.10.png": "styles/male/asian/asian.10.png",
+        "styles/male/indian/indian.1.png": "styles/male/indian/indian.1.png",
+        "styles/male/indian/indian.2.png": "styles/male/indian/indian.2.png",
+        "styles/male/indian/indian.3.png": "styles/male/indian/indian.3.png",
+        "styles/male/indian/indian.4.png": "styles/male/indian/indian.4.png",
+        "styles/male/indian/indian.5.png": "styles/male/indian/indian.5.png",
+        "styles/male/indian/indian.6.png": "styles/male/indian/indian.6.png",
+        "styles/male/indian/indian.7.png": "styles/male/indian/indian.7.png",
+        "styles/male/indian/indian.8.png": "styles/male/indian/indian.8.png",
+        "styles/male/indian/indian.9.png": "styles/male/indian/indian.9.png",
+        "styles/male/indian/indian.10.png": "styles/male/indian/indian.10.png",
+        "styles/male/mixed/mixed.1.png": "styles/male/mixed/mixed.1.png",
+        "styles/male/mixed/mixed.2.png": "styles/male/mixed/mixed.2.png",
+        "styles/male/mixed/mixed.3.png": "styles/male/mixed/mixed.3.png",
+        "styles/male/mixed/mixed.4.png": "styles/male/mixed/mixed.4.png",
+        "styles/male/mixed/mixed.5.png": "styles/male/mixed/mixed.5.png",
+        "styles/male/mixed/mixed.6.png": "styles/male/mixed/mixed.6.png",
+        "styles/male/mixed/mixed.7.png": "styles/male/mixed/mixed.7.png"
     };
 
     function getActualImagePath(jsonPath) {
@@ -1578,7 +1622,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let filteredStyles = ALL_STYLES_DATA.male;
         if (skinFilter) {
-            const skinMap = { 'white': 'white', 'black': 'black', 'asian': 'asian', 'indian': 'indian' };
+            const skinMap = { 'white': 'white', 'black': 'black', 'asian': 'asian', 'indian': 'indian', 'mixed': 'mixed' };
             const targetSkin = skinMap[skinFilter];
             filteredStyles = filteredStyles.filter(s => s.skinTone === targetSkin);
         }
