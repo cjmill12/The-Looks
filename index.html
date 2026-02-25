@@ -814,6 +814,14 @@ body {
     opacity: 0.7;
 }
 
+/* Outer div allows vertical overflow for scale effect */
+.gallery-scroll-outer {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding: 8px 0;
+}
+
 .hairstyle-options-group-wrapper {
     display: flex;
     flex-wrap: nowrap;
@@ -823,13 +831,10 @@ body {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     gap: 16px;
-    padding: 16px calc(50vw - 60px) 24px;
+    padding: 20px calc(50vw - 60px) 28px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     overscroll-behavior-x: contain;
-    /* Give space for scale transforms */
-    padding-top: 20px;
-    padding-bottom: 28px;
 }
 
 .hairstyle-options-group-wrapper::-webkit-scrollbar {
@@ -859,14 +864,14 @@ body {
 
 .style-option.selected {
     opacity: 1;
-    transform: scale(1.15);
+    transform: scale(1.05);
     z-index: 10;
 }
 
 /* Neighbors slightly visible */
 .style-option.neighbor {
     opacity: 0.75;
-    transform: scale(0.95);
+    transform: scale(0.97);
 }
 
 .style-thumbnail {
@@ -1124,7 +1129,7 @@ body {
     
     .hairstyle-options-group-wrapper {
         gap: 14px;
-        padding: 20px calc(50vw - 55px) 32px;
+        padding: 20px calc(50vw - 55px) 28px;
         overflow-y: visible;
     }
     
@@ -1431,8 +1436,11 @@ body {
         <!-- SECTION 3: STYLE GALLERY (Snapchat-style) -->
         <div id="style-inspiration-section">
             <p>Swipe to browse styles</p>
-            <div id="male-hairstyle-options-group" class="hairstyle-options-group-wrapper"></div>
-            <div id="female-hairstyle-options-group" class="hairstyle-options-group-wrapper" style="display: none;">
+            <div class="gallery-scroll-outer">
+                <div id="male-hairstyle-options-group" class="hairstyle-options-group-wrapper"></div>
+            </div>
+            <div class="gallery-scroll-outer">
+                <div id="female-hairstyle-options-group" class="hairstyle-options-group-wrapper" style="display: none;">
                 <div class="style-option" data-prompt="A shoulder-length cut with soft waves and natural volume, warm brunette color, gentle face-framing layers.">
                     <img class="style-thumbnail" src="styles/female/style1.png" alt="Soft Wavy Layers">
                     <p>Soft Wavy Layers</p>
@@ -1518,6 +1526,7 @@ body {
                     <p>Blunt Bangs Long</p>
                 </div>
             </div>
+            </div> <!-- close gallery-scroll-outer -->
         </div>
         
         <!-- SECTION 4: ALWAYS-VISIBLE FILTERS -->
