@@ -1525,7 +1525,7 @@ body {
                     <p class="filter-label">Gender</p>
                     <div class="gender-buttons-container">
                         <button id="male-gender-btn" class="gender-button">Male</button>
-                        <button id="female-gender-btn" class="gender-button">Female</button>
+                        <button id="female-gender-btn" class="gender-button" style="display: none;">Female</button>
                     </div>
                 </div>
                 
@@ -2064,12 +2064,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Second tap - capture photo
             triggerHaptic(20);
             captureImage();
-        } else if (imageCaptured) {
-            // Third tap - retake (reset and restart camera)
+        } else if (imageCaptured && !aiGenerationComplete) {
+            // Tap on captured selfie (before generation) - retake
             triggerHaptic(15);
             resetSession();
             startCamera();
         }
+        // If aiGenerationComplete, do nothing — keep the result showing
     });
 
     async function generateHairstyle() {
