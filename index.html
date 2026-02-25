@@ -176,6 +176,48 @@ body {
     box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5);
 }
 
+/* Share buttons row - sits above status message inside viewport */
+#share-buttons-row {
+    position: absolute;
+    bottom: 36px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 20;
+    padding: 0 12px;
+}
+
+#save-photo-btn, #share-btn {
+    flex: 1;
+    max-width: 120px;
+    padding: 7px 10px;
+    border: none;
+    border-radius: var(--border-radius-full);
+    font-size: 0.75em;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+
+#save-photo-btn {
+    background-color: rgba(15, 23, 42, 0.75);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+#share-btn {
+    background-color: rgba(14, 165, 233, 0.85);
+    color: white;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+}
+
+#save-photo-btn:hover { background-color: rgba(15, 23, 42, 0.9); transform: translateY(-1px); }
+#share-btn:hover { background-color: rgba(2, 132, 199, 0.95); transform: translateY(-1px); }
+
 /* Filters always visible */
 #filters-section-wrapper {
     width: 100%;
@@ -1372,6 +1414,10 @@ body {
                 <img id="ai-result" style="display: none;" src="" alt="AI Hairstyle Result">
                 <div id="face-guide-overlay"></div>
                 <button id="book-appointment-btn" style="display: none !important;">✂️ Book</button>
+                <div id="share-buttons-row" style="display: none;">
+                    <button id="save-photo-btn">💾 Save</button>
+                    <button id="share-btn">↗ Share</button>
+                </div>
                 <p id="status-message">Tap to take selfie</p>
             </div>
         </div>
@@ -1759,20 +1805,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateButtonVisibility() {
-        const bookBtn = document.getElementById('book-appointment-btn');
+        const shareRow = document.getElementById('share-buttons-row');
         if (aiGenerationComplete) {
-            statusMessage.textContent = `Love it? Book now or tap another style!`;
-            bookBtn.style.display = 'block';
+            statusMessage.textContent = `Looking good! Save or share with your barber.`;
+            shareRow.style.display = 'flex';
         } else if (imageCaptured) {
             statusMessage.textContent = "Tap a hairstyle to see your new look!";
-            bookBtn.style.display = 'none';
+            shareRow.style.display = 'none';
         } else {
             if (cameraStarted) {
                 statusMessage.textContent = "Position your face, then tap to capture";
             } else {
                 statusMessage.textContent = "Tap the box to take a selfie";
             }
-            bookBtn.style.display = 'none';
+            shareRow.style.display = 'none';
         }
     }
 
@@ -2097,16 +2143,79 @@ document.addEventListener('DOMContentLoaded', () => {
     bookAppointmentBtn.addEventListener('click', () => {
         if (!aiGenerationComplete) {
             statusMessage.textContent = "Please generate a look first before booking.";
-            triggerHaptic([50, 100, 50]); // Double buzz error
+            triggerHaptic([50, 100, 50]);
             return;
         }
-        triggerHaptic(20); // Medium haptic
+        triggerHaptic(20);
         referenceImagePreview.src = aiResultImg.src;
         selectedStyleNameSpan.textContent = selectedStyleLabel;
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.setDate() + 1);
         dateInput.min = tomorrow.toISOString().split('T')[0];
         bookingModalOverlay.classList.add('visible');
+    });
+
+    // --- SAVE PHOTO ---
+    document.getElementById('save-photo-btn').addEventListener('click', async () => {
+        if (!aiResultImg.src) return;
+        triggerHaptic(20);
+        try {
+            const res = await fetch(aiResultImg.src);
+            const blob = await res.blob();
+            const file = new File([blob], 'my-new-look.jpg', { type: 'image/jpeg' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                // iOS/Android: native share sheet — "Save Image" is the top option
+                await navigator.share({ files: [file], title: 'My New Look' });
+                triggerHaptic(15);
+            } else {
+                // Desktop fallback: direct download
+                const link = document.createElement('a');
+                link.download = `my-new-look-${(selectedStyleLabel || 'hairstyle').replace(/\s+/g, '-').toLowerCase()}.jpg`;
+                link.href = aiResultImg.src;
+                link.click();
+                statusMessage.textContent = '📸 Image downloaded!';
+                setTimeout(() => statusMessage.textContent = 'Looking good! Save or share with your barber.', 2500);
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                const link = document.createElement('a');
+                link.download = 'my-new-look.jpg';
+                link.href = aiResultImg.src;
+                link.click();
+            }
+        }
+    });
+
+    // --- SHARE ---
+    document.getElementById('share-btn').addEventListener('click', async () => {
+        if (!aiResultImg.src) return;
+        triggerHaptic(20);
+        const styleName = selectedStyleLabel || 'New Hairstyle';
+        try {
+            const res = await fetch(aiResultImg.src);
+            const blob = await res.blob();
+            const file = new File([blob], 'my-new-look.jpg', { type: 'image/jpeg' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: `My New Look – ${styleName}`,
+                    text: `Check out my new hairstyle! Generated with Looks ✂️`,
+                    files: [file]
+                });
+                triggerHaptic(15);
+            } else if (navigator.share) {
+                await navigator.share({
+                    title: `My New Look – ${styleName}`,
+                    text: `Check out my new hairstyle! Generated with Looks ✂️`
+                });
+            } else {
+                // Fallback: trigger save instead
+                document.getElementById('save-photo-btn').click();
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                document.getElementById('save-photo-btn').click();
+            }
+        }
     });
 
     modalCloseBtn.addEventListener('click', () => {
