@@ -819,15 +819,17 @@ body {
     flex-wrap: nowrap;
     white-space: nowrap;
     overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    gap: 20px;
-    padding: 0 calc(50vw - 60px) 20px;
+    gap: 16px;
+    padding: 16px calc(50vw - 65px) 24px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    scroll-padding: 0 calc(50vw - 60px);
     overscroll-behavior-x: contain;
+    /* Give space for scale transforms */
+    padding-top: 20px;
+    padding-bottom: 28px;
 }
 
 .hairstyle-options-group-wrapper::-webkit-scrollbar {
@@ -839,57 +841,70 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 130px;
+    width: 120px;
     flex-shrink: 0;
-    border: 3px solid transparent;
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: none;
+    transition: transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1),
+                opacity 0.3s ease;
     cursor: pointer;
-    transform-origin: center;
+    transform-origin: center bottom;
     border-radius: var(--border-radius-md);
-    padding: 6px;
+    padding: 4px;
     scroll-snap-align: center;
     scroll-snap-stop: always;
-    will-change: transform;
-}
-
-.style-option:hover {
-    transform: scale(1.1);
-    z-index: 5;
+    will-change: transform, opacity;
+    /* Dimmed by default */
+    opacity: 0.5;
+    transform: scale(0.88);
 }
 
 .style-option.selected {
-    /* Subtle elevated look - modern and clean */
-    background-color: var(--surface-color);
-    border: 1px solid rgba(14, 165, 233, 0.15);
-    border-radius: calc(var(--border-radius-md) + 4px);
-    box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.12),
-        0 2px 6px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    transform: scale(1.25);
+    opacity: 1;
+    transform: scale(1.15);
     z-index: 10;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Subtle accent ring on thumbnail */
-.style-option.selected .style-thumbnail {
-    box-shadow: 
-        0 0 0 2px var(--surface-color),
-        0 0 0 3px rgba(14, 165, 233, 0.2);
+/* Neighbors slightly visible */
+.style-option.neighbor {
+    opacity: 0.75;
+    transform: scale(0.95);
 }
 
 .style-thumbnail {
-    width: 122px;
-    height: 122px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
     object-position: top;
-    margin-bottom: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
 }
 
+.style-option.selected .style-thumbnail {
+    box-shadow: 
+        0 8px 28px rgba(0, 0, 0, 0.2),
+        0 0 0 3px white,
+        0 0 0 5px rgba(14, 165, 233, 0.4);
+}
+
+/* Style name label - fades in on selection */
 .style-option p {
-    display: none;
+    font-size: 0.7em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+.style-option.selected p {
+    opacity: 1;
+    transform: translateY(0);
+    color: var(--text-primary);
 }
 
 /* --- MODAL - MODERN DESIGN --- */
@@ -1123,17 +1138,18 @@ body {
     }
     
     .hairstyle-options-group-wrapper {
-        gap: 6px;
-        padding-bottom: 6px;
+        gap: 14px;
+        padding: 20px calc(50vw - 60px) 28px;
+        overflow-y: visible;
     }
     
     .style-option {
-        width: 120px;
+        width: 110px;
     }
     
     .style-thumbnail {
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
     }
 
     /* COMPACT FILTERS - Critical for fitting on screen */
@@ -1889,19 +1905,32 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateStyleSelectionOnScroll(scrollContainer, allOptions) {
         if (scrollContainer.style.display === 'none') return;
         const closestOption = findClosestToCenter(scrollContainer, allOptions);
-        if (closestOption) {
-            if (!closestOption.classList.contains('selected')) {
-                allOptions.forEach(o => o.classList.remove('selected'));
-                closestOption.classList.add('selected');
-                
-                // Very light debounced haptic on snap - feels like Snapchat
-                triggerScrollHaptic();
+        if (!closestOption) return;
+
+        const optionsArray = Array.from(allOptions);
+        const selectedIndex = optionsArray.indexOf(closestOption);
+
+        optionsArray.forEach((option, i) => {
+            option.classList.remove('selected', 'neighbor');
+            const distance = Math.abs(i - selectedIndex);
+            if (distance === 0) {
+                option.classList.add('selected');
+            } else if (distance === 1) {
+                option.classList.add('neighbor');
             }
-            if (selectedPrompt !== closestOption.dataset.prompt) {
-                selectedPrompt = closestOption.dataset.prompt;
-                selectedStyleLabel = closestOption.querySelector('p').textContent || closestOption.dataset.prompt;
-                updateButtonVisibility();
-            }
+        });
+
+        // Haptic on new selection
+        if (!closestOption.classList.contains('_wasSelected')) {
+            optionsArray.forEach(o => o.classList.remove('_wasSelected'));
+            closestOption.classList.add('_wasSelected');
+            triggerScrollHaptic();
+        }
+
+        if (selectedPrompt !== closestOption.dataset.prompt) {
+            selectedPrompt = closestOption.dataset.prompt;
+            selectedStyleLabel = closestOption.querySelector('p')?.textContent || closestOption.dataset.prompt;
+            updateButtonVisibility();
         }
     }
 
