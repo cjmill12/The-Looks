@@ -1,4 +1,4 @@
-const CACHE_NAME = 'looks-v13';
+const CACHE_NAME = 'looks-v14';
 
 // Core assets to cache on install
 const STATIC_ASSETS = [
