@@ -1,6 +1,15 @@
-const fs = require('fs').promises;
-const ANALYTICS_FILE = '/tmp/analytics.json';
+// netlify/functions/get_analytics.js
+// Returns analytics from in-memory storage
+
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'looks2025';
+
+// Access the same global storage
+global.analytics = global.analytics || {
+    sessions: [],
+    captures: [],
+    generations: [],
+    shares: []
+};
 
 exports.handler = async (event) => {
     const headers = {
@@ -10,6 +19,14 @@ exports.handler = async (event) => {
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers, body: '' };
+    }
+
+    if (event.httpMethod !== 'GET') {
+        return {
+            statusCode: 405,
+            headers,
+            body: JSON.stringify({ error: 'Method not allowed' })
+        };
     }
 
     const password = event.queryStringParameters?.password;
@@ -22,35 +39,41 @@ exports.handler = async (event) => {
     }
 
     try {
-        const data = await fs.readFile(ANALYTICS_FILE, 'utf8');
-        const analytics = JSON.parse(data);
+        const analytics = global.analytics;
         
-        // Simple counts
+        const sessions = analytics.sessions.length;
+        const captures = analytics.captures.length;
+        const generations = analytics.generations.length;
+        const shares = analytics.shares.length;
+        
         const summary = {
-            totalSessions: analytics.sessions.length,
-            totalCaptures: analytics.captures.length,
-            totalGenerations: analytics.generations.length,
-            totalShares: analytics.shares.length,
-            captureRate: ((analytics.captures.length / analytics.sessions.length) * 100).toFixed(1),
-            generationRate: ((analytics.generations.length / analytics.captures.length) * 100).toFixed(1),
-            shareRate: ((analytics.shares.length / analytics.generations.length) * 100).toFixed(1)
+            totalSessions: sessions,
+            totalCaptures: captures,
+            totalGenerations: generations,
+            totalShares: shares,
+            captureRate: sessions > 0 ? ((captures / sessions) * 100).toFixed(1) : '0.0',
+            generationRate: captures > 0 ? ((generations / captures) * 100).toFixed(1) : '0.0',
+            shareRate: generations > 0 ? ((shares / generations) * 100).toFixed(1) : '0.0'
         };
+        
+        console.log('📊 Analytics retrieved:', summary);
         
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ ...analytics, summary })
+            body: JSON.stringify({
+                ...analytics,
+                summary
+            })
         };
     } catch (error) {
+        console.error('❌ Error retrieving analytics:', error);
         return {
-            statusCode: 200,
+            statusCode: 500,
             headers,
             body: JSON.stringify({ 
-                sessions: [], 
-                captures: [], 
-                generations: [], 
-                shares: [],
-                summary: { totalSessions: 0, totalCaptures: 0, totalGenerations: 0, totalShares: 0 }
+                error: 'Failed to retrieve analytics',
+                details: error.message 
             })
         };
     }
