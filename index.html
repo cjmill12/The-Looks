@@ -1610,8 +1610,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Simple tracking function
     async function track(eventType, data = {}) {
+        console.log('🔍 TRACK CALLED:', eventType, data); // DEBUG
         try {
-            await fetch('/api/log_event', {
+            const response = await fetch('/api/log_event', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1619,8 +1620,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     eventData: { sessionId, ...data }
                 })
             });
+            console.log('✅ TRACK SUCCESS:', eventType, response.status); // DEBUG
         } catch (e) { 
-            console.error('Analytics tracking failed:', e); 
+            console.error('❌ TRACK FAILED:', eventType, e); 
         }
     }
     // ========================================
@@ -2476,7 +2478,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cta = document.getElementById('onboarding-cta');
 
         // TRACK: Session start when page loads
+        console.log('🚀 SESSION START - Firing in 1 second...'); // DEBUG
         setTimeout(() => {
+            console.log('🚀 SESSION START - Sending now...'); // DEBUG
             fetch('/api/log_event', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -2487,7 +2491,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         gender: 'Male' 
                     }
                 })
-            }).catch(e => console.error('Track failed:', e));
+            })
+            .then(r => {
+                console.log('✅ SESSION START SUCCESS:', r.status); // DEBUG
+                return r.json();
+            })
+            .then(d => console.log('✅ SESSION START RESPONSE:', d)) // DEBUG
+            .catch(e => console.error('❌ SESSION START FAILED:', e));
         }, 1000);
 
         // Show only on first visit
