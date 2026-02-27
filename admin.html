@@ -2,9 +2,10 @@
 <html>
 <head>
     <title>Looks Stats</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { 
-            font-family: Arial; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             max-width: 800px; 
             margin: 50px auto; 
             padding: 20px;
@@ -20,6 +21,7 @@
         .stat h2 { 
             margin: 0 0 10px 0; 
             color: #333; 
+            font-size: 18px;
         }
         .stat .number { 
             font-size: 48px; 
@@ -29,13 +31,15 @@
         .stat .label { 
             color: #666; 
             font-size: 14px;
+            margin-top: 5px;
         }
         input { 
-            padding: 10px; 
+            padding: 12px; 
             width: 100%; 
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 16px;
         }
         button { 
             padding: 12px 24px; 
@@ -44,27 +48,79 @@
             border: none; 
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
         }
-        .login { background: white; padding: 40px; border-radius: 8px; }
-        .dashboard { display: none; }
+        button:hover {
+            background: #0284c7;
+        }
+        .login { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .login h1 {
+            margin-top: 0;
+            color: #0f172a;
+        }
+        .dashboard { 
+            display: none; 
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #0f172a;
+        }
+        #error {
+            color: #ef4444;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .updated {
+            color: #999;
+            text-align: center;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 20px auto;
+                padding: 10px;
+            }
+            .stat {
+                padding: 20px;
+            }
+            .stat .number {
+                font-size: 36px;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="login" class="login">
-        <h1>Looks Admin</h1>
-        <input type="password" id="pw" placeholder="Password">
+        <h1>🔐 Looks Admin</h1>
+        <p style="color: #666; margin-bottom: 24px;">Enter password to view analytics</p>
+        <input type="password" id="pw" placeholder="Password" autocomplete="current-password">
         <button onclick="login()">Login</button>
-        <p id="error" style="color: red;"></p>
+        <p id="error"></p>
     </div>
     
     <div id="dashboard" class="dashboard">
-        <h1>📊 Looks Analytics</h1>
-        <button onclick="loadData()">🔄 Refresh</button>
+        <div class="header">
+            <h1>📊 Looks Analytics</h1>
+            <button onclick="loadData()">🔄 Refresh</button>
+        </div>
         
         <div class="stat">
             <h2>👥 Total Sessions</h2>
             <div class="number" id="sessions">0</div>
-            <div class="label">People who scanned QR code</div>
+            <div class="label">People who scanned the QR code</div>
         </div>
         
         <div class="stat">
@@ -76,7 +132,7 @@
         <div class="stat">
             <h2>✨ Hairstyles Generated</h2>
             <div class="number" id="generations">0</div>
-            <div class="label" id="gen-rate">0% of captures</div>
+            <div class="label" id="gen-rate">0% of selfies</div>
         </div>
         
         <div class="stat">
@@ -85,7 +141,7 @@
             <div class="label" id="share-rate">0% of generations</div>
         </div>
         
-        <p style="color: #999; text-align: center;" id="updated"></p>
+        <p class="updated" id="updated"></p>
     </div>
 
     <script>
@@ -93,40 +149,63 @@
         
         function login() {
             password = document.getElementById('pw').value;
+            if (!password) {
+                document.getElementById('error').textContent = 'Please enter a password';
+                return;
+            }
             loadData();
         }
         
         async function loadData() {
             try {
-                const res = await fetch(`/api/get_analytics?password=${password}`);
+                const res = await fetch(`/api/analytics?password=${encodeURIComponent(password)}`);
+                
                 if (res.status === 401) {
-                    document.getElementById('error').textContent = 'Wrong password';
+                    document.getElementById('error').textContent = 'Invalid password';
                     return;
+                }
+                
+                if (!res.ok) {
+                    throw new Error('Failed to load data');
                 }
                 
                 const data = await res.json();
                 
+                // Hide login, show dashboard
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 
-                document.getElementById('sessions').textContent = data.summary.totalSessions;
-                document.getElementById('captures').textContent = data.summary.totalCaptures;
+                // Update stats
+                document.getElementById('sessions').textContent = data.summary.totalSessions || 0;
+                document.getElementById('captures').textContent = data.summary.totalCaptures || 0;
                 document.getElementById('capture-rate').textContent = 
-                    data.summary.captureRate + '% of sessions';
-                document.getElementById('generations').textContent = data.summary.totalGenerations;
+                    (data.summary.captureRate || 0) + '% of sessions';
+                document.getElementById('generations').textContent = data.summary.totalGenerations || 0;
                 document.getElementById('gen-rate').textContent = 
-                    data.summary.generationRate + '% of captures';
-                document.getElementById('shares').textContent = data.summary.totalShares;
+                    (data.summary.generationRate || 0) + '% of selfies';
+                document.getElementById('shares').textContent = data.summary.totalShares || 0;
                 document.getElementById('share-rate').textContent = 
-                    data.summary.shareRate + '% of generations';
+                    (data.summary.shareRate || 0) + '% of generations';
                 document.getElementById('updated').textContent = 
                     'Last updated: ' + new Date().toLocaleString();
+                    
             } catch (e) {
-                document.getElementById('error').textContent = 'Error: ' + e.message;
+                console.error('Error:', e);
+                document.getElementById('error').textContent = 'Error loading data: ' + e.message;
             }
         }
         
-        setInterval(loadData, 30000); // Auto-refresh every 30 seconds
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (document.getElementById('dashboard').style.display === 'block') {
+                loadData();
+            }
+        }, 30000);
+        
+        // Allow Enter key to login
+        document.getElementById('pw').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
     </script>
 </body>
 </html>
