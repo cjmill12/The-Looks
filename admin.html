@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Looks Stats</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .stat { 
+            background: white; 
+            padding: 30px; 
+            margin: 20px 0; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat h2 { 
+            margin: 0 0 10px 0; 
+            color: #333; 
+        }
+        .stat .number { 
+            font-size: 48px; 
+            font-weight: bold; 
+            color: #0ea5e9; 
+        }
+        .stat .label { 
+            color: #666; 
+            font-size: 14px;
+        }
+        input { 
+            padding: 10px; 
+            width: 100%; 
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #0ea5e9; 
+            color: white; 
+            border: none; 
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login { background: white; padding: 40px; border-radius: 8px; }
+        .dashboard { display: none; }
+    </style>
+</head>
+<body>
+    <div id="login" class="login">
+        <h1>Looks Admin</h1>
+        <input type="password" id="pw" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="error" style="color: red;"></p>
+    </div>
+    
+    <div id="dashboard" class="dashboard">
+        <h1>📊 Looks Analytics</h1>
+        <button onclick="loadData()">🔄 Refresh</button>
+        
+        <div class="stat">
+            <h2>👥 Total Sessions</h2>
+            <div class="number" id="sessions">0</div>
+            <div class="label">People who scanned QR code</div>
+        </div>
+        
+        <div class="stat">
+            <h2>📸 Selfies Taken</h2>
+            <div class="number" id="captures">0</div>
+            <div class="label" id="capture-rate">0% of sessions</div>
+        </div>
+        
+        <div class="stat">
+            <h2>✨ Hairstyles Generated</h2>
+            <div class="number" id="generations">0</div>
+            <div class="label" id="gen-rate">0% of captures</div>
+        </div>
+        
+        <div class="stat">
+            <h2>↗️ Shares & Saves</h2>
+            <div class="number" id="shares">0</div>
+            <div class="label" id="share-rate">0% of generations</div>
+        </div>
+        
+        <p style="color: #999; text-align: center;" id="updated"></p>
+    </div>
+
+    <script>
+        let password = '';
+        
+        function login() {
+            password = document.getElementById('pw').value;
+            loadData();
+        }
+        
+        async function loadData() {
+            try {
+                const res = await fetch(`/api/get_analytics?password=${password}`);
+                if (res.status === 401) {
+                    document.getElementById('error').textContent = 'Wrong password';
+                    return;
+                }
+                
+                const data = await res.json();
+                
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                document.getElementById('sessions').textContent = data.summary.totalSessions;
+                document.getElementById('captures').textContent = data.summary.totalCaptures;
+                document.getElementById('capture-rate').textContent = 
+                    data.summary.captureRate + '% of sessions';
+                document.getElementById('generations').textContent = data.summary.totalGenerations;
+                document.getElementById('gen-rate').textContent = 
+                    data.summary.generationRate + '% of captures';
+                document.getElementById('shares').textContent = data.summary.totalShares;
+                document.getElementById('share-rate').textContent = 
+                    data.summary.shareRate + '% of generations';
+                document.getElementById('updated').textContent = 
+                    'Last updated: ' + new Date().toLocaleString();
+            } catch (e) {
+                document.getElementById('error').textContent = 'Error: ' + e.message;
+            }
+        }
+        
+        setInterval(loadData, 30000); // Auto-refresh every 30 seconds
+    </script>
+</body>
+</html>
