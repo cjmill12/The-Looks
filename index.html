@@ -1612,6 +1612,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const shopId = urlParams.get('shop') || 'wyckoff'; // Default to wyckoff
     
+    // Get or create unique user_id (persists in localStorage)
+    let userId = localStorage.getItem('looks_user_id');
+    let isReturning = false;
+    
+    if (userId) {
+        isReturning = true; // Existing user
+    } else {
+        // New user - create ID
+        userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem('looks_user_id', userId);
+    }
+    
+    console.log('🆔 User ID:', userId, isReturning ? '(RETURNING)' : '(NEW)');
+    
     // Simple tracking function
     async function track(eventType, data = {}) {
         console.log('🔍 TRACK CALLED:', eventType, data); // DEBUG
@@ -1622,7 +1636,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     eventType,
                     eventData: { 
-                        sessionId, 
+                        sessionId,
+                        user_id: userId,
+                        is_returning: isReturning,
                         shop_id: shopId,  // Include shop_id
                         ...data 
                     }
@@ -2491,6 +2507,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const shopId = urlParams.get('shop') || 'wyckoff';
         
+        // Get or create unique user_id
+        let userId = localStorage.getItem('looks_user_id');
+        let isReturning = false;
+
+        if (userId) {
+            isReturning = true;
+        } else {
+            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem('looks_user_id', userId);
+        }
+        
         setTimeout(() => {
             console.log('🚀 SESSION START - Sending now...'); // DEBUG
             fetch('/api/analytics', {
@@ -2500,6 +2527,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     eventType: 'session_start',
                     eventData: { 
                         sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                        user_id: userId,
+                        is_returning: isReturning,
                         shop_id: shopId,
                         gender: 'Male' 
                     }
