@@ -1,5 +1,5 @@
 // netlify/functions/analytics.js
-// Permanent storage using Supabase
+// Multi-shop tracking with Supabase
 
 const SUPABASE_URL = 'https://sehiygaoyvxmaksodiex.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -59,10 +59,14 @@ exports.handler = async (event) => {
         try {
             const { eventType, eventData } = JSON.parse(event.body);
             
-            // Save to Supabase
+            // Extract shop_id from eventData (will be set by client)
+            const shopId = eventData.shop_id || 'wyckoff'; // Default to wyckoff for now
+            
+            // Save to Supabase with shop_id
             await supabaseQuery('analytics_events', {
                 event_type: eventType,
                 session_id: eventData.sessionId,
+                shop_id: shopId,
                 data: eventData
             });
             
@@ -93,8 +97,15 @@ exports.handler = async (event) => {
         }
 
         try {
-            // Get all events from Supabase
-            const events = await supabaseSelect('analytics_events?select=*&order=timestamp.desc');
+            const shopFilter = event.queryStringParameters?.shop;
+            
+            // Build query - optionally filter by shop
+            let query = 'analytics_events?select=*&order=timestamp.desc';
+            if (shopFilter) {
+                query = `analytics_events?select=*&shop_id=eq.${shopFilter}&order=timestamp.desc`;
+            }
+            
+            const events = await supabaseSelect(query);
             
             // Organize by event type
             const sessions = events.filter(e => e.event_type === 'session_start');
@@ -107,6 +118,19 @@ exports.handler = async (event) => {
             const generationsCount = generations.length;
             const sharesCount = shares.length;
             
+            // Calculate per-shop breakdown
+            const shopStats = {};
+            events.forEach(e => {
+                const shop = e.shop_id || 'unknown';
+                if (!shopStats[shop]) {
+                    shopStats[shop] = { sessions: 0, captures: 0, generations: 0, shares: 0 };
+                }
+                if (e.event_type === 'session_start') shopStats[shop].sessions++;
+                if (e.event_type === 'image_capture') shopStats[shop].captures++;
+                if (e.event_type === 'generation_complete') shopStats[shop].generations++;
+                if (e.event_type === 'share_click' || e.event_type === 'save_click') shopStats[shop].shares++;
+            });
+            
             const summary = {
                 totalSessions: sessionsCount,
                 totalCaptures: capturesCount,
@@ -114,17 +138,18 @@ exports.handler = async (event) => {
                 totalShares: sharesCount,
                 captureRate: sessionsCount > 0 ? ((capturesCount / sessionsCount) * 100).toFixed(1) : '0.0',
                 generationRate: capturesCount > 0 ? ((generationsCount / capturesCount) * 100).toFixed(1) : '0.0',
-                shareRate: generationsCount > 0 ? ((sharesCount / generationsCount) * 100).toFixed(1) : '0.0'
+                shareRate: generationsCount > 0 ? ((sharesCount / generationsCount) * 100).toFixed(1) : '0.0',
+                shopBreakdown: shopStats
             };
             
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({
-                    sessions: sessions.map(e => ({ ...e.data, timestamp: e.timestamp })),
-                    captures: captures.map(e => ({ ...e.data, timestamp: e.timestamp })),
-                    generations: generations.map(e => ({ ...e.data, timestamp: e.timestamp })),
-                    shares: shares.map(e => ({ ...e.data, timestamp: e.timestamp })),
+                    sessions: sessions.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
+                    captures: captures.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
+                    generations: generations.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
+                    shares: shares.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
                     summary
                 })
             };
