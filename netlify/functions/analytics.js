@@ -59,14 +59,18 @@ exports.handler = async (event) => {
         try {
             const { eventType, eventData } = JSON.parse(event.body);
             
-            // Extract shop_id from eventData (will be set by client)
-            const shopId = eventData.shop_id || 'wyckoff'; // Default to wyckoff for now
+            // Extract tracking data
+            const shopId = eventData.shop_id || 'wyckoff';
+            const userId = eventData.user_id || null;
+            const isReturning = eventData.is_returning || false;
             
-            // Save to Supabase with shop_id
+            // Save to Supabase with user tracking
             await supabaseQuery('analytics_events', {
                 event_type: eventType,
                 session_id: eventData.sessionId,
                 shop_id: shopId,
+                user_id: userId,
+                is_returning: isReturning,
                 data: eventData
             });
             
@@ -131,6 +135,21 @@ exports.handler = async (event) => {
                 if (e.event_type === 'share_click' || e.event_type === 'save_click') shopStats[shop].shares++;
             });
             
+            // Calculate unique users
+            const uniqueUserIds = new Set(events.filter(e => e.user_id).map(e => e.user_id));
+            const uniqueUsers = uniqueUserIds.size;
+            const newUsers = sessions.filter(s => s.is_returning === false).length;
+            const returningUsers = sessions.filter(s => s.is_returning === true).length;
+            
+            // Calculate today's stats
+            const today = new Date().toISOString().split('T')[0];
+            const todaySessions = sessions.filter(s => s.timestamp.startsWith(today));
+            const todayCaptures = captures.filter(c => c.timestamp.startsWith(today));
+            const todayGenerations = generations.filter(g => g.timestamp.startsWith(today));
+            const todayShares = shares.filter(s => s.timestamp.startsWith(today));
+            const todayNewUsers = todaySessions.filter(s => s.is_returning === false).length;
+            const todayReturningUsers = todaySessions.filter(s => s.is_returning === true).length;
+            
             const summary = {
                 totalSessions: sessionsCount,
                 totalCaptures: capturesCount,
@@ -139,17 +158,30 @@ exports.handler = async (event) => {
                 captureRate: sessionsCount > 0 ? ((capturesCount / sessionsCount) * 100).toFixed(1) : '0.0',
                 generationRate: capturesCount > 0 ? ((generationsCount / capturesCount) * 100).toFixed(1) : '0.0',
                 shareRate: generationsCount > 0 ? ((sharesCount / generationsCount) * 100).toFixed(1) : '0.0',
-                shopBreakdown: shopStats
+                shopBreakdown: shopStats,
+                uniqueUsers: uniqueUsers,
+                newUsers: newUsers,
+                returningUsers: returningUsers,
+                returnRate: sessionsCount > 0 ? ((returningUsers / sessionsCount) * 100).toFixed(1) : '0.0',
+                today: {
+                    date: today,
+                    sessions: todaySessions.length,
+                    captures: todayCaptures.length,
+                    generations: todayGenerations.length,
+                    shares: todayShares.length,
+                    newUsers: todayNewUsers,
+                    returningUsers: todayReturningUsers
+                }
             };
             
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({
-                    sessions: sessions.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
-                    captures: captures.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
-                    generations: generations.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
-                    shares: shares.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id })),
+                    sessions: sessions.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id, user_id: e.user_id, is_returning: e.is_returning })),
+                    captures: captures.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id, user_id: e.user_id })),
+                    generations: generations.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id, user_id: e.user_id })),
+                    shares: shares.map(e => ({ ...e.data, timestamp: e.timestamp, shop_id: e.shop_id, user_id: e.user_id })),
                     summary
                 })
             };
