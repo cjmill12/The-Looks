@@ -1608,16 +1608,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
+    // Get shop_id from URL parameter (?shop=wyckoff)
+    const urlParams = new URLSearchParams(window.location.search);
+    const shopId = urlParams.get('shop') || 'wyckoff'; // Default to wyckoff
+    
     // Simple tracking function
     async function track(eventType, data = {}) {
         console.log('🔍 TRACK CALLED:', eventType, data); // DEBUG
         try {
-            const response = await fetch('/api/analytics', {  // CHANGED: single endpoint
+            const response = await fetch('/api/analytics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     eventType,
-                    eventData: { sessionId, ...data }
+                    eventData: { 
+                        sessionId, 
+                        shop_id: shopId,  // Include shop_id
+                        ...data 
+                    }
                 })
             });
             console.log('✅ TRACK SUCCESS:', eventType, response.status); // DEBUG
@@ -2479,15 +2487,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // TRACK: Session start when page loads
         console.log('🚀 SESSION START - Firing in 1 second...'); // DEBUG
+        // Get shop_id from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const shopId = urlParams.get('shop') || 'wyckoff';
+        
         setTimeout(() => {
             console.log('🚀 SESSION START - Sending now...'); // DEBUG
-            fetch('/api/analytics', {  // CHANGED: single endpoint
+            fetch('/api/analytics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     eventType: 'session_start',
                     eventData: { 
                         sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                        shop_id: shopId,
                         gender: 'Male' 
                     }
                 })
