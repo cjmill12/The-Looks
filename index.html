@@ -1610,7 +1610,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Get shop_id from URL parameter (?shop=wyckoff)
     const urlParams = new URLSearchParams(window.location.search);
-    const shopId = urlParams.get('shop') || 'unknown';
+    const shopId = urlParams.get('shop');
+    const validShops = ['wyckoff', 'allendale', 'montana'];
+    const trackingEnabled = shopId && validShops.includes(shopId);
     
     // Get or create unique user_id (persists in localStorage)
     let userId = localStorage.getItem('looks_user_id');
@@ -1626,8 +1628,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('🆔 User ID:', userId, isReturning ? '(RETURNING)' : '(NEW)');
     
-    // Simple tracking function
+    // Simple tracking function - only fires when a valid shop QR code is used
     async function track(eventType, data = {}) {
+        if (!trackingEnabled) return; // Skip if no valid shop parameter
         console.log('🔍 TRACK CALLED:', eventType, data); // DEBUG
         try {
             const response = await fetch('/api/analytics', {
@@ -2501,11 +2504,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById('onboarding-overlay');
         const cta = document.getElementById('onboarding-cta');
 
-        // TRACK: Session start when page loads
-        console.log('🚀 SESSION START - Firing in 1 second...'); // DEBUG
-        // Get shop_id from URL
+        // TRACK: Session start - only when a valid shop QR code is used
         const urlParams = new URLSearchParams(window.location.search);
-        const shopId = urlParams.get('shop') || 'unknown';
+        const shopId = urlParams.get('shop');
+        const validShops = ['wyckoff', 'allendale', 'montana'];
+        if (!shopId || !validShops.includes(shopId)) return; // Skip tracking
         
         // Get or create unique user_id
         let userId = localStorage.getItem('looks_user_id');
