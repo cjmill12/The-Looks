@@ -1610,7 +1610,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Get shop_id from URL parameter (?shop=wyckoff)
     const urlParams = new URLSearchParams(window.location.search);
-    const shopId = urlParams.get('shop') || 'wyckoff'; // Default to wyckoff
+    const shopId = urlParams.get('shop') || 'unknown';
     
     // Get or create unique user_id (persists in localStorage)
     let userId = localStorage.getItem('looks_user_id');
@@ -2505,7 +2505,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('🚀 SESSION START - Firing in 1 second...'); // DEBUG
         // Get shop_id from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const shopId = urlParams.get('shop') || 'wyckoff';
+        const shopId = urlParams.get('shop') || 'unknown';
         
         // Get or create unique user_id
         let userId = localStorage.getItem('looks_user_id');
