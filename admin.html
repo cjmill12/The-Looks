@@ -567,8 +567,8 @@
             const tbody = document.getElementById('shop-table-body');
             tbody.innerHTML = '';
             
-            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop' };
-            const validShops = ['wyckoff', 'allendale', 'montana'];
+            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop', 'virile': 'Virile', 'maple-w': 'Maple (Waldwick)', 'ridgewood': 'Ridgewood Man' };
+            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
             
             for (const [shopId, stats] of Object.entries(shopBreakdown)) {
                 if (!validShops.includes(shopId)) continue; // Skip unknown/test traffic
@@ -591,7 +591,7 @@
             const tbody = document.getElementById('session-table-body');
             tbody.innerHTML = '';
             
-            const validShops = ['wyckoff', 'allendale', 'montana'];
+            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
             const sessions = {};
             data.sessions.filter(s => validShops.includes(s.shop_id)).forEach(s => {
                 sessions[s.sessionId] = { 
@@ -612,7 +612,7 @@
             });
             
             const sessionArray = Object.values(sessions).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 20);
-            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop' };
+            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop', 'virile': 'Virile', 'maple-w': 'Maple (Waldwick)', 'ridgewood': 'Ridgewood Man' };
             
             sessionArray.forEach(session => {
                 const time = new Date(session.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
