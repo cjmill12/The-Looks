@@ -1611,7 +1611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get shop_id from URL parameter (?shop=wyckoff)
     const urlParams = new URLSearchParams(window.location.search);
     const shopId = urlParams.get('shop');
-    const validShops = ['wyckoff', 'allendale', 'montana'];
+    const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
     const trackingEnabled = shopId && validShops.includes(shopId);
     
     // Get or create unique user_id (persists in localStorage)
@@ -2507,7 +2507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // TRACK: Session start - only when a valid shop QR code is used
         const urlParams = new URLSearchParams(window.location.search);
         const shopId = urlParams.get('shop');
-        const validShops = ['wyckoff', 'allendale', 'montana'];
+        const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
         if (!shopId || !validShops.includes(shopId)) return; // Skip tracking
         
         // Get or create unique user_id
