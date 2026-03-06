@@ -60,7 +60,7 @@ exports.handler = async (event) => {
             const { eventType, eventData } = JSON.parse(event.body);
             
             // Extract tracking data
-            const shopId = eventData.shop_id || 'wyckoff';
+            const shopId = eventData.shop_id || 'unknown';
             const userId = eventData.user_id || null;
             const isReturning = eventData.is_returning || false;
             
@@ -106,7 +106,7 @@ exports.handler = async (event) => {
             // Build query - optionally filter by shop
             let query = 'analytics_events?select=*&order=timestamp.desc';
             if (shopFilter) {
-                query = `analytics_events?select=*&shop_id=eq.${shopFilter}&order=timestamp.desc`;
+                query = `analytics_events?select=*&order=timestamp.desc&shop_id=eq.${shopFilter}`;
             }
             
             const events = await supabaseSelect(query);
