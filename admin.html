@@ -568,8 +568,10 @@
             tbody.innerHTML = '';
             
             const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop' };
+            const validShops = ['wyckoff', 'allendale', 'montana'];
             
             for (const [shopId, stats] of Object.entries(shopBreakdown)) {
+                if (!validShops.includes(shopId)) continue; // Skip unknown/test traffic
                 const convRate = stats.sessions > 0 ? ((stats.captures / stats.sessions) * 100).toFixed(0) : '0';
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -589,8 +591,9 @@
             const tbody = document.getElementById('session-table-body');
             tbody.innerHTML = '';
             
+            const validShops = ['wyckoff', 'allendale', 'montana'];
             const sessions = {};
-            data.sessions.forEach(s => {
+            data.sessions.filter(s => validShops.includes(s.shop_id)).forEach(s => {
                 sessions[s.sessionId] = { 
                     id: s.sessionId, 
                     timestamp: s.timestamp, 
