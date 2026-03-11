@@ -300,6 +300,18 @@
             <div class="header">
                 <h1>📊 Looks Analytics</h1>
                 <div class="header-actions">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="color: rgba(255,255,255,0.7); font-size: 13px; white-space: nowrap;">Since:</label>
+                        <input type="date" id="since-date" style="
+                            background: rgba(255,255,255,0.1);
+                            border: 1px solid rgba(255,255,255,0.2);
+                            border-radius: 6px;
+                            color: white;
+                            padding: 6px 10px;
+                            font-size: 13px;
+                            cursor: pointer;
+                        " onchange="loadData()">
+                    </div>
                     <button class="btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
                     <button class="btn-secondary" onclick="loadData()">🔄 Refresh</button>
                 </div>
@@ -465,6 +477,11 @@
                 document.getElementById('error').textContent = 'Please enter a password';
                 return;
             }
+            // Default since date to today
+            const sinceInput = document.getElementById('since-date');
+            if (!sinceInput.value) {
+                sinceInput.value = new Date().toISOString().split('T')[0];
+            }
             loadData();
         }
         
@@ -479,7 +496,55 @@
                 
                 if (!res.ok) throw new Error('Failed to load data');
                 
-                allData = await res.json();
+                const rawData = await res.json();
+
+                // Apply "since" date filter client-side
+                const sinceDate = document.getElementById('since-date').value;
+                if (sinceDate) {
+                    const since = new Date(sinceDate).toISOString();
+                    rawData.sessions = rawData.sessions.filter(e => e.timestamp >= since);
+                    rawData.captures = rawData.captures.filter(e => e.timestamp >= since);
+                    rawData.generations = rawData.generations.filter(e => e.timestamp >= since);
+                    rawData.shares = rawData.shares.filter(e => e.timestamp >= since);
+
+                    // Recalculate summary from filtered data
+                    const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
+                    const shopStats = {};
+                    [...rawData.sessions, ...rawData.captures, ...rawData.generations, ...rawData.shares].forEach(e => {
+                        const shop = e.shop_id || 'unknown';
+                        if (!shopStats[shop]) shopStats[shop] = { sessions: 0, captures: 0, generations: 0, shares: 0 };
+                        if (rawData.sessions.includes(e)) shopStats[shop].sessions++;
+                        if (rawData.captures.includes(e)) shopStats[shop].captures++;
+                        if (rawData.generations.includes(e)) shopStats[shop].generations++;
+                        if (rawData.shares.includes(e)) shopStats[shop].shares++;
+                    });
+
+                    const s = rawData.sessions.length;
+                    const c = rawData.captures.length;
+                    const g = rawData.generations.length;
+                    const sh = rawData.shares.length;
+                    const uniqueUsers = new Set(rawData.sessions.filter(e => e.user_id).map(e => e.user_id)).size;
+                    const newUsers = rawData.sessions.filter(e => e.is_returning === false).length;
+                    const returningUsers = rawData.sessions.filter(e => e.is_returning === true).length;
+
+                    rawData.summary = {
+                        ...rawData.summary,
+                        totalSessions: s,
+                        totalCaptures: c,
+                        totalGenerations: g,
+                        totalShares: sh,
+                        uniqueUsers,
+                        newUsers,
+                        returningUsers,
+                        captureRate: s > 0 ? ((c / s) * 100).toFixed(1) : '0.0',
+                        generationRate: c > 0 ? ((g / c) * 100).toFixed(1) : '0.0',
+                        shareRate: g > 0 ? ((sh / g) * 100).toFixed(1) : '0.0',
+                        returnRate: s > 0 ? ((returningUsers / s) * 100).toFixed(1) : '0.0',
+                        shopBreakdown: shopStats,
+                    };
+                }
+
+                allData = rawData;
                 
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
