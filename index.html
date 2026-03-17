@@ -2508,44 +2508,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const shopId = urlParams.get('shop');
         const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
-        if (!shopId || !validShops.includes(shopId)) return; // Skip tracking
         
-        // Get or create unique user_id
-        let userId = localStorage.getItem('looks_user_id');
-        let isReturning = false;
+        // Only track analytics if valid shop parameter exists
+        if (shopId && validShops.includes(shopId)) {
+            // Get or create unique user_id
+            let userId = localStorage.getItem('looks_user_id');
+            let isReturning = false;
 
-        if (userId) {
-            isReturning = true;
-        } else {
-            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            localStorage.setItem('looks_user_id', userId);
-        }
-        
-        setTimeout(() => {
-            console.log('🚀 SESSION START - Sending now...'); // DEBUG
-            fetch('/api/analytics', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    eventType: 'session_start',
-                    eventData: { 
-                        sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                        user_id: userId,
-                        is_returning: isReturning,
-                        shop_id: shopId,
-                        gender: 'Male' 
-                    }
+            if (userId) {
+                isReturning = true;
+            } else {
+                userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                localStorage.setItem('looks_user_id', userId);
+            }
+            
+            setTimeout(() => {
+                console.log('🚀 SESSION START - Sending now...'); // DEBUG
+                fetch('/api/analytics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        eventType: 'session_start',
+                        eventData: { 
+                            sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                            user_id: userId,
+                            is_returning: isReturning,
+                            shop_id: shopId,
+                            gender: 'Male' 
+                        }
+                    })
                 })
-            })
-            .then(r => {
-                console.log('✅ SESSION START SUCCESS:', r.status); // DEBUG
-                return r.json();
-            })
-            .then(d => console.log('✅ SESSION START RESPONSE:', d)) // DEBUG
-            .catch(e => console.error('❌ SESSION START FAILED:', e));
-        }, 1000);
+                .then(r => {
+                    console.log('✅ SESSION START SUCCESS:', r.status); // DEBUG
+                    return r.json();
+                })
+                .then(d => console.log('✅ SESSION START RESPONSE:', d)) // DEBUG
+                .catch(e => console.error('❌ SESSION START FAILED:', e));
+            }, 1000);
+        }
 
-        // Show only on first visit
+        // Show only on first visit (always runs, regardless of shop parameter)
         if (localStorage.getItem('looks-onboarded')) {
             overlay.classList.add('hidden');
         }
