@@ -1608,11 +1608,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Get shop_id from URL parameter (?shop=wyckoff)
+    // Get shop_id from URL parameter, default to 'instagram' for all non-shop traffic
     const urlParams = new URLSearchParams(window.location.search);
-    const shopId = urlParams.get('shop');
-    const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
-    const trackingEnabled = shopId && validShops.includes(shopId);
+    const shopId = urlParams.get('shop') || 'instagram';
+    const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
+    const trackingEnabled = validShops.includes(shopId);
     
     // Get or create unique user_id (persists in localStorage)
     let userId = localStorage.getItem('looks_user_id');
@@ -2504,50 +2504,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById('onboarding-overlay');
         const cta = document.getElementById('onboarding-cta');
 
-        // TRACK: Session start - only when a valid shop QR code is used
+        // TRACK: Session start - defaults to 'instagram' for all non-shop traffic
         const urlParams = new URLSearchParams(window.location.search);
-        const shopId = urlParams.get('shop');
-        const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
+        const shopId = urlParams.get('shop') || 'instagram';
+        const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
+        if (!validShops.includes(shopId)) return; // Skip tracking only for invalid shops
         
-        // Only track analytics if valid shop parameter exists
-        if (shopId && validShops.includes(shopId)) {
-            // Get or create unique user_id
-            let userId = localStorage.getItem('looks_user_id');
-            let isReturning = false;
+        // Get or create unique user_id
+        let userId = localStorage.getItem('looks_user_id');
+        let isReturning = false;
 
-            if (userId) {
-                isReturning = true;
-            } else {
-                userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                localStorage.setItem('looks_user_id', userId);
-            }
-            
-            setTimeout(() => {
-                console.log('🚀 SESSION START - Sending now...'); // DEBUG
-                fetch('/api/analytics', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        eventType: 'session_start',
-                        eventData: { 
-                            sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                            user_id: userId,
-                            is_returning: isReturning,
-                            shop_id: shopId,
-                            gender: 'Male' 
-                        }
-                    })
-                })
-                .then(r => {
-                    console.log('✅ SESSION START SUCCESS:', r.status); // DEBUG
-                    return r.json();
-                })
-                .then(d => console.log('✅ SESSION START RESPONSE:', d)) // DEBUG
-                .catch(e => console.error('❌ SESSION START FAILED:', e));
-            }, 1000);
+        if (userId) {
+            isReturning = true;
+        } else {
+            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            localStorage.setItem('looks_user_id', userId);
         }
+        
+        setTimeout(() => {
+            console.log('🚀 SESSION START - Sending now...'); // DEBUG
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    eventType: 'session_start',
+                    eventData: { 
+                        sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                        user_id: userId,
+                        is_returning: isReturning,
+                        shop_id: shopId,
+                        gender: 'Male' 
+                    }
+                })
+            })
+            .then(r => {
+                console.log('✅ SESSION START SUCCESS:', r.status); // DEBUG
+                return r.json();
+            })
+            .then(d => console.log('✅ SESSION START RESPONSE:', d)) // DEBUG
+            .catch(e => console.error('❌ SESSION START FAILED:', e));
+        }, 1000);
 
-        // Show only on first visit (always runs, regardless of shop parameter)
+        // Show only on first visit
         if (localStorage.getItem('looks-onboarded')) {
             overlay.classList.add('hidden');
         }
