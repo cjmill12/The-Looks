@@ -632,8 +632,19 @@
             const tbody = document.getElementById('shop-table-body');
             tbody.innerHTML = '';
             
-            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop', 'virile': 'Virile', 'maple-w': 'Maple (Waldwick)', 'ridgewood': 'Ridgewood Man' };
-            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood'];
+            const shopNames = { 
+                'wyckoff': 'Wyckoff Barber', 
+                'allendale': 'Allendale Barbershop', 
+                'montana': 'Montana Barbershop', 
+                'virile': 'Virile', 
+                'maple-w': 'Maple (Waldwick)', 
+                'ridgewood': 'Ridgewood Man',
+                'instagram': '📱 Instagram',
+                'instagram-bio': '📱 Instagram Bio',
+                'instagram-story': '📱 Instagram Story',
+                'instagram-post': '📱 Instagram Post'
+            };
+            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram', 'instagram-bio', 'instagram-story', 'instagram-post'];
             
             for (const [shopId, stats] of Object.entries(shopBreakdown)) {
                 if (!validShops.includes(shopId)) continue; // Skip unknown/test traffic
@@ -677,7 +688,18 @@
             });
             
             const sessionArray = Object.values(sessions).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 20);
-            const shopNames = { 'wyckoff': 'Wyckoff Barber', 'allendale': 'Allendale Barbershop', 'montana': 'Montana Barbershop', 'virile': 'Virile', 'maple-w': 'Maple (Waldwick)', 'ridgewood': 'Ridgewood Man' };
+            const shopNames = { 
+                'wyckoff': 'Wyckoff Barber', 
+                'allendale': 'Allendale Barbershop', 
+                'montana': 'Montana Barbershop', 
+                'virile': 'Virile', 
+                'maple-w': 'Maple (Waldwick)', 
+                'ridgewood': 'Ridgewood Man',
+                'instagram': '📱 Instagram',
+                'instagram-bio': '📱 Instagram Bio',
+                'instagram-story': '📱 Instagram Story',
+                'instagram-post': '📱 Instagram Post'
+            };
             
             sessionArray.forEach(session => {
                 const time = new Date(session.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
