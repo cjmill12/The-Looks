@@ -639,12 +639,9 @@
                 'virile': 'Virile', 
                 'maple-w': 'Maple (Waldwick)', 
                 'ridgewood': 'Ridgewood Man',
-                'instagram': '📱 Instagram',
-                'instagram-bio': '📱 Instagram Bio',
-                'instagram-story': '📱 Instagram Story',
-                'instagram-post': '📱 Instagram Post'
+                'instagram': '📱 Instagram'
             };
-            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram', 'instagram-bio', 'instagram-story', 'instagram-post'];
+            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
             
             for (const [shopId, stats] of Object.entries(shopBreakdown)) {
                 if (!validShops.includes(shopId)) continue; // Skip unknown/test traffic
@@ -695,10 +692,7 @@
                 'virile': 'Virile', 
                 'maple-w': 'Maple (Waldwick)', 
                 'ridgewood': 'Ridgewood Man',
-                'instagram': '📱 Instagram',
-                'instagram-bio': '📱 Instagram Bio',
-                'instagram-story': '📱 Instagram Story',
-                'instagram-post': '📱 Instagram Post'
+                'instagram': '📱 Instagram'
             };
             
             sessionArray.forEach(session => {
