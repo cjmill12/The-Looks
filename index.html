@@ -153,15 +153,16 @@ body {
     display: none !important;
 }
 
-/* ACTION BUTTONS - ABOVE GALLERY */
+/* ACTION BUTTONS - BELOW GALLERY */
 #action-buttons {
     position: fixed;
-    bottom: 250px; /* Above gallery */
+    bottom: 10px; /* Below gallery */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 12px;
     z-index: 90;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .action-btn {
@@ -256,23 +257,28 @@ body {
     box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 6px 24px rgba(0,0,0,0.6);
 }
 
-/* STATUS MESSAGE - ABOVE GALLERY */
+/* STATUS MESSAGE - HIDDEN BY DEFAULT */
 #status-message {
     position: fixed;
-    bottom: 320px; /* Above buttons */
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.75);
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
     color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
     font-weight: 500;
     z-index: 95;
     backdrop-filter: blur(10px);
     text-align: center;
     max-width: 80%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    display: none; /* Hidden by default */
+}
+
+#status-message.visible {
+    display: block;
 }
 
 /* LOADING SPINNER */
@@ -591,6 +597,7 @@ async function generateLook() {
     
     spinner.classList.add('active');
     statusMsg.textContent = 'Generating your look...';
+    statusMsg.classList.add('visible');
     
     const complexionClause = selectedComplexionCode === 'ds' ? ' with a darkest complexion' : '';
     const finalPrompt = `STRICTLY operate in an inpainting/editing mode. The ONLY element to be changed is the subject's hair. PRESERVE the subject's face, identity, expression, clothing, and background EXACTLY as they appear in the original photograph. Apply the following hairstyle, matching its texture, color, and shape: ${selectedPrompt}. The final result must be a high quality, professional studio portrait of a ${selectedGender} model${complexionClause} with NO other changes besides the hair.`;
@@ -614,7 +621,7 @@ async function generateLook() {
         
         aiComplete = true;
         spinner.classList.remove('active');
-        statusMsg.textContent = 'Love it? Book now!';
+        statusMsg.classList.remove('visible');
         updateUI();
         
         if (trackingEnabled) track('generation_complete', { styleLabel: selectedStyleLabel });
@@ -622,6 +629,8 @@ async function generateLook() {
         console.error('Generate error:', e);
         spinner.classList.remove('active');
         statusMsg.textContent = 'Error generating. Try again.';
+        statusMsg.classList.add('visible');
+        setTimeout(() => statusMsg.classList.remove('visible'), 3000);
     }
 }
 
@@ -642,15 +651,21 @@ function updateUI() {
     generateBtn.classList.remove('visible'); // Never show
     bookBtn.classList.toggle('visible', aiComplete);
     
-    // Update status messages
+    // Show status only when important
     if (!cameraStarted && !imageCaptured) {
         statusMsg.textContent = 'Loading camera...';
+        statusMsg.classList.add('visible');
     } else if (cameraStarted && !imageCaptured) {
         statusMsg.textContent = 'Tap anywhere to take selfie';
+        statusMsg.classList.add('visible');
+        // Hide after 3 seconds
+        setTimeout(() => statusMsg.classList.remove('visible'), 3000);
     } else if (imageCaptured && !aiComplete) {
         statusMsg.textContent = 'Tap a style to try it on';
-    } else if (aiComplete) {
-        statusMsg.textContent = 'Love it? Book your appointment!';
+        statusMsg.classList.add('visible');
+        setTimeout(() => statusMsg.classList.remove('visible'), 3000);
+    } else {
+        statusMsg.classList.remove('visible');
     }
 }
 
@@ -766,10 +781,15 @@ function selectStyle(item) {
     // Scroll to center
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     
+    // Reset aiComplete so we can generate again with new style
+    if (imageCaptured && aiComplete) {
+        aiComplete = false;
+    }
+    
     updateUI();
     
     // Auto-generate if image is captured
-    if (imageCaptured && !aiComplete) {
+    if (imageCaptured) {
         generateLook();
     }
 }
