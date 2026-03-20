@@ -223,9 +223,8 @@ body {
     background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 80; /* Above camera, below controls */
+    z-index: 80;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    border-top: 2px solid red; /* DEBUG: Make visible */
 }
 
 .gallery-label {
@@ -237,11 +236,10 @@ body {
     opacity: 0.5;
     margin: 8px 0 6px 0;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    background: yellow; /* DEBUG */
 }
 
 .style-scroll {
-    display: flex !important; /* Force visible */
+    display: flex;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
     gap: 16px;
@@ -250,8 +248,6 @@ body {
     scrollbar-width: none;
     height: 130px;
     align-items: center;
-    background: rgba(255,0,0,0.3); /* DEBUG: Red tint */
-    min-height: 130px;
 }
 
 .style-scroll::-webkit-scrollbar { display: none; }
@@ -661,27 +657,50 @@ function updateUI() {
     bookBtn.classList.toggle('visible', aiComplete);
 }
 
-// Load Female Styles (hardcoded)
-const femaleStylesData = [
-    { src: 'styles/female/style1.png', prompt: 'A shoulder-length cut with soft waves and natural volume, warm brunette color, gentle face-framing layers.', label: 'Soft Wavy Layers' },
-    { src: 'styles/female/style2.png', prompt: 'A long layered hairstyle with loose curls, dark brown color, flowing and romantic silhouette.', label: 'Long Loose Curls' },
-    { src: 'styles/female/style3.png', prompt: 'A sleek straight bob cut at chin length, jet black color, sharp and modern profile.', label: 'Sleek Chin Bob' },
-    { src: 'styles/female/style4.png', prompt: 'A textured lob with subtle waves, ash blonde color, effortless and airy finish.', label: 'Textured Wavy Lob' },
-    { src: 'styles/female/style5.png', prompt: 'A short pixie cut with choppy layers, platinum blonde color, bold and edgy look.', label: 'Choppy Pixie Cut' },
-    { src: 'styles/female/style6.png', prompt: 'A long haircut with smooth straight strands, rich chestnut color, polished and elegant feel.', label: 'Long Sleek Layers' },
-    { src: 'styles/female/style7.png', prompt: 'A curly shoulder-length style with defined ringlets, deep black color, lively and full shape.', label: 'Defined Curly Cut' },
-    { src: 'styles/female/style8.png', prompt: 'A layered shag cut with curtain bangs, honey brown color, relaxed and trendy vibe.', label: 'Layered Shag Cut' },
-];
-
-femaleStylesData.forEach(style => {
-    const div = document.createElement('div');
-    div.className = 'style-item';
-    div.innerHTML = `<img class="style-thumbnail" src="${style.src}" alt="${style.label}">`;
-    div.dataset.prompt = style.prompt;
-    div.dataset.label = style.label;
-    div.addEventListener('click', () => selectStyle(div));
-    femaleStyles.appendChild(div);
-});
+// Load Female Styles from JSON
+console.log('🔍 Loading female styles from JSON...');
+fetch('/styles-data.json')
+    .then(r => r.json())
+    .then(data => {
+        const styles = data.female || [];
+        console.log('✅ Female styles found:', styles.length);
+        
+        styles.forEach(style => {
+            const div = document.createElement('div');
+            div.className = 'style-item';
+            div.innerHTML = `<img class="style-thumbnail" src="${style.image}" alt="${style.name}">`;
+            div.dataset.prompt = style.prompt;
+            div.dataset.label = style.name;
+            div.addEventListener('click', () => selectStyle(div));
+            femaleStyles.appendChild(div);
+        });
+        
+        console.log('✅ Female styles rendered:', femaleStyles.children.length);
+    })
+    .catch(e => {
+        console.error('❌ Female styles load error:', e);
+        // Fallback to hardcoded female styles
+        const fallbackStyles = [
+            { src: 'styles/female/style1.png', prompt: 'A shoulder-length cut with soft waves and natural volume, warm brunette color, gentle face-framing layers.', label: 'Soft Wavy Layers' },
+            { src: 'styles/female/style2.png', prompt: 'A long layered hairstyle with loose curls, dark brown color, flowing and romantic silhouette.', label: 'Long Loose Curls' },
+            { src: 'styles/female/style3.png', prompt: 'A sleek straight bob cut at chin length, jet black color, sharp and modern profile.', label: 'Sleek Chin Bob' },
+            { src: 'styles/female/style4.png', prompt: 'A textured lob with subtle waves, ash blonde color, effortless and airy finish.', label: 'Textured Wavy Lob' },
+            { src: 'styles/female/style5.png', prompt: 'A short pixie cut with choppy layers, platinum blonde color, bold and edgy look.', label: 'Choppy Pixie Cut' },
+            { src: 'styles/female/style6.png', prompt: 'A long haircut with smooth straight strands, rich chestnut color, polished and elegant feel.', label: 'Long Sleek Layers' },
+            { src: 'styles/female/style7.png', prompt: 'A curly shoulder-length style with defined ringlets, deep black color, lively and full shape.', label: 'Defined Curly Cut' },
+            { src: 'styles/female/style8.png', prompt: 'A layered shag cut with curtain bangs, honey brown color, relaxed and trendy vibe.', label: 'Layered Shag Cut' },
+        ];
+        
+        fallbackStyles.forEach(style => {
+            const div = document.createElement('div');
+            div.className = 'style-item';
+            div.innerHTML = `<img class="style-thumbnail" src="${style.src}" alt="${style.label}">`;
+            div.dataset.prompt = style.prompt;
+            div.dataset.label = style.label;
+            div.addEventListener('click', () => selectStyle(div));
+            femaleStyles.appendChild(div);
+        });
+    });
 
 // Load Male Styles from JSON
 console.log('🔍 Loading male styles from JSON...');
@@ -691,18 +710,18 @@ fetch('/styles-data.json')
         return r.json();
     })
     .then(data => {
-        console.log('✅ JSON data loaded:', data.length, 'total styles');
-        const styles = data.filter(s => s.gender === 'male');
-        console.log('✅ Male styles filtered:', styles.length);
+        console.log('✅ JSON data loaded:', data);
+        const styles = data.male || []; // Get male array
+        console.log('✅ Male styles found:', styles.length);
         const shuffled = styles.sort(() => Math.random() - 0.5);
         
         shuffled.forEach(style => {
             const div = document.createElement('div');
             div.className = 'style-item';
-            div.innerHTML = `<img class="style-thumbnail" src="${style.thumbnail_path}" alt="${style.name}">`;
+            div.innerHTML = `<img class="style-thumbnail" src="${style.image}" alt="${style.name}">`;
             div.dataset.prompt = style.prompt;
             div.dataset.label = style.name;
-            div.dataset.code = style.complexion;
+            div.dataset.code = style.skinTone; // Use skinTone instead of complexion
             div.addEventListener('click', () => selectStyle(div));
             maleStyles.appendChild(div);
         });
