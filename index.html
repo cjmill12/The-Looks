@@ -1611,7 +1611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get shop_id from URL parameter, default to 'instagram' for all non-shop traffic
     const urlParams = new URLSearchParams(window.location.search);
     const shopId = urlParams.get('shop') || 'instagram';
-    const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
+    const validShops = ['wyckoff', 'wyckoff-ig', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
     const trackingEnabled = validShops.includes(shopId);
     
     // Get or create unique user_id (persists in localStorage)
@@ -2275,19 +2275,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Shop-specific Vagaro booking URLs
+    const bookingUrls = {
+        'wyckoff': 'https://www.vagaro.com/wyckoffavebarbershop/book-now',
+        'wyckoff-ig': 'https://www.vagaro.com/wyckoffavebarbershop/book-now',
+        'allendale': null, // Add Vagaro link when available
+        'montana': null,
+        'virile': null,
+        'maple-w': null,
+        'ridgewood': null,
+        'instagram': null
+    };
+    
     bookAppointmentBtn.addEventListener('click', () => {
         if (!aiGenerationComplete) {
             statusMessage.textContent = "Please generate a look first before booking.";
             triggerHaptic([50, 100, 50]);
             return;
         }
+        
         triggerHaptic(20);
-        referenceImagePreview.src = aiResultImg.src;
-        selectedStyleNameSpan.textContent = selectedStyleLabel;
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.setDate() + 1);
-        dateInput.min = tomorrow.toISOString().split('T')[0];
-        bookingModalOverlay.classList.add('visible');
+        
+        const bookingUrl = bookingUrls[shopId];
+        
+        if (bookingUrl) {
+            // Track the booking click
+            if (trackingEnabled) {
+                track('booking_click', { 
+                    shop_id: shopId,
+                    styleLabel: selectedStyleLabel 
+                });
+            }
+            // Redirect to shop's Vagaro booking page
+            window.open(bookingUrl, '_blank');
+            statusMessage.textContent = "Opening booking page...";
+        } else {
+            // No booking URL configured for this shop
+            statusMessage.textContent = "Booking not available yet. Please contact the shop directly.";
+            triggerHaptic([50, 100, 50]);
+        }
     });
 
     // --- SAVE PHOTO ---
@@ -2507,7 +2533,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // TRACK: Session start - defaults to 'instagram' for all non-shop traffic
         const urlParams = new URLSearchParams(window.location.search);
         const shopId = urlParams.get('shop') || 'instagram';
-        const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
+        const validShops = ['wyckoff', 'wyckoff-ig', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
         if (!validShops.includes(shopId)) return; // Skip tracking only for invalid shops
         
         // Get or create unique user_id
