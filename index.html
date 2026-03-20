@@ -68,9 +68,8 @@ body {
 #video-feed, #ai-result {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Changed from cover to show more */
+    object-fit: cover; /* Fill the screen, crop to fit */
     display: none;
-    background: #000; /* Black bars instead of cropping */
 }
 
 #video-feed.active { display: block; }
@@ -154,16 +153,15 @@ body {
     display: none !important;
 }
 
-/* ACTION BUTTONS - BELOW GALLERY */
+/* ACTION BUTTONS - ABOVE GALLERY */
 #action-buttons {
     position: fixed;
-    bottom: 60px; /* Below gallery */
+    bottom: 250px; /* Above gallery */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 12px;
     z-index: 90;
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .action-btn {
@@ -195,15 +193,15 @@ body {
     color: white;
 }
 
-/* BOTTOM STYLE GALLERY - MOVED UP */
+/* BOTTOM STYLE GALLERY - LOWER */
 #style-gallery {
     position: fixed;
-    bottom: 120px; /* Moved up to make room for buttons below */
+    bottom: 40px; /* Moved down closer to bottom */
     left: 0;
     right: 0;
     height: 200px;
     z-index: 80;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
     pointer-events: none;
 }
 
@@ -258,24 +256,23 @@ body {
     box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 6px 24px rgba(0,0,0,0.6);
 }
 
-/* STATUS MESSAGE - BELOW GALLERY */
+/* STATUS MESSAGE - ABOVE GALLERY */
 #status-message {
     position: fixed;
-    bottom: 20px; /* At very bottom */
+    bottom: 320px; /* Above buttons */
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0,0,0,0.75);
     color: white;
     padding: 8px 16px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     z-index: 95;
     backdrop-filter: blur(10px);
     text-align: center;
     max-width: 80%;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
 }
 
 /* LOADING SPINNER */
