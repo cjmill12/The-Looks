@@ -153,16 +153,20 @@ body {
     display: none !important;
 }
 
-/* ACTION BUTTONS - BELOW GALLERY */
+/* ACTION BUTTONS - AT VERY BOTTOM */
 #action-buttons {
     position: fixed;
-    bottom: 10px; /* Below gallery */
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     gap: 12px;
     z-index: 90;
-    padding-bottom: env(safe-area-inset-bottom);
+    padding: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    justify-content: center;
+    background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+    backdrop-filter: blur(10px);
 }
 
 .action-btn {
@@ -194,10 +198,10 @@ body {
     color: white;
 }
 
-/* BOTTOM STYLE GALLERY - LOWER */
+/* BOTTOM STYLE GALLERY - HIGHER UP */
 #style-gallery {
     position: fixed;
-    bottom: 40px; /* Moved down closer to bottom */
+    bottom: 80px; /* Higher to make room for buttons below */
     left: 0;
     right: 0;
     height: 200px;
@@ -257,12 +261,12 @@ body {
     box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 6px 24px rgba(0,0,0,0.6);
 }
 
-/* STATUS MESSAGE - HIDDEN BY DEFAULT */
+/* STATUS MESSAGE - TOP OF SCREEN */
 #status-message {
     position: fixed;
-    top: 50%;
+    top: 100px; /* Below the gender/filter bar */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     background: rgba(0,0,0,0.8);
     color: white;
     padding: 12px 24px;
@@ -538,9 +542,10 @@ async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { 
-                facingMode: 'user', 
-                width: { ideal: 1920 },  // Wider for zoom out
-                height: { ideal: 1920 } 
+                facingMode: 'user',
+                width: { ideal: 1280, max: 1920 },
+                height: { ideal: 720, max: 1080 }, // 16:9 aspect for wider view
+                aspectRatio: { ideal: 16/9 }
             }
         });
         videoFeed.srcObject = stream;
@@ -549,10 +554,13 @@ async function startCamera() {
         placeholder.classList.add('hidden');
         cameraStarted = true;
         statusMsg.textContent = 'Tap anywhere to take selfie';
+        statusMsg.classList.add('visible');
+        setTimeout(() => statusMsg.classList.remove('visible'), 3000);
         captureBtn.classList.remove('hidden');
     } catch (e) {
         console.error('Camera error:', e);
         statusMsg.textContent = 'Camera access denied';
+        statusMsg.classList.add('visible');
     }
 }
 
