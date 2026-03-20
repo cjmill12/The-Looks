@@ -148,34 +148,15 @@ body {
     cursor: pointer;
 }
 
-/* CAPTURE BUTTON - ABOVE GALLERY */
+/* CAPTURE BUTTON - HIDDEN */
 #capture-button {
-    position: fixed;
-    bottom: 200px; /* Above the 180px gallery */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 4px solid white;
-    background: rgba(255,255,255,0.3);
-    backdrop-filter: blur(10px);
-    z-index: 90;
-    cursor: pointer;
-    transition: transform 0.1s;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    display: none !important;
 }
 
-#capture-button:active {
-    transform: translateX(-50%) scale(0.9);
-}
-
-#capture-button.hidden { display: none; }
-
-/* ACTION BUTTONS - ABOVE GALLERY */
+/* ACTION BUTTONS - ONLY REDO AND BOOK */
 #action-buttons {
     position: fixed;
-    bottom: 200px; /* Above the 180px gallery */
+    bottom: 220px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -199,8 +180,7 @@ body {
 .action-btn:active { transform: scale(0.95); }
 
 #generate-btn {
-    background: var(--success-color);
-    color: white;
+    display: none !important; /* Never show */
 }
 
 #redo-btn {
@@ -213,75 +193,67 @@ body {
     color: white;
 }
 
-/* BOTTOM STYLE GALLERY - OVERLAID ON CAMERA */
+/* BOTTOM STYLE GALLERY - NO BACKGROUND */
 #style-gallery {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 180px;
-    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    height: 200px;
     z-index: 80;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    pointer-events: none; /* Allow taps to pass through empty space */
 }
 
 .gallery-label {
-    text-align: center;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    opacity: 0.5;
-    margin: 8px 0 6px 0;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    display: none; /* Hidden */
 }
 
 .style-scroll {
     display: flex;
     overflow-x: scroll;
     scroll-snap-type: x mandatory;
-    gap: 16px;
-    padding: 0 calc(50vw - 45px);
+    gap: 20px;
+    padding: 0 calc(50vw - 75px); /* Adjusted for larger thumbnails */
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    height: 130px;
+    height: 180px;
     align-items: center;
+    pointer-events: auto; /* Re-enable taps on thumbnails */
 }
 
 .style-scroll::-webkit-scrollbar { display: none; }
 
 .style-item {
     flex-shrink: 0;
-    width: 90px;
+    width: 150px;
     scroll-snap-align: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    opacity: 0.6;
-    transform: scale(0.88);
+    opacity: 0.7;
+    transform: scale(0.92);
 }
 
 .style-item.selected {
     opacity: 1;
-    transform: scale(1.08);
+    transform: scale(1.1);
     z-index: 10;
 }
 
 .style-thumbnail {
-    width: 90px;
-    height: 90px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     object-position: top;
-    border: 3px solid rgba(255,255,255,0.3);
+    border: 4px solid rgba(255,255,255,0.4);
     transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
 }
 
 .style-item.selected .style-thumbnail {
     border-color: var(--accent-color);
-    box-shadow: 0 0 20px rgba(14, 165, 233, 0.6), 0 4px 16px rgba(0,0,0,0.5);
+    box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 6px 24px rgba(0,0,0,0.6);
 }
 
 /* STATUS MESSAGE - ABOVE GALLERY */
@@ -559,14 +531,18 @@ async function startCamera() {
     if (cameraStarted) return;
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } }
+            video: { 
+                facingMode: 'user', 
+                width: { ideal: 1920 },  // Wider for zoom out
+                height: { ideal: 1920 } 
+            }
         });
         videoFeed.srcObject = stream;
         await videoFeed.play();
         videoFeed.classList.add('active');
         placeholder.classList.add('hidden');
         cameraStarted = true;
-        statusMsg.textContent = 'Tap circle to capture';
+        statusMsg.textContent = 'Tap anywhere to take selfie';
         captureBtn.classList.remove('hidden');
     } catch (e) {
         console.error('Camera error:', e);
@@ -583,9 +559,11 @@ function stopCamera() {
 }
 
 function captureImage() {
+    if (!cameraStarted) return;
+    
     const ctx = canvas.getContext('2d');
-    canvas.width = videoFeed.videoWidth || 1280;
-    canvas.height = videoFeed.videoHeight || 1280;
+    canvas.width = videoFeed.videoWidth || 1920;
+    canvas.height = videoFeed.videoHeight || 1920;
     ctx.drawImage(videoFeed, 0, 0);
     capturedImage = canvas.toDataURL('image/jpeg').split(',')[1];
     
@@ -598,7 +576,15 @@ function captureImage() {
     updateUI();
     
     if (trackingEnabled) track('image_capture');
+    statusMsg.textContent = 'Tap a style to try it on';
 }
+
+// Tap camera viewport to capture
+document.getElementById('camera-viewport').addEventListener('click', () => {
+    if (cameraStarted && !imageCaptured) {
+        captureImage();
+    }
+});
 
 async function generateLook() {
     if (!capturedImage || !selectedPrompt) return;
@@ -652,9 +638,20 @@ function resetSession() {
 
 function updateUI() {
     captureBtn.classList.toggle('hidden', imageCaptured);
-    redoBtn.classList.toggle('visible', imageCaptured);
-    generateBtn.classList.toggle('visible', imageCaptured && selectedPrompt && !aiComplete);
+    redoBtn.classList.toggle('visible', imageCaptured || aiComplete);
+    generateBtn.classList.remove('visible'); // Never show
     bookBtn.classList.toggle('visible', aiComplete);
+    
+    // Update status messages
+    if (!cameraStarted && !imageCaptured) {
+        statusMsg.textContent = 'Loading camera...';
+    } else if (cameraStarted && !imageCaptured) {
+        statusMsg.textContent = 'Tap anywhere to take selfie';
+    } else if (imageCaptured && !aiComplete) {
+        statusMsg.textContent = 'Tap a style to try it on';
+    } else if (aiComplete) {
+        statusMsg.textContent = 'Love it? Book your appointment!';
+    }
 }
 
 // Load Female Styles from JSON
@@ -770,6 +767,11 @@ function selectStyle(item) {
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     
     updateUI();
+    
+    // Auto-generate if image is captured
+    if (imageCaptured && !aiComplete) {
+        generateLook();
+    }
 }
 
 // Gender Toggle
