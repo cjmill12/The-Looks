@@ -673,10 +673,16 @@ femaleStylesData.forEach(style => {
 });
 
 // Load Male Styles from JSON
+console.log('🔍 Loading male styles from JSON...');
 fetch('/styles-data.json')
-    .then(r => r.json())
+    .then(r => {
+        console.log('✅ JSON fetch response:', r.status);
+        return r.json();
+    })
     .then(data => {
+        console.log('✅ JSON data loaded:', data.length, 'total styles');
         const styles = data.filter(s => s.gender === 'male');
+        console.log('✅ Male styles filtered:', styles.length);
         const shuffled = styles.sort(() => Math.random() - 0.5);
         
         shuffled.forEach(style => {
@@ -690,12 +696,37 @@ fetch('/styles-data.json')
             maleStyles.appendChild(div);
         });
         
+        console.log('✅ Male styles rendered:', maleStyles.children.length);
+        
         // Auto-select first
         if (maleStyles.firstChild) {
             selectStyle(maleStyles.firstChild);
         }
     })
-    .catch(e => console.error('Styles load error:', e));
+    .catch(e => {
+        console.error('❌ Styles load error:', e);
+        console.log('⚠️ Falling back to hardcoded male styles...');
+        // Fallback hardcoded styles
+        const fallbackStyles = [
+            { src: 'styles/male/style1.png', prompt: 'A short haircut with a tousled and textured top, dark brown color, sharp side profile.', label: 'Tousled Crop' },
+            { src: 'styles/male/style2.png', prompt: 'A clean fade with a slightly messy wavy top, medium brown color, defined jawline framing', label: 'Wavy Fade' },
+            { src: 'styles/male/style3.png', prompt: 'A classic side-part with a smooth combed finish, ash black color, crisp temple blend.', label: 'Side Part' },
+        ];
+        
+        fallbackStyles.forEach(style => {
+            const div = document.createElement('div');
+            div.className = 'style-item';
+            div.innerHTML = `<img class="style-thumbnail" src="${style.src}" alt="${style.label}">`;
+            div.dataset.prompt = style.prompt;
+            div.dataset.label = style.label;
+            div.addEventListener('click', () => selectStyle(div));
+            maleStyles.appendChild(div);
+        });
+        
+        if (maleStyles.firstChild) {
+            selectStyle(maleStyles.firstChild);
+        }
+    });
 
 function selectStyle(item) {
     const container = item.parentElement;
