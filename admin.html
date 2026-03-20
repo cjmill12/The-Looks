@@ -633,7 +633,8 @@
             tbody.innerHTML = '';
             
             const shopNames = { 
-                'wyckoff': 'Wyckoff Barber', 
+                'wyckoff': 'Wyckoff Barber (In-Shop)',
+                'wyckoff-ig': 'Wyckoff Barber (Instagram)',
                 'allendale': 'Allendale Barbershop', 
                 'montana': 'Montana Barbershop', 
                 'virile': 'Virile', 
@@ -641,7 +642,7 @@
                 'ridgewood': 'Ridgewood Man',
                 'instagram': '📱 Instagram'
             };
-            const validShops = ['wyckoff', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
+            const validShops = ['wyckoff', 'wyckoff-ig', 'allendale', 'montana', 'virile', 'maple-w', 'ridgewood', 'instagram'];
             
             for (const [shopId, stats] of Object.entries(shopBreakdown)) {
                 if (!validShops.includes(shopId)) continue; // Skip unknown/test traffic
@@ -686,7 +687,8 @@
             
             const sessionArray = Object.values(sessions).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 20);
             const shopNames = { 
-                'wyckoff': 'Wyckoff Barber', 
+                'wyckoff': 'Wyckoff Barber (In-Shop)',
+                'wyckoff-ig': 'Wyckoff Barber (Instagram)',
                 'allendale': 'Allendale Barbershop', 
                 'montana': 'Montana Barbershop', 
                 'virile': 'Virile', 
