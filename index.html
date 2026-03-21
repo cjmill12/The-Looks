@@ -107,7 +107,7 @@ body {
     z-index: 100;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* Center the filter button */
     padding: 0 16px;
     padding-top: env(safe-area-inset-top);
 }
@@ -138,14 +138,7 @@ body {
 }
 
 .filter-btn {
-    padding: 8px 16px;
-    border: none;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    display: none; /* Hidden - filters are always visible at bottom */
 }
 
 /* CAPTURE BUTTON - HIDDEN */
@@ -310,50 +303,20 @@ body {
 }
 
 /* FILTERS MODAL */
-#filters-modal {
+/* FILTERS BAR - ALWAYS VISIBLE AT BOTTOM */
+#filters-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(15, 23, 42, 0.95);
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 100%);
     backdrop-filter: blur(20px);
-    border-radius: 20px 20px 0 0;
-    padding: 24px;
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    z-index: 150;
-    transform: translateY(100%);
-    transition: transform 0.3s;
-}
-
-#filters-modal.open { transform: translateY(0); }
-
-.modal-header {
+    -webkit-backdrop-filter: blur(20px);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 70; /* Below gallery (80) and buttons (90) */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.modal-title {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.filter-label {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-    margin-bottom: 12px;
+    justify-content: center;
 }
 
 .complexion-options {
@@ -389,10 +352,6 @@ body {
 
     <!-- TOP BAR -->
     <div id="top-bar">
-        <div class="gender-toggle">
-            <button class="gender-btn active" data-gender="male">Male</button>
-            <button class="gender-btn" data-gender="female">Female</button>
-        </div>
         <button class="filter-btn" id="filter-btn">+ Filters</button>
     </div>
 
@@ -419,13 +378,8 @@ body {
         <div class="style-scroll" id="female-styles" style="display:none;"></div>
     </div>
 
-    <!-- FILTERS MODAL -->
-    <div id="filters-modal">
-        <div class="modal-header">
-            <div class="modal-title">Filters</div>
-            <button class="close-btn" id="close-filters">&times;</button>
-        </div>
-        <div class="filter-label">Complexion</div>
+    <!-- FILTERS BAR - ALWAYS VISIBLE AT BOTTOM -->
+    <div id="filters-bar">
         <div class="complexion-options">
             <div class="complexion-tile" style="background:#F8D7BE" data-code="default"></div>
             <div class="complexion-tile" style="background:#D6A476" data-code="default"></div>
@@ -509,10 +463,6 @@ const statusMsg = document.getElementById('status-message');
 const spinner = document.getElementById('spinner');
 const maleStyles = document.getElementById('male-styles');
 const femaleStyles = document.getElementById('female-styles');
-const filterBtn = document.getElementById('filter-btn');
-const filtersModal = document.getElementById('filters-modal');
-const closeFilters = document.getElementById('close-filters');
-
 // DEBUG: Check if elements exist
 console.log('🔍 DOM ELEMENTS CHECK:');
 console.log('maleStyles element:', maleStyles);
@@ -605,7 +555,13 @@ function captureImage() {
     updateUI();
     
     if (trackingEnabled) track('image_capture');
-    statusMsg.textContent = 'Tap a style to try it on';
+    statusMsg.textContent = 'Generating your look...';
+    statusMsg.classList.add('visible');
+    
+    // Auto-generate immediately if style is selected
+    if (selectedPrompt) {
+        generateLook();
+    }
 }
 
 // Tap camera viewport to capture
@@ -679,12 +635,12 @@ function updateUI() {
         statusMsg.textContent = 'Loading camera...';
         statusMsg.classList.add('visible');
     } else if (cameraStarted && !imageCaptured) {
-        statusMsg.textContent = 'Tap anywhere to take selfie';
+        statusMsg.textContent = 'Tap a style to capture & try it on';
         statusMsg.classList.add('visible');
         // Hide after 3 seconds
         setTimeout(() => statusMsg.classList.remove('visible'), 3000);
     } else if (imageCaptured && !aiComplete) {
-        statusMsg.textContent = 'Tap a style to try it on';
+        statusMsg.textContent = 'Tap another style to try it on';
         statusMsg.classList.add('visible');
         setTimeout(() => statusMsg.classList.remove('visible'), 3000);
     } else {
@@ -804,6 +760,12 @@ function selectStyle(item) {
     // Scroll to center
     item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     
+    // If camera is running, capture first
+    if (cameraStarted && !imageCaptured) {
+        captureImage();
+        return; // Will auto-generate after capture completes
+    }
+    
     // Reset aiComplete so we can generate again with new style
     if (imageCaptured && aiComplete) {
         aiComplete = false;
@@ -836,10 +798,7 @@ document.querySelectorAll('.gender-btn').forEach(btn => {
     });
 });
 
-// Filters Modal
-filterBtn.addEventListener('click', () => filtersModal.classList.add('open'));
-closeFilters.addEventListener('click', () => filtersModal.classList.remove('open'));
-
+// Complexion selection (always visible at bottom)
 document.querySelectorAll('.complexion-tile').forEach(tile => {
     tile.addEventListener('click', () => {
         document.querySelectorAll('.complexion-tile').forEach(t => t.classList.remove('selected'));
